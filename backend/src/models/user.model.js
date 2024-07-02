@@ -22,7 +22,6 @@ const UserSchema = new Schema(
         },
         coverImage:{
         type:String, //cloudinary Url
-
         },
         password:{
         type:String
