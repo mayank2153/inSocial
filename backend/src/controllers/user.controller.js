@@ -2,17 +2,14 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
-import mongoose from "mongoose";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const generateAccessAndRefereshTokens = async(userId) => {
     try {
         const user = await User.findById(userId)
         if (!user) throw new Error("Invalid")
-        console.log(user);
         const accessToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
-        console.log(accessToken, refreshToken);
         user.refreshToken = refreshToken
         await user.save({ validateBeforeSave: false })
 
@@ -86,7 +83,6 @@ const registerUser = asyncHandler(async(req, res) => {
 })
 
 const loginUser = asyncHandler(async(req, res) => {
-    console.log("login body:",req.body);
     const {email, password} = req.body
 
     if(!password){
@@ -111,12 +107,15 @@ const loginUser = asyncHandler(async(req, res) => {
     }
 
     const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(existedUser._id)
-
+    console.log("access token")
+    console.log(accessToken)
+    console.log("refresh token:")
+    console.log(refreshToken)
     const loggedInUser = await User.findById(existedUser._id).select("-password -refreshToken")
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: false
     }
 
     return res
@@ -150,9 +149,9 @@ const logOutUser = asyncHandler(async(req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: false
     }
-
+    
     return res
     .status(200)
     .clearCookie("accessToken", options)
@@ -179,7 +178,7 @@ const refreshAccessToken = asyncHandler(async(req, res) => {
             throw new ApiError(401, "Invalid RefreshToken")
         }
     
-        if(incomingRefreshtoken !== user?.refreshToken){
+        if(incomingRefreshtoken !== user.refreshToken){
             throw new ApiError(401, "refreshToken is expired or used")
         }
     
@@ -189,7 +188,6 @@ const refreshAccessToken = asyncHandler(async(req, res) => {
         }
     
         const {accessToken, newrefreshToken} = await generateAccessAndRefereshTokens(user._id)
-    
         return res
         .status(200)
         .cookie("accessToken", accessToken, options)
@@ -202,7 +200,8 @@ const refreshAccessToken = asyncHandler(async(req, res) => {
     
             )
         )
-    } catch (error) {
+    } 
+    catch (error) {
         throw new ApiError(401, error?.message || "Invalid access token")
     }
 })

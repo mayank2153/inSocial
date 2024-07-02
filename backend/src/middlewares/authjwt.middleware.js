@@ -8,16 +8,15 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 export const verifyJWT = asyncHandler(async(req, _, next) => {
     try {
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
-
-        console.log(req);
+        console.log("token"+token)
         if(!token) {
             throw new ApiError(401, "Unauthorized Access")
         }
 
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-
-        const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
-
+        console.log("decoded token:",decodedToken)
+        const user = await User.findById(decodedToken?.id).select("-password -refreshToken")
+        console.log("user:",user)
         req.user = user;
         next()
     } catch (error) {

@@ -4,13 +4,16 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import userRouter from "./routes/user.routes.js";
 import session from "express-session"
+import "./middlewares/googleauth.middleware.js";
+import "./middlewares/discordauth.middleware.js"
+
 const app = express();
-app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }
-  }))
+    app.use(session({
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false }
+    }))
 
 
 app.use(passport.initialize());
