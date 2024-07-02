@@ -7,6 +7,9 @@ const PostSchema=new Schema({
     description:{
         type:"String"
     },
+    media:{
+        type:"String" // cloudinary url
+    },
     owner:{
         type:Schema.Types.ObjectId,
         ref:"User",
@@ -15,7 +18,15 @@ const PostSchema=new Schema({
     category:{
         type:Schema.Types.ObjectId,
         ref:"Category"
-    }
+    },
+    votes:[{
+        type: Schema.Types.ObjectId,
+        ref:"Vote"
+    }],
+    comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment'
+  }]
 },{
     timestamps:true
 })
