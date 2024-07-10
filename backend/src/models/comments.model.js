@@ -14,7 +14,7 @@ const CommentSchema = new Schema({
         ref: "Post",
         required:true
     },
-    parentComment: {
+    parentCommentId: {
         type: Schema.Types.ObjectId,
         ref: "Comment" // Reference to the Comment model itself
     }
