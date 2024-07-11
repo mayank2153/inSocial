@@ -2,21 +2,19 @@ import mongoose,{Schema} from "mongoose";
 const VoteSchema=new Schema({
     user:{
         type:Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        required: true
     },
     post:{
         type:Schema.Types.ObjectId,
-        ref:"Post"
+        ref:"Post",
+        required: true
     },
-    comment:{
-        type: Schema.Types.ObjectId,
-        ref:"Comment"
-    },
-    
-    type:{
+    voteType: {
         type: String,
-        required:true
-    },
+        enum: ["upvote", "downvote"],
+        required: true
+    }
     
 },{
     timestamps:true
