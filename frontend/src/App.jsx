@@ -1,15 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { createBrowserRouter,RouterProvider,Outlet } from 'react-router-dom';
 
-function App() {
-  const [count, setCount] = useState(0)
 
+function Layout() {
   return (
     <>
       
+      <Outlet />
     </>
-  )
+  );
+}
+
+const appRouting=createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Layout /> ,
+      children:[
+        {
+          path: "/"
+        }
+      ]
+    }
+  ]
+)
+function App() {
+  return (
+    <RouterProvider router={appRouting} />
+  );
 }
 
 export default App
