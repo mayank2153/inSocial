@@ -34,9 +34,11 @@ app.use(cookieParser())
 import userRouter from "./routes/user.routes.js";
 import postRouter from "./routes/post.routes.js";
 import commentRouter from "./routes/comment.routes.js";
+import voteRouter from "./routes/vote.routes.js";
 app.use("/users", userRouter)
 app.use("/posts",postRouter)
 app.use("/comments",commentRouter)
+app.use("/vote",voteRouter)
 app.get("/",(req,res)=>{
     res.send("WHISPERHUB")
 })
