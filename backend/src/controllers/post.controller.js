@@ -119,7 +119,6 @@ const updatePost = asyncHandler(async (req, res) => {
     );
 });
 
-
 const deletePost = asyncHandler(async (req, res) => {
     const { postId } = req.params;
 
@@ -146,10 +145,33 @@ const getPostsByUser= asyncHandler(async(req,res)=>{
     )
 })
 
+const fetchPosts=asyncHandler(async(req,res)=>{
+    const userId = req.user._id;
+    
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    let posts;
+    if (user.likedCategories && user.likedCategories.length > 0) {
+        // Fetch posts from liked categories
+        posts = await Post.find({ category: { $in: user.likedCategories } }).sort({ createdAt: -1 });
+    } else {
+        // Fetch all posts
+        posts = await Post.find({}).sort({ createdAt: -1 });
+    }
+
+    return res.status(200).json(new ApiResponse(200, posts, "Posts fetched successfully"));
+
+})
+
 export {
     createNewPost,
     updatePost,
     deletePost,
-    getPostsByUser
+    getPostsByUser,
+    fetchPosts
 }
 
