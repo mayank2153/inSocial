@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
-
+import { Category } from "../models/category.model.js"
 const generateAccessAndRefereshTokens = async(userId) => {
     try {
         const user = await User.findById(userId)
@@ -206,10 +206,54 @@ const refreshAccessToken = asyncHandler(async(req, res) => {
     }
 })
 
+
+const addLikedCategories = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const categoryIds = req.body.categoryIds;
+
+    if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
+        throw new ApiError(400, "Please provide an array of category IDs");
+    }
+
+    const user = await User.findById(userId);
+
+    for (let categoryId of categoryIds) {
+        const category = await Category.findById(categoryId);
+        if (!category) {
+            throw new ApiError(404, `Category not found: ${categoryId}`);
+        }
+
+        if (!user.likedCategories.includes(categoryId)) {
+            user.likedCategories.push(categoryId);
+        }
+    }
+
+    await user.save();
+
+    return res.status(200).json(new ApiResponse(200, user.likedCategories, "Categories added to liked categories"));
+});
+
+const removeLikedCategory = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const categoryId = req.body.categoryId;
+
+    const user = await User.findById(userId);
+
+    if (!user.likedCategories.includes(categoryId)) {
+        throw new ApiError(400, "Category not liked");
+    }
+
+    user.likedCategories.pull(categoryId);
+    await user.save();
+
+    return res.status(200).json(new ApiResponse(200, user.likedCategories, "Category removed from liked categories"));
+});
 export {
     registerUser,
     loginUser,
     logOutUser,
     generateAccessAndRefereshTokens,
-    refreshAccessToken
+    refreshAccessToken,
+    addLikedCategories,
+    removeLikedCategory
 }
