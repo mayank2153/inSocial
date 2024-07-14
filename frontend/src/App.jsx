@@ -3,6 +3,7 @@ import Header from './components/header.jsx';
 import Login from './components/Login/login.jsx';
 import { Provider } from 'react-redux';
 import Store from './utils/store.jsx';
+import HomePage from './components/homepage/homepage.jsx';
 function Layout() {
   return (
     <div  className="montserrat-medium">
@@ -21,6 +22,10 @@ const appRouting=createBrowserRouter(
       path: "/",
       element: <Layout /> ,
       children:[
+        {
+          path: "/",
+          element: <HomePage />
+        },
         {
           path: "/login",
           element: <Login />
