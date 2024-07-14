@@ -3,6 +3,7 @@ import Header from './components/header.jsx';
 import Login from './components/Login/login.jsx';
 import { Provider } from 'react-redux';
 import Store from './utils/store.jsx';
+import MultiStepForm from './components/Signup/multistepForm.jsx';
 function Layout() {
   return (
     <div  className="montserrat-medium">
@@ -24,6 +25,10 @@ const appRouting=createBrowserRouter(
         {
           path: "/login",
           element: <Login />
+        },
+        {
+          path: "/register",
+          element: <MultiStepForm /> 
         }
       ]
     }
