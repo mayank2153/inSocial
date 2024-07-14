@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess, loginFailure } from "../../utils/authslice.jsx";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 
-// const url = process.env.BASE_URL || 'http://localhost:8000/api/';
+const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
 const Login = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate(); 
     const [user, setUser] = useState({
         email: "",
         password: ""
@@ -27,6 +28,7 @@ const Login = () => {
         try {
             const response = await axios.post(`${url}users/login`, user, { withCredentials: true });
             dispatch(loginSuccess(response.data));
+            navigate('/'); // Redirect to the homepage after successful login
         } catch (error) {
             dispatch(loginFailure(error.response.data.message));
             alert(error.response.data.message || "Login failed");
