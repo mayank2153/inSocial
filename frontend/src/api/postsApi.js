@@ -7,7 +7,12 @@ export const fetchPosts = () => async (dispatch) => {
   dispatch(setLoading());
 
   try {
-    const response = await axios.get(`${url}posts/AllPosts`);
+    const response = await axios.get(`${url}posts/AllPosts`, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true 
+      });
     dispatch(setPosts(response.data)); 
   } catch (error) {
     dispatch(setError(error.message));
