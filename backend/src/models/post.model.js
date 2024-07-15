@@ -23,8 +23,18 @@ const PostSchema = new Schema({
         ref: "Category"
     },
     votes: [{
-        type: Schema.Types.ObjectId,
-        ref: "Vote"
+        voteId: {
+            type: Schema.Types.ObjectId,
+            ref: "Vote"
+        },
+        voteOwner: {
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        },
+        voteType: {
+            type: Schema.Types.ObjectId,
+            ref: "Vote"
+        }
     }],
     comments: [{
         type: mongoose.Schema.Types.ObjectId,

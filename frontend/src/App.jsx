@@ -8,8 +8,8 @@ function Layout() {
   return (
     <div  className="montserrat-medium">
       <Provider store={Store}>
-      <Header />
-      <Outlet />
+        <Header />
+        <Outlet />
       </Provider>
 
     </div>

@@ -18,6 +18,8 @@ const createVote=asyncHandler(async(req,res)=>{
         if(vote){
             vote.voteType=voteType;
             await vote.save();
+            post.votes.push({ voteId: vote._id, voteOwner: userId, voteType: voteType });
+            await post.save();
         }
         else{
             vote=await Vote.create({
@@ -26,7 +28,8 @@ const createVote=asyncHandler(async(req,res)=>{
                 voteType:voteType
             });
             await vote.save();
-            post.votes.push(vote._id);
+            post.votes.push({ voteId: vote._id, voteOwner: userId, voteType: voteType });
+            console.log(post.votes)
             await post.save();
         }
         return res.status(201).json(
