@@ -32,8 +32,7 @@ const PostSchema = new Schema({
             ref: "User"
         },
         voteType: {
-            type: Schema.Types.ObjectId,
-            ref: "Vote"
+            type: String
         }
     }],
     comments: [{

@@ -16,16 +16,15 @@ import { User } from "../models/user.model.js"
 import {Category} from "../models/category.model.js"
 
 
-const createNewPost  =  asyncHandler(async(req, res) => {
 
-    
-    const {title, description, category} = req.body
+const createNewPost = asyncHandler(async (req, res) => {
+    const { title, description, category } = req.body;
     console.log(category);
-    if(
-        [title, category, description].some((field) => field?.trim() === "") 
-    ){
-        throw new ApiError(400, "please provide neccessary details")
+
+    if ([title, category, description].some((field) => field?.trim() === "")) {
+        throw new ApiError(400, "Please provide necessary details");
     }
+
     let existingCategory;
     try {
         existingCategory = await Category.findOne({ name: category });
@@ -37,35 +36,33 @@ const createNewPost  =  asyncHandler(async(req, res) => {
     }
 
     let mediapostLocalPath;
-    if(req.files && Array.isArray(req.files.media) && req.files.media.length > 0){
+    if (req.files && Array.isArray(req.files.media) && req.files.media.length > 0) {
         mediapostLocalPath = req.files.media[0].path;
     }
 
-
-    const cloudinaryMedia = await uploadOnCloudinary(mediapostLocalPath);
-    if(!cloudinaryMedia){
-        throw new ApiError(400, "unable to upload media")
+    const cloudinaryMedia = mediapostLocalPath ? await uploadOnCloudinary(mediapostLocalPath) : null;
+    if (mediapostLocalPath && !cloudinaryMedia) {
+        throw new ApiError(400, "Unable to upload media");
     }
 
     const post = await Post.create({
-        title : title,
-        description : description,
+        title: title,
+        description: description,
         category: existingCategory._id,
-        media : cloudinaryMedia?.url || "",
-        owner: req.user._id
-    })
+        media: cloudinaryMedia?.url || "",
+        owner: req.user._id,
+    });
 
-    const createdpost = await Post.findById(post._id)
+    const createdPost = await Post.findById(post._id);
 
-    if(!createdpost){
-        throw new ApiError(500, "something went wrong while creating a Post")
+    if (!createdPost) {
+        throw new ApiError(500, "Something went wrong while creating a post");
     }
 
     return res.status(201).json(
-        new ApiResponse(200, createdpost , "post has been successfully created")
-    )
-
-})
+        new ApiResponse(200, createdPost, "Post has been successfully created")
+    );
+});
 
 const updatePost = asyncHandler(async (req, res) => {
     const { postId } = req.params;
