@@ -4,6 +4,7 @@ import Login from './components/Login/login.jsx';
 import { Provider } from 'react-redux';
 import Store from './utils/store.jsx';
 import HomePage from './components/homepage/homepage.jsx';
+import PostPage from './components/homepage/postPage/postPage.jsx';
 function Layout() {
   return (
     <div  className="montserrat-medium">
@@ -29,6 +30,10 @@ const appRouting=createBrowserRouter(
         {
           path: "/login",
           element: <Login />
+        },
+        {
+          path: "/post/:postId",
+          element: <PostPage />
         }
       ]
     }

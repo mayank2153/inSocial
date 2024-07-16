@@ -163,12 +163,26 @@ const fetchPosts=asyncHandler(async(req,res)=>{
     return res.status(200).json(new ApiResponse(200, posts, "Posts fetched successfully"));
 
 })
-
+const getPostById=asyncHandler(async(req,res)=>{
+    const {postId}=req.params;
+    try {
+        const post = await Post.findById(postId);
+        if(!post){
+            throw new ApiError(404,"invalid postId")
+        }
+        return res.status(200).json(
+            new ApiResponse(200,post,"post fetched successfully")
+        )
+    } catch (error) {
+        throw new ApiError(409,error);
+    }
+})
 export {
     createNewPost,
     updatePost,
     deletePost,
     getPostsByUser,
-    fetchPosts
+    fetchPosts,
+    getPostById
 }
 
