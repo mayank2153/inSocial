@@ -7,6 +7,7 @@ import "./middlewares/googleauth.middleware.js";
 import "./middlewares/discordauth.middleware.js"
 
 const app = express();
+app.use(cookieParser())
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
@@ -28,7 +29,6 @@ app.use(
 app.use(express.json({limit: "16kb"}));
 app.use(express.urlencoded({extended: true, limit: "16kb"}))
 app.use(express.static("public"))
-app.use(cookieParser())
 
 //routes import
 import userRouter from "./routes/user.routes.js";
@@ -41,6 +41,7 @@ app.use("/posts",postRouter)
 app.use("/comments",commentRouter)
 app.use("/vote",voteRouter)
 app.use("/category", categoryRouter);
+
 app.get("/",(req,res)=>{
     res.send("WHISPERHUB")
 })

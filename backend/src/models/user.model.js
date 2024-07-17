@@ -32,7 +32,11 @@ const UserSchema = new Schema(
         },
         refreshToken: {
             type : String,
-        } 
+        },
+        likedCategories: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Category',
+        }],
     },{
         timestamps:true
     }

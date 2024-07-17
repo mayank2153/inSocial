@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser , loginUser , logOutUser , refreshAccessToken } from "../controllers/user.controller.js"
+import { registerUser , loginUser , logOutUser , refreshAccessToken, addLikedCategories, removeLikedCategory, getUserById } from "../controllers/user.controller.js"
 import { upload } from "../middlewares/multer.middleware.js";
 import {verifyJWT} from "../middlewares/authjwt.middleware.js";
 import passport from "passport";
@@ -22,7 +22,9 @@ userRouter.route("/register").post(
 
 userRouter.route("/login").post(loginUser)
 userRouter.route("/logout").post(verifyJWT, logOutUser);
-
+userRouter.route("/add-liked-categories").post(verifyJWT,addLikedCategories);
+userRouter.route("/remove-liked-category").post(verifyJWT,removeLikedCategory);
+userRouter.route("/get-user/:userId").get(verifyJWT,getUserById);
 userRouter.get('/auth/google',
     passport.authenticate('google', {scope: ['email']})
 );
