@@ -185,4 +185,3 @@ export {
     fetchPosts,
     getPostById
 }
-
