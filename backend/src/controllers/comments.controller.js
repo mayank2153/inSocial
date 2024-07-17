@@ -59,28 +59,36 @@ const deleteComment=asyncHandler(async(req,res)=>{
         comment.deleted=true;
         await comment.save();
         return res.status(200).json(
-            new ApiResponse(200, null, "comment has been successfully deleted")
+            new ApiResponse(200, comment, "comment has been successfully deleted")
         );
     } catch (error) {
         return res.status(500).json(
-            new ApiResponse(500, null, "An error occurred while deleting the comment")
+            new ApiResponse(500, null, "An error occurred while deleting the comment",error.message)
         );
     }
 })
 const getCommentsByPost=asyncHandler(async(req,res)=>{
-    const {postId}=req.params;
+    // const {postId}=req.params;
     try {
-        const comments=await Comment.find({post:postId});
-        if(!comments){
-            throw new ApiError(404,"unable to find comments")
-        }
-        return res.status(200).json(
-            new ApiResponse(200, comments, "comments has been successfully fetched")
-        )
+        const { postId } = req.params;
+
+        // Fetch all comments for the post
+        const comments = await Comment.find({ post: postId, parentCommentId: null }).populate('owner').exec();
+
+        // Fetch replies for each comment
+        const commentsWithReplies = await Promise.all(comments.map(async (comment) => {
+            const replies = await Comment.find({ parentCommentId: comment._id }).populate('owner').exec();
+            return { ...comment.toObject(), replies };
+        }));
+
+        res.status(200).json({
+            data: commentsWithReplies
+        });
     } catch (error) {
-        return res.status(500).json(
-            new ApiResponse(500, null, "An error occurred while fetching the comments")
-        );
+        res.status(500).json({
+            message: 'Error fetching comments with replies',
+            error
+        });
     }
 })
 const getCommentById=asyncHandler(async(req,res)=>{
