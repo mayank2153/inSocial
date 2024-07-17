@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { IoIosNotificationsOutline, IoIosSearch } from "react-icons/io";
 import logo from "../assets/images/logo.png";
 import logo_img from "../assets/images/logo_img.png";
-
+import { Link } from 'react-router-dom';
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -16,10 +16,10 @@ const Header = () => {
         {/* lg+ */}
         <nav className="flex items-center h-16 lg:h-20 justify-between w-[100vw] lg:px-10 px-5">
           <div className="flex-shrink-0">
-            <a href="#" title="" className="flex">
+            <Link to="/" title="" className="flex">
               <img className="w-auto h-8 lg:h-10 hidden lg:block" src={logo} alt="Logo" />
               <img className={`w-auto h-8 lg:h-10 lg:hidden ${isSearchOpen ? 'hidden' : 'block'}`} src={logo_img} alt="Logo" />
-            </a>
+            </Link>
           </div>
 
           <div className="flex-grow px-4 lg:px-8 max-w-[35rem]">
@@ -34,9 +34,9 @@ const Header = () => {
             <a href="#" title="" className="text-base font-medium text-white transition-all duration-200 hover:text-blue-600 focus:text-blue-600">
               <IoIosNotificationsOutline size={30} />
             </a>
-            <a href="#" title="" className="items-center justify-center  px-4 py-3 text-base font-semibold text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-md lg:inline-flex hover:bg-blue-700 focus:bg-blue-700" role="button">
+            <Link to="/login" title="" className="items-center justify-center  px-4 py-3 text-base font-semibold text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-md lg:inline-flex hover:bg-blue-700 focus:bg-blue-700" role="button">
               Login
-            </a>
+            </Link>
           </div>
 
           {/* Menu button for mobile */}

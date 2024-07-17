@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import Store from './utils/store.jsx';
 import HomePage from './components/homepage/homepage.jsx';
 import PostPage from './components/homepage/postPage/postPage.jsx';
+import CreatePost from './components/createPost/createPost.jsx';
 function Layout() {
   return (
     <div  className="montserrat-medium">
@@ -34,6 +35,11 @@ const appRouting=createBrowserRouter(
         {
           path: "/post/:postId",
           element: <PostPage />
+        },
+        {
+          path: "/createPost",
+          element: <CreatePost />
+
         }
       ]
     }

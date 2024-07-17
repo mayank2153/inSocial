@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { FaRegComment } from "react-icons/fa";
-import { AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
+import { FaRegComment } from 'react-icons/fa';
+import { AiOutlineLike, AiOutlineDislike } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import { fetchOwnerDetails } from '../../api/fetchOwnerDetails.js';
+import { fetchCategoryDetails } from '../../api/fetchCategoryDetails.js';
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
@@ -21,7 +23,6 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
         withCredentials: true
       });
       console.log('Vote response:', response.data);
-      // Update the user vote state
       setUserVote(voteType);
       // Optionally update the UI with the new vote
     } catch (error) {
@@ -34,17 +35,11 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
     const fetchDetails = async () => {
       try {
         const [ownerResponse, categoryResponse] = await Promise.all([
-          axios.get(`${url}users/get-user/${owner}`, {
-            headers: { 'Content-Type': 'application/json' },
-            withCredentials: true
-          }),
-          axios.get(`${url}category/category/${category}`, {
-            headers: { 'Content-Type': 'application/json' },
-            withCredentials: true
-          })
+          fetchOwnerDetails(owner),
+          fetchCategoryDetails(category)
         ]);
-        setOwnerDetails(ownerResponse.data.data);
-        setCategoryDetails(categoryResponse.data.data.name);
+        setOwnerDetails(ownerResponse);
+        setCategoryDetails(categoryResponse);
       } catch (error) {
         setError('Error fetching details');
         console.error('Error fetching details:', error);
