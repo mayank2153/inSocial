@@ -16,7 +16,7 @@ const CommentSchema = new Schema({
     },
     parentCommentId: {
         type: Schema.Types.ObjectId,
-        ref: "Comment" // Reference to the Comment model itself
+        ref: "Comment" 
     },
     deleted: {
         type: Boolean,

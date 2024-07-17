@@ -12,7 +12,7 @@ const categoryIds = [
     "668b994197f1db3456f5379b", "668b994197f1db3456f5379e", "668b994197f1db3456f537a0",
     "668b994197f1db3456f537a1", "668b994197f1db3456f53796", "668b994197f1db3456f5379f"
 ];
-const numberOfPosts = 50;
+const numberOfPosts = 100;
 
 // Generate a random post
 const generateRandomPost = () => {

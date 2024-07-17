@@ -114,8 +114,7 @@ const loginUser = asyncHandler(async(req, res) => {
     const loggedInUser = await User.findById(existedUser._id).select("-password -refreshToken")
 
     const options = {
-        httpOnly: true,
-        secure: false
+        httpOnly: true
     }
 
     return res
@@ -148,8 +147,7 @@ const logOutUser = asyncHandler(async(req, res) => {
     )
 
     const options = {
-        httpOnly: true,
-        secure: false
+        httpOnly: true
     }
     
     return res
@@ -183,8 +181,7 @@ const refreshAccessToken = asyncHandler(async(req, res) => {
         }
     
         const options = {
-            httpOnly: true,
-            secure: true
+            httpOnly: true
         }
     
         const {accessToken, newrefreshToken} = await generateAccessAndRefereshTokens(user._id)
@@ -248,6 +245,20 @@ const removeLikedCategory = asyncHandler(async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200, user.likedCategories, "Category removed from liked categories"));
 });
+
+const getUserById = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        return res.status(200).json(new ApiResponse(200, user, "User found"));
+    } catch (error) {
+        console.error("Error fetching user by ID:", error);
+        throw new ApiError(500, "Something unexpected occurred while fetching user details");
+    }
+});
 export {
     registerUser,
     loginUser,
@@ -255,5 +266,6 @@ export {
     generateAccessAndRefereshTokens,
     refreshAccessToken,
     addLikedCategories,
-    removeLikedCategory
+    removeLikedCategory,
+    getUserById
 }
