@@ -40,7 +40,8 @@ app.use("/users", userRouter)
 app.use("/posts",postRouter)
 app.use("/comments",commentRouter)
 app.use("/vote",voteRouter)
-app.use("/category",categoryRouter);
+app.use("/category", categoryRouter);
+
 app.get("/",(req,res)=>{
     res.send("WHISPERHUB")
 })

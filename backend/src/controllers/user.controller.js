@@ -63,9 +63,9 @@ const registerUser = asyncHandler(async(req, res) => {
     //creating user and storing in database:
 
     const user = await User.create({
-        userName : userName.toLowerCase(),
+        userName : userName,
         email,
-        password,
+        password, 
         avatar : avatar.url,
         coverImage : coverImage?.url || "",
         bio
