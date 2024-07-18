@@ -8,12 +8,16 @@ import ShowCategories from './components/category/category.jsx';
 import HomePage from './components/homepage/homepage.jsx';
 import PostPage from './components/homepage/postPage/postPage.jsx';
 import CreatePost from './components/createPost/createPost.jsx';
+import PostByCategory from './components/homepage/postByCategory/postByCategory.jsx';
 function Layout() {
   return (
     <div  className="montserrat-medium">
       <Provider store={Store}>
         <Header />
-        <Outlet />
+        <div >
+          <ShowCategories />
+          <Outlet />
+        </div>
       </Provider>
 
     </div>
@@ -38,10 +42,6 @@ const appRouting=createBrowserRouter(
           path: "/register",
           element: <MultiStepForm /> 
         },
-        {
-          path: "/category",
-          element: <ShowCategories />
-        },
           {
           path: "/post/:postId",
           element: <PostPage />
@@ -49,6 +49,10 @@ const appRouting=createBrowserRouter(
         {
           path: "/createPost",
           element: <CreatePost />
+        },
+        {
+          path: "posts/category/:categoryId",
+          element: <PostByCategory />
         }
       ]
     }

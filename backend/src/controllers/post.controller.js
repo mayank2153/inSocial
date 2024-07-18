@@ -177,11 +177,27 @@ const getPostById=asyncHandler(async(req,res)=>{
         throw new ApiError(409,error);
     }
 })
+const getPostsByCategory=asyncHandler(async(req,res)=>{
+    const {categoryId}=req.params;
+    try {
+        const posts= await Post.find({category: categoryId});
+        if(!posts){
+            throw new ApiError(404,"unable to fetch posts")
+        }
+        return res.status(200).json(
+            new ApiResponse(200,posts,"posts fetched successfully")
+        )
+    } 
+    catch (error) {
+        throw new ApiError(409,error);
+    }
+})
 export {
     createNewPost,
     updatePost,
     deletePost,
     getPostsByUser,
     fetchPosts,
-    getPostById
+    getPostById,
+    getPostsByCategory
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
+import { useNavigate } from "react-router-dom";
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
 const MultiStepForm = () => {
@@ -15,7 +15,7 @@ const MultiStepForm = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
-
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -58,9 +58,10 @@ const MultiStepForm = () => {
       Object.keys(formData).forEach((key) => {
         data.append(key, formData[key]);
       });
-
+      // console.log(formData)
       const response = await axios.post(`${url}users/register`, data);
-      console.log(response.data);
+      // console.log(response.data);
+      navigate("/")
     } catch (error) {
       console.error(error);
     }
