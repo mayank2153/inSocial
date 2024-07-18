@@ -23,17 +23,18 @@ const generateAccessAndRefereshTokens = async(userId) => {
 const registerUser = asyncHandler(async(req, res) => {
     console.log("req body: ",req.body);
     console.log("req files: ",req.files);
-    const { userName, email, password, bio } = req.body;
+    const { username, email, password, bio } = req.body;
 
     if(
-        [userName, email, password].some((field) => field?.trim() === "")
+        [username, email, password].some((field) => field?.trim() === "")
     ){
         throw new ApiError(400, "Please provide all fields");
     }
-
     const existedUser = await User.findOne({
-        $or: [{userName}, {email}]
+        $or: [{username}, {email}]
     })
+    console.log("userName, email, password, bio",username, email, password, bio)
+    console.log("existed User:",existedUser);
 
     if(existedUser){
         throw new ApiError(409, "User already exists")
@@ -63,7 +64,7 @@ const registerUser = asyncHandler(async(req, res) => {
     //creating user and storing in database:
 
     const user = await User.create({
-        userName : userName,
+        userName : username,
         email,
         password, 
         avatar : avatar.url,
