@@ -18,6 +18,7 @@ const CommentInputReply = ({ postId , parentCommentId,userName}) => {
   const handleComment = async () => {
     try {
         // setComment("@"+userName+" "+comment);
+        
       const response = await axios.post(`${url}comments/create-comment/${postId}`,
         { content: comment,parentCommentId: parentCommentId },
         { withCredentials: true });
