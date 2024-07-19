@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import PostCard from "../postCard.jsx";
 import CommentInput from "../comments/commentInput.jsx";
 import ShowComments from "../comments/showComments.jsx";
-const url = import.meta.env.VITE_BASE_URL;
+const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
 const PostPage = () => {
   const { postId } = useParams();
@@ -15,14 +15,13 @@ const PostPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("entered");
+        console.log(postId);
         const response = await axios.get(`${url}posts/getPost/${postId}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          
           withCredentials: true,
         });
-        console.log(response.data);
+        console.log("check")
+        console.log(response);
         setData(response.data.data);
       } catch (error) {
         setError(error.message);

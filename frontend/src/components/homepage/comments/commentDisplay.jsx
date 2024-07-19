@@ -9,7 +9,7 @@ const url = import.meta.env.VITE_BASE_URL;
 const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedAt, owner, replies }) => {
   const [isReplying, setIsReplying] = useState(false);
   const { postId } = useParams();
-  const user = useSelector(state => state.auth.user.data.user._id);
+  const user = useSelector(state => state.auth.user?.data?.user?._id);
 
   const handleCommentDelete = async () => {
     try {
@@ -36,7 +36,8 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
   };
 
   return (
-    <div className="comment w-[500px] ml-4">
+    <div className="comment w-[500px] ml-4 flex">
+      <div>
       {owner && (
         <div className="owner-info flex items-center mb-4 gap-4">
           <img
@@ -77,6 +78,10 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
           ))}
         </div>
       )}
+      </div>
+      <div>
+        <p className='text-sm'>{new Date(updatedAt).toLocaleDateString()}</p>
+      </div>
     </div>
   );
 };
