@@ -6,6 +6,9 @@ const CategorySchema=new Schema({
     },
     description:{
         type:"String"
+    },
+    media:{
+        type:"String"
     }
 },{
     timestamps:true
