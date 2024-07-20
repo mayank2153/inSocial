@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import Store from './utils/store.jsx';
 import MultiStepForm from './components/Signup/multistepForm.jsx';
 import ShowCategories from './components/category/category.jsx';
+import Categorypage from './components/category/categorypage.jsx';
 function Layout() {
   return (
     <div  className="montserrat-medium">
@@ -34,6 +35,10 @@ const appRouting=createBrowserRouter(
         {
           path: "/category",
           element: <ShowCategories />
+        },
+        {
+          path: "registerCategories",
+          element: <Categorypage />
         }
       ]
     }

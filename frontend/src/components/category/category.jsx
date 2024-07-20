@@ -26,15 +26,19 @@ const ShowCategories = () => {
 
     return (
         <>
-        <div className="bg-[#1e0832] w-1/6 h-screen fixed shadow-xl" style={{height : ""}}>   
-            <div className="justify-center mt-8 border-b-2 border-b-slate-500 ">
+        <div className="bg-[#1e0832] w-1/6   shadow-xl" style={{height : ""}}>   
+            <div className="justify-center mt-0 pt-8 border-b-2 border-b-slate-500 ">
                 <h1 className="text-slate-300 flex gap-4 text-xl ml-4 mb-4"><FaHome /> Home</h1>
             </div>
             <div className="mt-8 border-b-2 border-b-slate-500 ">
                 <h1 className="text-2xl justify-center ml-14 text-slate-300">Categories</h1>
                 <ul className="mt-6 ml-4 pb-2">
                     {categories.map((category) => (
+                        <div className="flex gap-5 pb-5">
+                        
+                        <li className="rounded-full"><img className="rounded-full h-12 w-12 object-cover"src={category.media} alt={category.name}/></li>
                         <li className="mt-3 text-slate-300" key={category._id}>{category.name}</li>
+                        </div>
                     ))}
                 </ul>
             </div>
