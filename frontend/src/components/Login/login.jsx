@@ -28,6 +28,7 @@ const Login = () => {
         try {
             const response = await axios.post(`${url}users/login`, user, { withCredentials: true });
             dispatch(loginSuccess(response.data));
+            console.log(response.data)
             navigate('/'); // Redirect to the homepage after successful login
         } catch (error) {
             dispatch(loginFailure(error.response.data.message));
@@ -40,7 +41,7 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 ">
             <div className="bg-[#0f031c] shadow-xl rounded-lg p-8 w-full max-w-md">
                 <h2 className="text-2xl  text-center text-white mb-6">Login</h2>
                 <form onSubmit={handleLogin}>
