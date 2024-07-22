@@ -24,7 +24,7 @@ const ShowCategories = () => {
     }, []);
 
     return (
-        <div className="bg-[#1e0832] w-1/6 h-screen fixed shadow-xl mt-20 overflow-y-scroll">
+        <div className=" bg-gradient-to-r from-[#1e0832] via-[#290f42] to-[#452762] w-1/6 h-screen fixed shadow-xl mt-20 overflow-y-scroll no-scrollbar ">
             <div className="mt-8 border-b-2 border-slate-500 pb-4">
                
                 <h1 className="text-slate-300 flex items-center gap-4 text-xl ml-4">

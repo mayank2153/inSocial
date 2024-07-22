@@ -58,7 +58,7 @@ const MultiStepForm = () => {
       Object.keys(formData).forEach((key) => {
         data.append(key, formData[key]);
       });
-      // console.log(formData)
+      console.log(data)
       const response = await axios.post(`${url}users/register`, data);
       // console.log(response.data);
       navigate("/")
