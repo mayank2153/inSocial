@@ -12,7 +12,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-[#1e0832] fixed w-full border-t-slate-300 border-b-slate-300 border-y-2 z-10">
+    <header className="bg-gradient-to-b from-[#1e0832] via-[#290f42] to-[#452762] fixed w-full   z-10">
       <div className="max-w-7xl mx-auto px-5 lg:px-10">
         <nav className="flex items-center h-16 lg:h-20 justify-between">
           <div className="flex-shrink-0">
@@ -34,6 +34,7 @@ const Header = () => {
             <a href="#" title="Notifications" className="text-white hover:text-blue-600">
               <IoIosNotificationsOutline size={30} />
             </a>
+            <Link to="/createPost"  className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">Create</Link>
             <Link to="/login" className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
               Login
             </Link>

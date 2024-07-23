@@ -21,7 +21,7 @@ const createNewPost = asyncHandler(async (req, res) => {
     const { title, description, category } = req.body;
     console.log(category);
 
-    if ([title, category, description].some((field) => field?.trim() === "")) {
+    if ([title, category, description].some((field) => field === "")) {
         throw new ApiError(400, "Please provide necessary details");
     }
 
