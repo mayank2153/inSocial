@@ -55,6 +55,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
       if (userVote) {
         setUserVote(userVote.voteType);
       }
+      console.log("currentUser:",currentUser)
     }
   }, [currentUser, votes]);
 
