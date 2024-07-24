@@ -25,7 +25,10 @@ const HomePage = () => {
       {
         items && items.data && items.data.length > 0 ? (
           items.data.map((item) => (
-            <PostCard key={item._id} {...item} />
+            <div className="border-slate-200 border-b w-fit" key={item._id}>
+              
+              <PostCard  {...item} />
+            </div>
           ))
         ) : (
           <div>No posts available</div>

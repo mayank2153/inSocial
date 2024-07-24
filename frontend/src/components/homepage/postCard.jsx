@@ -68,7 +68,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const commentCount = comments.length;
 
   return (
-    <div className="post-card bg-[#0d1114] shadow-md w-[500px] max-h-[500px] min-w-[600px] border-b py-1 border-slate-200">
+    <div className="post-card bg-[#13181d] shadow-md w-[500px] max-h-[500px] min-w-[600px]  py-1 ">
       <div className='hover:bg-[#2e2b2b] rounded-2xl py-4 px-8'>
         <div className='flex gap-10 justify-between'>
           {ownerDetails && (
@@ -110,15 +110,27 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
               `}>
                 <AiOutlineLike
                   size={30}
-                  className={`p-1 rounded-full ${userVote === "upvote" ?  'text-green-500 bg-green-300': 'hover:text-white hover:bg-red-600 '  }`}
+                  className={`p-1 rounded-full
+                    ${userVote===null?'hover:text-green-600':null}
+                    ${userVote === "upvote" ?  'text-green-500 bg-green-300': null  }
+                    ${userVote === "downvote" ? ' hover:bg-red-600' : null}
+                    duration-200
+                    `}
                   onClick={() => handleVote("upvote")}
+                  
                 />
                 <Link to={`/post/${_id}`} >
                   <p className='text-xl'>{voteCount}</p>
                 </Link>
                 <AiOutlineDislike
                   size={30}
-                  className={`p-1 rounded-full ${userVote === "downvote" ? 'text-red-500 bg-red-300' : 'hover:text-white hover:bg-green-600'}`}
+                  
+                  className={`p-1 rounded-full 
+                  ${userVote===null?'hover:text-red-600':null}  
+                  ${userVote === "downvote" ? 'text-red-500 bg-red-300' : null}
+                  ${userVote === "upvote" ? ' hover:bg-green-600' : null}
+                    duration-200
+                  `}
                   onClick={() => handleVote("downvote")}
                 />
               </div>
