@@ -27,17 +27,19 @@ const CommentInput = ({ postId }) => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-lg border-2 border-black rounded-full m-2 py-2 px-6">
+    <div className={`flex flex-col items-center w-full max-w-lg border border-slate-50 py-2 px-4  m-2  bg-[#13181d] transition-all duration-200
+    ${isInputFocused?'rounded-2xl':'rounded-full'}
+    `}>
       <textarea
         ref={textareaRef}
         placeholder="Add a comment"
-        className={`w-full focus:outline-none p-2 rounded-full transition-all duration-200 resize-none ${
-          isInputFocused ? 'h-14' : 'h-12'
-        }`}
+        className={`w-full bg-[#13181d] focus:outline-none text-white  transition-all duration-200 resize-none 
+          `}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         onFocus={() => setIsInputFocused(true)}
       />
+      <div className="flex justify-end w-full ">
       {isInputFocused && (
         <button
           className="items-center justify-center px-4 py-2 text-base font-semibold text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-full hover:bg-blue-700 focus:bg-blue-700 mt-2"
@@ -46,6 +48,7 @@ const CommentInput = ({ postId }) => {
           Comment
         </button>
       )}
+      </div>
     </div>
   );
 };
