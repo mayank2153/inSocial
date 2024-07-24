@@ -3,16 +3,14 @@ import { IoIosNotificationsOutline, IoIosSearch } from "react-icons/io";
 import logo from "../assets/images/logo.png";
 import logo_img from "../assets/images/logo_img.png";
 import { Link } from 'react-router-dom';
+import SearchBar from './searchBar/searchBar.jsx';
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen);
-  };
 
   return (
-    <header className="bg-gradient-to-b from-[#1e0832] via-[#290f42] to-[#452762] fixed w-full   z-10">
+    <header className="bg-gradient-to-b from-[#1e0832] via-[#290f42] to-[#452762] fixed w-full z-10">
       <div className="max-w-7xl mx-auto px-5 lg:px-10">
         <nav className="flex items-center h-16 lg:h-20 justify-between">
           <div className="flex-shrink-0">
@@ -22,31 +20,19 @@ const Header = () => {
             </Link>
           </div>
 
-          <div className="flex-grow px-4 lg:px-8 max-w-[35rem]">
-            <input
-              type="text"
-              placeholder="Search..."
-              className={`w-full py-2 px-4 border border-gray-300 rounded-md outline-none ${isSearchOpen ? 'block' : 'hidden'} lg:block`}
-            />
-          </div>
+          {/* SearchBar Component */}
+          <SearchBar />
 
           <div className="hidden lg:flex lg:items-center lg:space-x-2">
             <a href="#" title="Notifications" className="text-white hover:text-blue-600">
               <IoIosNotificationsOutline size={30} />
             </a>
-            <Link to="/createPost"  className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">Create</Link>
+            <Link to="/createPost" className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">Create</Link>
             <Link to="/login" className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
               Login
             </Link>
           </div>
 
-          <button
-            type="button"
-            className="inline-flex p-2 text-white rounded-md lg:hidden"
-            onClick={toggleSearch}
-          >
-            <IoIosSearch size={25} />
-          </button>
           <Link to="/login" className={`lg:hidden px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 ${isSearchOpen ? 'hidden' : 'block'} ml-4`}>
             Login
           </Link>
