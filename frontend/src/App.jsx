@@ -9,6 +9,7 @@ import HomePage from './components/homepage/homepage.jsx';
 import PostPage from './components/homepage/postPage/postPage.jsx';
 import CreatePost from './components/createPost/createPost.jsx';
 import PostByCategory from './components/homepage/postByCategory/postByCategory.jsx';
+import SearchResults from './components/searchResults/searchResults.jsx';
 function Layout() {
   return (
     <div  className="montserrat-medium">
@@ -53,6 +54,10 @@ const appRouting=createBrowserRouter(
         {
           path: "posts/category/:categoryId",
           element: <PostByCategory />
+        },
+        {
+          path:"/searchresults",
+          element:<SearchResults />
         }
       ]
     }
