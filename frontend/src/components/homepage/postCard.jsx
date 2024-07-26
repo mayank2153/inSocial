@@ -105,8 +105,10 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
           <div className="text-sm text-gray-500 flex gap-10 mt-2">
             <div className='flex gap-2'>
               <div className={`flex   rounded-full gap-1 cursor-pointer
-              ${userVote === "upvote" ?  'bg-green-500 text-white': 'bg-red-500 text-white'  }
               ${userVote===null?'bg-[#222020]':null}
+              ${userVote === "upvote" ?  'bg-green-500 text-white': null  }
+              ${userVote==="downvote"?'bg-red-500 text-white':null}
+              
               `}>
                 <AiOutlineLike
                   size={30}
