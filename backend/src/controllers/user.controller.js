@@ -260,6 +260,66 @@ const getUserById = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Something unexpected occurred while fetching user details");
     }
 });
+
+const editUser = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const { userName, email, password, bio } = req.body;
+
+    if ([userName, email, password, bio].some(field => field && field.trim() === "")) {
+        throw new ApiError(400, "Please provide necessary details");
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, "User not found or there was an error in finding the user");
+    }
+
+    if (userName) {
+        user.userName = userName;
+    }
+    if (email) {
+        user.email = email;
+    }
+    if (bio) {
+        user.bio = bio;
+    }
+    if (password) {
+        user.password = password;
+    }
+
+    let avatarLocalPath;
+    if (req.files && Array.isArray(req.files.avatar) && req.files.avatar.length > 0) {
+        avatarLocalPath = req.files.avatar[0].path;
+    }
+
+    let coverImageLocalPath;
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files.coverImage[0].path;
+    }
+
+    if (avatarLocalPath) {
+        const avatar = await uploadOnCloudinary(avatarLocalPath);
+        if (!avatar) {
+            throw new ApiError(500, "Failed to upload avatar");
+        }
+        user.avatar = avatar.url;
+    }
+
+    if (coverImageLocalPath) {
+        const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+        if (!coverImage) {
+            throw new ApiError(500, "Failed to upload cover image");
+        }
+        user.coverImage = coverImage.url;
+    }
+
+    await user.save();
+
+    const updatedUser = await User.findById(user._id).select("-password -refreshToken");
+    return res.status(200).json(new ApiResponse(200, updatedUser, "User updated successfully"));
+});
+
+
 export {
     registerUser,
     loginUser,
@@ -268,5 +328,6 @@ export {
     refreshAccessToken,
     addLikedCategories,
     removeLikedCategory,
-    getUserById
+    getUserById,
+    editUser
 }
