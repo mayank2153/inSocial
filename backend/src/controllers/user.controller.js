@@ -23,7 +23,7 @@ const generateAccessAndRefereshTokens = async(userId) => {
 const registerUser = asyncHandler(async(req, res) => {
     console.log("req body: ",req.body);
     console.log("req files: ",req.files);
-    const { username, email, password, bio } = req.body;
+    const { username, email, password, bio, likedCategories} = req.body;
 
     if(
         [username, email, password].some((field) => field?.trim() === "")
@@ -61,6 +61,8 @@ const registerUser = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Avatar file is required")
     }
 
+    
+
     //creating user and storing in database:
 
     const user = await User.create({
@@ -69,7 +71,8 @@ const registerUser = asyncHandler(async(req, res) => {
         password, 
         avatar : avatar.url,
         coverImage : coverImage?.url || "",
-        bio
+        bio,
+        // likedCategories : likedCategories ? Array.isArray(likedCategories) : [likedCategories]
     })
 
     const createdUser = await User.findById(user._id).select("-password -refreshToken")
