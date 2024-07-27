@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
@@ -82,7 +83,7 @@ const MultiStepForm = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
-    <div className="flex items-center justify-end min-h-screen bg-black">
+    <div className="flex items-center justify-end min-h-screen bg-black w-full">
       <div
         className="bg-black shadow-xl rounded-lg p-8 w-full max-w-md mr-40"
         style={{ height: "500px", width: "450px" }}
@@ -218,6 +219,9 @@ const MultiStepForm = () => {
                 Submit
               </button>
             )}
+          </div>
+          <div className="text-white flex justify-center py-5">
+            <h1>Already have an Account? <Link to={"/login"}><span className="text-blue-500 hover:underline">Login</span></Link></h1>
           </div>
         </form>
       </div>
