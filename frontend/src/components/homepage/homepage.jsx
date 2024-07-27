@@ -21,7 +21,7 @@ const HomePage = () => {
   }
   console.log(items);
   return (
-    <div className="flex flex-col  bg-[#0d1114] pt-24 pl-72 w-full justify-center max-h-[100vh] overflow-y-scroll no-scrollbar">
+    <div className="flex flex-col  bg-[#30223d] pt-24 pl-72 w-full justify-center max-h-[100vh] overflow-y-scroll no-scrollbar">
       {
         items && items.data && items.data.length > 0 ? (
           items.data.map((item) => (
