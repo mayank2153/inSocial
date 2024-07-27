@@ -41,7 +41,7 @@ const SearchResults = () => {
         setOpenUser(false)
     }
     return(
-        <div className="pl-80 pt-40">
+        <div className="pl-80 pt-40 w-full">
             <div>
                 <button onClick={toggleUser}>Users</button>
                 <button onClick={togglePosts}>Posts</button>
