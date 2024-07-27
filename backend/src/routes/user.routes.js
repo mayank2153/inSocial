@@ -40,15 +40,11 @@ userRouter.route("/edit-user/:userId").post(
     editUser
 );
 userRouter.get('/auth/google',
-    passport.authenticate('google', {scope: ['email']})
+    passport.authenticate('google', {scope: ["profile","email"]})
 );
 
 userRouter.get('/auth/google/redirect',
-    passport.authenticate('google'),
-    (req, res) => {
-        res.send("Authentication successfull")
-    }
-    
+    passport.authenticate("google" , {failureRedirect: "/login"})
 )
 
 userRouter.get('/auth/discord',
