@@ -68,8 +68,8 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const commentCount = comments.length;
 
   return (
-    <div className="post-card bg-[#13181d] shadow-md w-[500px] max-h-[500px] min-w-[600px]  py-1 ">
-      <div className='hover:bg-[#2e2b2b] rounded-2xl py-4 px-8'>
+    <div className="post-card bg-[#30223d]  shadow-md w-full max-h-[500px] min-w-[900px]  py-1 ">
+      <div className='bg-[#13181d] rounded-2xl py-4 px-8'>
         <div className='flex gap-10 justify-between'>
           {ownerDetails && (
             <div className="owner-info flex items-center mb-4 gap-4 text-white">
