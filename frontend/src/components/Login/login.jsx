@@ -3,8 +3,8 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess, loginFailure } from "../../utils/authslice.jsx";
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
@@ -35,18 +35,21 @@ const Login = () => {
             alert(error.response.data.message || "Login failed");
         }
     };
+    const handleGoogleLogin = () => {
+        window.location.href = `${url}users/auth/google`;
+    };
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100 ">
-            <div className="bg-[#0f031c] shadow-xl rounded-lg p-8 w-full max-w-md">
-                <h2 className="text-2xl  text-center text-white mb-6">Login</h2>
+        <div className="flex items-center justify-end min-h-screen bg-black">
+            <div className="bg-black  mr-40 w-full max-w-md">
+                <h2 className="text-5xl text-center text-white mb-6">Login</h2>
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">
-                        <label className="block text-white pl-4 pb-1">Email</label>
+                        <label className="block text-xl text-white pl-4 pb-1">Email</label>
                         <input
                             type="email"
                             name="email"
@@ -57,7 +60,7 @@ const Login = () => {
                         />
                     </div>
                     <div className="mb-4">
-                        <label className="block text-white pl-4 pb-1">Password</label>
+                        <label className="block text-white  text-xl pl-4 pb-1">Password</label>
                         <div className="relative">
                             <input
                                 type={showPassword ? "text" : "password"}
@@ -79,16 +82,27 @@ const Login = () => {
                     <div className="mb-4">
                         <button
                             type="submit"
-                            className="w-full bg-white text-[#0f031c] py-2 rounded-full hover:bg-[#101C03] focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100"
+                            className="w-full bg-white text-[#0f031c] py-2 rounded-full hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100"
                         >
                             Login
                         </button>
                     </div>
+                    <div className="mb-4">
+                        <button
+                            type="button"
+                            onClick={handleGoogleLogin}
+                            className="w-full bg-white text-black py-2 rounded-full flex justify-center gap-4 font-bold hover:bg-gray-200"
+                        >
+                            <FaGoogle className="text-blue-600 mt-1" />
+                            Sign In With 
+                            <span className="text-blue-600"> Google</span>
+                        </button>
+                    </div>
                 </form>
                 <div className="text-center flex gap-2 justify-center">
-                    <p className="text-slate-300">Don't have an account? </p>
+                    <p className="text-slate-300">Don't have an account?</p>
                     <Link to="/register" className="text-blue-500 hover:underline">
-                         Register
+                        Register
                     </Link>
                 </div>
             </div>
