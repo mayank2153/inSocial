@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
 const MultiStepForm = () => {
@@ -15,6 +16,7 @@ const MultiStepForm = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,6 +25,14 @@ const MultiStepForm = () => {
       ...prevData,
       [name]: files ? files[0] : value,
     }));
+    if (files) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const validateStep = () => {
@@ -43,7 +53,6 @@ const MultiStepForm = () => {
           stepErrors.password = "Password is required";
         }
         break;
-      
       default:
         break;
     }
@@ -58,29 +67,35 @@ const MultiStepForm = () => {
       Object.keys(formData).forEach((key) => {
         data.append(key, formData[key]);
       });
-      console.log(data)
       const response = await axios.post(`${url}users/register`, data);
-      // console.log(response.data);
-      navigate("/")
+      // Redirect to login page after successful registration
+      navigate("/login");
     } catch (error) {
       console.error(error);
     }
   };
 
-  const nextStep = () => { if(validateStep()) setStep((prevStep) => prevStep + 1);}
+  const nextStep = () => {
+    if (validateStep()) setStep((prevStep) => prevStep + 1);
+  };
   const prevStep = () => setStep((prevStep) => prevStep - 1);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-[#0f031c] shadow-xl rounded-lg p-8 w-full  max-w-md" style={{ height: "500px", width: "450px" }}>
+    <div className="flex items-center justify-end min-h-screen bg-black">
+      <div
+        className="bg-black shadow-xl rounded-lg p-8 w-full max-w-md mr-40"
+        style={{ height: "500px", width: "450px" }}
+      >
         <h2 className="text-2xl text-white font-bold mt-20">
           Create Your Account
         </h2>
         <form onSubmit={handleSubmit}>
           {step === 1 && (
-            <div className="mb-4 ">
-              <label className="block text-white pl-40 font-semibold mt-10 pb-2">Email *</label>
+            <div className="mb-4">
+              <label className="block text-white pl-40 font-semibold mt-10 pb-2">
+                Email *
+              </label>
               <input
                 type="email"
                 name="email"
@@ -89,7 +104,11 @@ const MultiStepForm = () => {
                 className="w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
-              {errors.email && <p className="text-red-500 text-sm pl-2 mt-2">*{errors.email}</p>}
+              {errors.email && (
+                <p className="text-red-500 text-sm pl-2 mt-2">
+                  *{errors.email}
+                </p>
+              )}
             </div>
           )}
           {step === 2 && (
@@ -104,7 +123,11 @@ const MultiStepForm = () => {
                   className="w-full px-3 py-2 mt-1 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-                 {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
+                {errors.username && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.username}
+                  </p>
+                )}
               </div>
               <div className="mb-4">
                 <label className="block text-white pl-4">Password</label>
@@ -125,21 +148,35 @@ const MultiStepForm = () => {
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
-                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.password}
+                  </p>
+                )}
               </div>
             </>
           )}
           {step === 3 && (
             <>
-
               <div className="mb-4 mt-4">
                 <label className="block text-white">Avatar</label>
-                <input
-                  type="file"
-                  name="avatar"
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                {!preview && (
+                  <input
+                    type="file"
+                    name="avatar"
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border mt-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  />
+                )}
+                {preview && (
+                  <div className="mt-4 border-2 border-slate-400 rounded-full w-fit">
+                    <img
+                      src={preview}
+                      alt="Avatar Preview"
+                      className="block w-24 h-24 rounded-full object-cover "
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="mb-4">

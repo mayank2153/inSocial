@@ -26,15 +26,11 @@ userRouter.route("/add-liked-categories").post(verifyJWT,addLikedCategories);
 userRouter.route("/remove-liked-category").post(verifyJWT,removeLikedCategory);
 userRouter.route("/get-user/:userId").get(verifyJWT,getUserById);
 userRouter.get('/auth/google',
-    passport.authenticate('google', {scope: ['email']})
+    passport.authenticate('google', {scope: ["profile","email"]})
 );
 
 userRouter.get('/auth/google/redirect',
-    passport.authenticate('google'),
-    (req, res) => {
-        res.send("Authentication successfull")
-    }
-    
+    passport.authenticate("google" , {failureRedirect: "/login"})
 )
 
 userRouter.get('/auth/discord',
