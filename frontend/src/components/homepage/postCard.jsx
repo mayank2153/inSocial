@@ -40,6 +40,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
         ]);
         setOwnerDetails(ownerResponse);
         setCategoryDetails(categoryResponse);
+        console.log(categoryDetails);
       } catch (error) {
         setError('Error fetching details');
         console.error('Error fetching details:', error);
@@ -55,7 +56,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
       if (userVote) {
         setUserVote(userVote.voteType);
       }
-      console.log("currentUser:",currentUser)
+      console.log("currentUser:", currentUser);
     }
   }, [currentUser, votes]);
 
@@ -67,11 +68,11 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const commentCount = comments.length;
 
   return (
-    <Link to={`/post/${_id}`} >
-      <div className="post-card bg-white border py-4 px-8 shadow-md w-[500px] max-h-[500px]">
-        <div className='flex gap-10'>
+    <div className="post-card bg-[#13181d] shadow-md w-[500px] max-h-[500px] min-w-[600px]  py-1 ">
+      <div className='hover:bg-[#2e2b2b] rounded-2xl py-4 px-8'>
+        <div className='flex gap-10 justify-between'>
           {ownerDetails && (
-            <div className="owner-info flex items-center mb-4 gap-4">
+            <div className="owner-info flex items-center mb-4 gap-4 text-white">
               <img
                 src={ownerDetails.avatar}
                 alt={`Avatar of ${ownerDetails.userName}`}
@@ -83,40 +84,70 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
               </div>
             </div>
           )}
-          <p className='text-sm'>{categoryDetails}</p>
+          <Link to={`/posts/category/${categoryDetails?._id}`}>
+            <p className='text-sm text-white'>{categoryDetails?.name}</p>
+          </Link>
         </div>
         <div>
-          <h2 className="text-xl font-bold">{title}</h2>
-          <p className="text-gray-700">{description}</p>
-          {media && (
-            <div className="media mt-4">
-              <img src={media} alt="Media content" className="max-w-full h-auto rounded-md" />
-            </div>
-          )}
+          <div>
+            <Link to={`/post/${_id}`} >
+              <h2 className="text-xl font-bold text-white">{title}</h2>
+              <p className="text-[#9bb7b8]">{description}</p>
+            </Link>
+            {media && (
+              <div className="media mt-4 rounded-2xl border border-slate-200 flex justify-center">
+                <a href={media} target="_blank" rel="noopener noreferrer">
+                  <img src={media} alt="Media content" className="max-w-full h-auto" />
+                </a>
+              </div>
+            )}
+          </div>
           <div className="text-sm text-gray-500 flex gap-10 mt-2">
             <div className='flex gap-2'>
-              <div className='flex'>
+              <div className={`flex   rounded-full gap-1 cursor-pointer
+              ${userVote===null?'bg-[#222020]':null}
+              ${userVote === "upvote" ?  'bg-green-500 text-white': null  }
+              ${userVote==="downvote"?'bg-red-500 text-white':null}
+              
+              `}>
                 <AiOutlineLike
                   size={30}
-                  className={`p-1 rounded-full ${userVote === "upvote" ? 'text-red-500 bg-red-300' : 'hover:text-red-500 hover:bg-red-300'}`}
+                  className={`p-1 rounded-full
+                    ${userVote===null?'hover:text-green-600':null}
+                    ${userVote === "upvote" ?  'text-green-500 bg-green-300': null  }
+                    ${userVote === "downvote" ? ' hover:bg-red-600' : null}
+                    duration-200
+                    `}
                   onClick={() => handleVote("upvote")}
+                  
                 />
+                <Link to={`/post/${_id}`} >
+                  <p className='text-xl'>{voteCount}</p>
+                </Link>
                 <AiOutlineDislike
                   size={30}
-                  className={`p-1 rounded-full ${userVote === "downvote" ? 'text-green-500 bg-green-300' : 'hover:text-green-500 hover:bg-green-300'}`}
+                  
+                  className={`p-1 rounded-full 
+                  ${userVote===null?'hover:text-red-600':null}  
+                  ${userVote === "downvote" ? 'text-red-500 bg-red-300' : null}
+                  ${userVote === "upvote" ? ' hover:bg-green-600' : null}
+                    duration-200
+                  `}
                   onClick={() => handleVote("downvote")}
                 />
               </div>
-              <p className='text-xl'>{voteCount}</p>
+              
             </div>
-            <div className='flex gap-2'>
-              <FaRegComment size={30} className='hover:text-blue-500 p-1 hover:bg-blue-300 rounded-full'/>
-              <p className='text-xl'>{commentCount}</p>
-            </div>
+            <Link to={`/post/${_id}`}>
+              <div className='flex bg-[#222020]  rounded-full gap-1 cursor-pointer pr-1'>
+                <FaRegComment size={30} className='hover:text-blue-500 p-1 hover:bg-[#1c1a1a] rounded-full'/>
+                <p className='text-xl'>{commentCount}</p>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

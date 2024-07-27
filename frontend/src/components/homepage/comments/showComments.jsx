@@ -32,9 +32,8 @@ const ShowComments = () => {
 
   return (
     <div>
-      <h3>Comments</h3>
       {comments && comments.length>0 && comments.map((comment) => (
-        <div key={comment._id} className="p-2 m-2 border-b">
+        <div key={comment._id} className="p-2 mt-4">
           <CommentDisplay {...comment} />
         </div>
       ))}
