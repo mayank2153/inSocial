@@ -20,7 +20,7 @@ const PostByCategory=()=>{
     },[categoryId])
     
     return(
-        <div className="flex flex-col items-center bg-black ">
+        <div className="flex flex-col  bg-[#0d1114] pt-24 pl-72  ">
         {
           posts ? (
             posts.map((item) => (

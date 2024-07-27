@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CommentInputReply from './commentInputReply';
+import CommentInputReply from './commentInputReply.jsx';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -23,65 +23,62 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
         }
       );
       console.log(response.data);
+      // Optionally refresh the comments or update the UI
     } catch (error) {
-      alert("Error deleting comment: " + error.message);
+      alert("Error deleting comment: " + (error.response?.data?.message || error.message));
       console.log(error);
     }
   };
-  
 
   const handleReply = () => {
-    // Logic for handling reply
     setIsReplying(true);
   };
 
   return (
-    <div className="comment w-[500px] ml-4 flex">
-      <div>
-      {owner && (
-        <div className="owner-info flex items-center mb-4 gap-4">
-          <img
-            src={owner.avatar}
-            alt={`Avatar of ${owner.userName}`}
-            className="w-6 h-6 rounded-full mr-2"
-          />
-          <div>
-            <span className="font-bold">{owner.userName}</span>
-          </div>
-        </div>
-      )}
-      {deleted ? (
-        <div>
-          <p>This comment is deleted</p>
-        </div>
-      ) : (
-        <div>
-          <p>{content}</p>
-          <button onClick={handleReply} className="text-sm text-blue-500 hover:underline">
-            Reply
-          </button>
-          {isReplying && (
-            <div className="reply-input">
-              {console.log(_id)}
-              <CommentInputReply postId={postId} parentCommentId={parentCommentId || _id} {...owner} />
-            </div>
-          )}
-          {owner._id === user && (
+    <div className="comment w-[500px] ml-4  text-white  rounded-2xl">
+      <div className='hover:bg-[#2e2b2b]  py-2 px-4 rounded-2xl'>
+        {owner && (
+          <div className="owner-info flex items-center mb-4 gap-2 text-white">
+            <img
+              src={owner.avatar}
+              alt={`Avatar of ${owner.userName}`}
+              className="w-6 h-6 rounded-full mr-2"
+            />
             <div>
-              <button onClick={handleCommentDelete} className="text-sm text-red-500 hover:underline">Delete</button>
+              <span>{owner.userName}</span>
             </div>
-          )}
-          {replies && replies.map((reply) => (
-            <React.Fragment key={reply._id}>
-              <CommentDisplay {...reply} />
-            </React.Fragment>
+            <p className='text-[10px]'>{new Date(updatedAt).toLocaleDateString()}</p>
+          </div>
+        )}
+        {deleted ? (
+          <div>
+            <p>This comment is deleted</p>
+          </div>
+        ) : (
+          <div>
+            <p>{content}</p>
+            <button onClick={handleReply} className="text-sm text-blue-500 hover:underline">
+              Reply
+            </button>
+            {isReplying && (
+              <div className="reply-input">
+                {console.log(_id)}
+                <CommentInputReply postId={postId} parentCommentId={parentCommentId || _id} {...owner} />
+              </div>
+            )}
+            {owner._id === user && (
+              <div>
+                <button onClick={handleCommentDelete} className="text-sm text-red-500 hover:underline">Delete</button>
+              </div>
+            )}
+            
+          </div>
+          
+        )}
+      </div>
+      {replies && replies.map((reply) => (
+            <CommentDisplay key={reply._id} {...reply} />
           ))}
-        </div>
-      )}
-      </div>
-      <div>
-        <p className='text-sm'>{new Date(updatedAt).toLocaleDateString()}</p>
-      </div>
     </div>
   );
 };
