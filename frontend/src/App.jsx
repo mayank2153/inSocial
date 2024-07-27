@@ -10,14 +10,17 @@ import PostPage from './components/homepage/postPage/postPage.jsx';
 import CreatePost from './components/createPost/createPost.jsx';
 import PostByCategory from './components/homepage/postByCategory/postByCategory.jsx';
 import SearchResults from './components/searchResults/searchResults.jsx';
+import EditPost from './components/homepage/editPost/editPost.jsx';
+import Right from './components/right/right.jsx';
 function Layout() {
   return (
     <div  className="montserrat-medium">
       <Provider store={Store}>
         <Header />
-        <div >
+        <div className='flex'>
           <ShowCategories />
           <Outlet />
+          <Right />
         </div>
       </Provider>
 
@@ -58,7 +61,12 @@ const appRouting=createBrowserRouter(
         {
           path:"/searchresults",
           element:<SearchResults />
+        },
+        {
+          path: "/post/edit-post/:postId",
+          element: <EditPost />
         }
+        
       ]
     }
   ]
