@@ -24,7 +24,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-[#1e0832] fixed w-full z-10 border-b-2 border-black">
+    <header className="bg-[#1e0832]  w-full  border-b-2 border-black">
       <div className="max-w-7xl mx-auto ">
         <nav className="flex items-center h-16 lg:h-20 justify-between">
           <div className="flex items-center justify-end -ml-20">

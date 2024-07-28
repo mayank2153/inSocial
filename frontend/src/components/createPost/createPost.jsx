@@ -137,8 +137,8 @@ const CreatePost = () => {
     };
 
     return (
-        <div className="w-full flex bg-[#13181d] pb-10 justify-center">
-            <div className="flex flex-col bg-[#0d1114] items-center mt-28 rounded-2xl ml-[255px] max-h-[100vh] text-white  px-10 py-5 min-w-[600px] gap-4 ">
+        <div className="w-full flex bg-[#13181d] justify-center py-8">
+            <div className="flex flex-col bg-[#0d1114] items-center  rounded-2xl max-h-[100vh] text-white  px-10 py-5 min-w-[600px] gap-4 ">
                 <h1 className="text-3xl">Create Post</h1>
                 <div>
                     <form onSubmit={handleSubmit} className="flex flex-col text-2xl gap-8 min-w-[400px] w-[400px]">
