@@ -23,8 +23,8 @@ const Header = () => {
     setIsSearchOpen(!isSearchOpen);
   };
 
-  return (
-    <header className="bg-[#1e0832]  w-full  border-b-2 border-black">
+  return isAuthenticated ? (
+    <header className="bg-[#1e0832]  w-full shadow-lg">
       <div className="max-w-7xl mx-auto ">
         <nav className="flex items-center h-16 lg:h-20 justify-between">
           <div className="flex items-center justify-end -ml-20">
@@ -43,7 +43,7 @@ const Header = () => {
               <a href="#" title="Notifications" className="text-white hover:text-blue-600">
                 <IoIosNotificationsOutline size={30} />
               </a>
-              <Link to="/createPost" className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">Create</Link>
+              
               <div className="relative">
                 <img
                   src={userProfileImage}
@@ -84,7 +84,7 @@ const Header = () => {
         </nav>
       </div>
     </header>
-  );
+  ) : null
 };
 
 export default Header;
