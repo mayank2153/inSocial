@@ -21,7 +21,8 @@ const HomePage = () => {
   }
   console.log(items);
   return (
-    <div className="flex flex-col  bg-[#30223d] pt-24 pl-72 w-full justify-center max-h-[100vh] overflow-y-scroll no-scrollbar">
+    <div className="flex flex-col  bg-[#0d1114] w-full max-h-screen overflow-y-auto items-center no-scrollbar py-8">
+      <div className="rounded-2xl bg-[#13181d] p-1">
       {
         items && items.data && items.data.length > 0 ? (
           items.data.map((item) => (
@@ -34,6 +35,7 @@ const HomePage = () => {
           <div>No posts available</div>
         )
       }
+      </div>
     </div>
   );
 };
