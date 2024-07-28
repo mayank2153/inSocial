@@ -138,6 +138,7 @@ const loginUser = asyncHandler(async(req, res) => {
 
 const logOutUser = asyncHandler(async(req, res) => {
     console.log("req user:",req.user)
+    // const {user}=req.body
     await User.findByIdAndUpdate(
         req.user._id,
         {
