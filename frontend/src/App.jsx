@@ -98,8 +98,12 @@ const appRouting = createBrowserRouter([
       },
       {
         path: "/post/edit-post/:postId",
-        element: <EditPost />,
-      }
+        element: (
+          <ProtectedRoute>
+            <EditPost />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 ]);
