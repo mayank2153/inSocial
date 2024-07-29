@@ -40,7 +40,6 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
         ]);
         setOwnerDetails(ownerResponse);
         setCategoryDetails(categoryResponse);
-        console.log(categoryDetails);
       } catch (error) {
         setError('Error fetching details');
         console.error('Error fetching details:', error);
@@ -66,7 +65,6 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
 
   const voteCount = votes.length;
   const commentCount = comments.length;
-
   return (
     <div className="post-card bg-[#13181d] shadow-md w-[500px] max-h-[500px] min-w-[600px]  py-1 ">
       <div className='hover:bg-[#2e2b2b] rounded-2xl py-4 px-8'>
@@ -144,6 +142,14 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
                 <p className='text-xl'>{commentCount}</p>
               </div>
             </Link>
+            {
+              currentUser===owner &&
+              <Link to={`/post/edit-post/${_id}`}>
+              <div className='flex bg-[#222020]  rounded-full gap-1 cursor-pointer pr-1'> 
+                  <p className='text-xl'>Edit</p>
+                </div>
+              </Link>
+            }
           </div>
         </div>
       </div>
