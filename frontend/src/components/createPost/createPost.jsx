@@ -7,15 +7,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import { MdDriveFolderUpload } from "react-icons/md";
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
-
 function Previews({ setFormData, initialMedia }) {
     const [files, setFiles] = useState([]);
 
     useEffect(() => {
         if (initialMedia) {
             if (typeof initialMedia === 'string') {
+                console.log("string")
                 setFiles([{ url: initialMedia }]);
+                console.log(files)
             } else {
+                console.log("any")
                 setFiles([initialMedia]);
             }
         }
@@ -24,6 +26,7 @@ function Previews({ setFormData, initialMedia }) {
     const { getRootProps, getInputProps } = useDropzone({
         accept: 'image/*',
         onDrop: acceptedFiles => {
+            console.log("Accepted Files:", acceptedFiles);
             setFiles(acceptedFiles.map(file => Object.assign(file, {
                 preview: URL.createObjectURL(file)
             })));
@@ -31,6 +34,9 @@ function Previews({ setFormData, initialMedia }) {
                 ...prevData,
                 media: acceptedFiles[0]
             }));
+        },
+        onDropRejected: rejectedFiles => {
+            console.error("Rejected Files:", rejectedFiles);
         }
     });
 
@@ -44,14 +50,14 @@ function Previews({ setFormData, initialMedia }) {
 
     const thumbs = files.map(file => (
         <div className="relative inline-flex rounded border border-gray-300 mb-2 mr-2 p-1 box-border min-w-max" key={file.name || file.url || file}>
+            
             <button onClick={handleDelete} className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">X</button>
             <div className="flex min-w-0 overflow-hidden">
                 <img
-                    src={file.preview ? file.preview : `${url}${file.url || file}`}
+                    src={file.preview ? file.preview : file.url}
                     className="block w-auto h-24"
                     onLoad={() => { file.preview && URL.revokeObjectURL(file.preview) }}
                 />
-                {console.log(file)}
             </div>
         </div>
     ));
@@ -77,6 +83,7 @@ function Previews({ setFormData, initialMedia }) {
         </section>
     );
 }
+
 
 
 
@@ -221,7 +228,7 @@ const PostForm = ({ isEdit }) => {
                             required
                         />
                         <div className='rounded border-dashed border-2 h-40 px-5 py-3 border-slate-300'>
-                            {/* {console.log("form:",formData)} */}
+                            {console.log("form:",formData.media)}
                             <Previews setFormData={setFormData} initialMedia={formData.media} />
                         </div>
 
