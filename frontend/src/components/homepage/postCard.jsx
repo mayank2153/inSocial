@@ -40,7 +40,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
         ]);
         setOwnerDetails(ownerResponse);
         setCategoryDetails(categoryResponse);
-        console.log(categoryDetails);
+        // console.log(categoryDetails);
       } catch (error) {
         setError('Error fetching details');
         console.error('Error fetching details:', error);
@@ -68,7 +68,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const commentCount = comments.length;
 
   return (
-    <div className="post-card bg-[#13181d] shadow-md w-[500px] max-h-[500px] min-w-[600px]  py-1 ">
+    <div className="post-card bg-[#13181d] shadow-md w-[500px] max-h-[500px] min-w-[600px] rounded-lg py-1 ">
       <div className='hover:bg-[#2e2b2b] rounded-2xl py-4 px-8'>
         <div className='flex gap-10 justify-between'>
           {ownerDetails && (
