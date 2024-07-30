@@ -3,13 +3,24 @@ import { useDropzone } from 'react-dropzone';
 import { fetchCategories } from "../../api/fetchAllCategories";
 import axios from "axios";
 import { useSelector } from 'react-redux';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { MdDriveFolderUpload } from "react-icons/md";
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
-function Previews({ setFormData }) {
+function Previews({ setFormData, initialMedia }) {
     const [files, setFiles] = useState([]);
+
+    useEffect(() => {
+        if (initialMedia) {
+            if (typeof initialMedia === 'string') {
+                setFiles([{ url: initialMedia }]);
+            } else {
+                setFiles([initialMedia]);
+            }
+        }
+    }, [initialMedia]);
+
     const { getRootProps, getInputProps } = useDropzone({
         accept: 'image/*',
         onDrop: acceptedFiles => {
@@ -32,20 +43,21 @@ function Previews({ setFormData }) {
     };
 
     const thumbs = files.map(file => (
-        <div className="relative inline-flex rounded border border-gray-300 mb-2 mr-2 p-1 box-border min-w-max" key={file.name}>
+        <div className="relative inline-flex rounded border border-gray-300 mb-2 mr-2 p-1 box-border min-w-max" key={file.name || file.url || file}>
             <button onClick={handleDelete} className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">X</button>
             <div className="flex min-w-0 overflow-hidden">
                 <img
-                    src={file.preview}
+                    src={file.preview ? file.preview : `${url}${file.url || file}`}
                     className="block w-auto h-24"
-                    onLoad={() => { URL.revokeObjectURL(file.preview) }}
+                    onLoad={() => { file.preview && URL.revokeObjectURL(file.preview) }}
                 />
+                {console.log(file)}
             </div>
         </div>
     ));
 
     useEffect(() => {
-        return () => files.forEach(file => URL.revokeObjectURL(file.preview));
+        return () => files.forEach(file => file.preview && URL.revokeObjectURL(file.preview));
     }, [files]);
 
     return (
@@ -66,11 +78,14 @@ function Previews({ setFormData }) {
     );
 }
 
-const CreatePost = () => {
+
+
+const PostForm = ({ isEdit }) => {
     const [categories, setCategories] = useState([]);
     const currentUser = useSelector((state) => state.auth.user?.data?.user?._id);
     const [selectedColor, setSelectedColor] = useState('#13181d'); 
     const navigate = useNavigate();
+    const { postId } = useParams();
 
     const [formData, setFormData] = useState({
         category: "",
@@ -101,6 +116,30 @@ const CreatePost = () => {
         }
     }, [currentUser]);
 
+    useEffect(() => {
+        if (isEdit && postId) {
+            const fetchPost = async () => {
+                try {
+                    const { data } = await axios.get(`${url}posts/getPost/${postId}`,{
+                        headers: { 'Content-Type': 'application/json' },
+                        withCredentials:true
+                    })
+                    console.log("post:",data)
+                    setFormData({
+                        category: data.data.category,
+                        title: data.data.title,
+                        description: data.data.description,
+                        owner: data.data.owner,
+                        media: data.data.media,
+                    });
+                } catch (error) {
+                    console.error("Error fetching post", error);
+                }
+            };
+            fetchPost();
+        }
+    }, [isEdit, postId]);
+
     const handleChange = e => {
         const { name, value } = e.target;
         setFormData(prevData => ({
@@ -126,9 +165,9 @@ const CreatePost = () => {
             Object.keys(formData).forEach(key => {
                 data.append(key, formData[key]);
             });
-            const response = await axios.post(`${url}posts/create-post`, data, {
-                withCredentials: true
-            });
+            const response = isEdit
+                ? await axios.put(`${url}posts/${postId}`, data, { withCredentials: true })
+                : await axios.post(`${url}posts/create-post`, data, { withCredentials: true });
             console.log("Response", response);
             navigate("/");
         } catch (error) {
@@ -139,7 +178,7 @@ const CreatePost = () => {
     return (
         <div className="w-full flex bg-[#13181d] justify-center py-8">
             <div className="flex flex-col bg-[#0d1114] items-center  rounded-2xl max-h-[100vh] text-white  px-10 py-5 min-w-[600px] gap-4 ">
-                <h1 className="text-3xl">Create Post</h1>
+                <h1 className="text-3xl">{isEdit ? "Edit Post" : "Create Post"}</h1>
                 <div>
                     <form onSubmit={handleSubmit} className="flex flex-col text-2xl gap-8 min-w-[400px] w-[400px]">
                         <select 
@@ -182,7 +221,8 @@ const CreatePost = () => {
                             required
                         />
                         <div className='rounded border-dashed border-2 h-40 px-5 py-3 border-slate-300'>
-                            <Previews setFormData={setFormData} />
+                            {/* {console.log("form:",formData)} */}
+                            <Previews setFormData={setFormData} initialMedia={formData.media} />
                         </div>
 
                         <div className='flex justify-end'>
@@ -195,4 +235,4 @@ const CreatePost = () => {
     );
 };
 
-export default CreatePost;
+export default PostForm;
