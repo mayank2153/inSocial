@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 const LikedCategories = () => {
-    const url = import.meta.env.VITE_BASE_URL;
+    const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
     const userData = useSelector((state) => state.auth.user);
     const userlikedCategories = userData?.data?.user?.likedCategories || [];
     const [categories, setCategories] = useState([]);

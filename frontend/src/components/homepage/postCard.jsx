@@ -93,9 +93,9 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
               <p className="text-[#9bb7b8]">{description}</p>
             </Link>
             {media && (
-              <div className="media mt-4 rounded-2xl border border-slate-200 flex justify-center">
+              <div className="media mt-4 rounded-2xl border border-slate-200 flex justify-center ">
                 <a href={media} target="_blank" rel="noopener noreferrer">
-                  <img src={media} alt="Media content" className="max-w-full h-auto" />
+                  <img src={media} alt="Media content" className="max-w-[500px] max-h-[300px]" />
                 </a>
               </div>
             )}
