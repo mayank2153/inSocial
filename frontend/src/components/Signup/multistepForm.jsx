@@ -212,12 +212,15 @@ const MultiStepForm = () => {
               </button>
             )}
             {step === 3 && (
-              <button
+              <Link to={"/login"}>
+                <button
                 type="submit"
                 className="bg-blue-500 text-white py-2 px-4 mt-6 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Submit
               </button>
+              </Link>
+              
             )}
           </div>
           <div className="text-white flex justify-center py-5">
