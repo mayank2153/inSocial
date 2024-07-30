@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const CategoryPage = () => {
   const url = import.meta.env.VITE_BASE_URL;
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
+  const userData = useSelector((state) => state.auth.user);
+  // const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  // console.log(userData);
   const fetchCategories = async () => {
     try {
       const response = await axios.get(`${url}category/category`);
@@ -33,16 +38,32 @@ const CategoryPage = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // Here you can send the selectedCategories to the backend
-    console.log("Selected categories:", selectedCategories);
-    // axios.post(`${url}your-endpoint`, { categories: selectedCategories })
-    //   .then(response => console.log(response))
-    //   .catch(error => console.log(error));
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post(
+        `${url}users/add-liked-categories`,
+        {
+          userId: userData?.data?.user?._id,
+          categoryIds: selectedCategories
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        }
+      );
+  
+      console.log(response);
+    } catch (error) {
+      console.log('error:', error);
+    }
   };
+  
 
-  return (
-    <div className="fixed inset-0 bg-slate-100 w-1/2 ml-72 mt-10 mb-10 h-screen rounded overflow-y-scroll">
+  return  (
+    <div className="w-full h-[100vh] bg-[#0d1114] flex items-center justify-center">
+      <div className=" bg-slate-100 w-fit  mt-10 mb-10 h-screen rounded overflow-y-scroll no-scrollbar">
       {categories.length > 0 && (
         <>
           <div>
@@ -68,12 +89,17 @@ const CategoryPage = () => {
             ))}
           </div>
           <div className="pt-4 pb-7 flex justify-center">
-            <button onClick={handleSubmit} className="bg-blue-500 text-white my-6 px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Next</button>
+            
+            <button onClick={handleSubmit} className="bg-[#0d1114] text-white my-2 px-8 py-2 rounded hover:bg-[#13181d] focus:outline-none focus:ring-2 focus:ring-blue-500">Next</button>
+          
+            
           </div>
         </>
       )}
     </div>
-  );
+    </div>
+    
+  )  ;
 }
 
 export default CategoryPage;

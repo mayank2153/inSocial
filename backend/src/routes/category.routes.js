@@ -5,5 +5,5 @@ const categoryRouter=Router();
 
 categoryRouter.route('/category').get(getCategories);
 
-categoryRouter.route('/category/:categoryId').get(verifyJWT,getCategoryById);
+categoryRouter.route('/category/:categoryId').get(getCategoryById);
 export default categoryRouter;

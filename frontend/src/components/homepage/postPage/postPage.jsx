@@ -46,7 +46,8 @@ const PostPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center bg-[#13181d] w-full  max-h-screen overflow-y-scroll no-scrollbar">
+    <div className="flex flex-col items-center w-full bg-[#0d1114] pt-24 min-h-[100vh]">
+
       
       <PostCard {...data} />
       <CommentInput postId={postId} />

@@ -210,8 +210,13 @@ const refreshAccessToken = asyncHandler(async(req, res) => {
 
 
 const addLikedCategories = asyncHandler(async (req, res) => {
-    const userId = req.user._id;
-    const categoryIds = req.body.categoryIds;
+    const userId = req.body.userId;
+    let categoryIds = req.body.categoryIds;
+
+    console.log(categoryIds);
+
+    categoryIds = Array.isArray(categoryIds) ? categoryIds : [categoryIds];
+    console.log(categoryIds);
 
     if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
         throw new ApiError(400, "Please provide an array of category IDs");
@@ -234,6 +239,8 @@ const addLikedCategories = asyncHandler(async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200, user.likedCategories, "Categories added to liked categories"));
 });
+
+
 
 const removeLikedCategory = asyncHandler(async (req, res) => {
     const userId = req.user._id;
