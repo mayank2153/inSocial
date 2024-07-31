@@ -1,11 +1,26 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import authReducer from "./authslice.jsx";
-import postsReducer from "./postsSlice.jsx"
-const Store = configureStore({
-    reducer: {
-        auth: authReducer,
-        posts: postsReducer
-    }
+import postsReducer from "./postsSlice.jsx";
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth'], // Only auth reducer will be persisted
+};
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  posts: postsReducer,
 });
 
-export default Store;
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+  reducer: persistedReducer,
+});
+
+const persistor = persistStore(store);
+
+export { store, persistor };
