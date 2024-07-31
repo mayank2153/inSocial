@@ -1,8 +1,9 @@
+import React from 'react';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Header from './components/header.jsx';
 import Login from './components/Login/login.jsx';
 import { Provider } from 'react-redux';
-import store from './utils/store.jsx';
+import { store, persistor } from './utils/store.jsx'; // Corrected import
 import MultiStepForm from './components/Signup/multistepForm.jsx';
 import ShowCategories from './components/category/category.jsx';
 import HomePage from './components/homepage/homepage.jsx';
@@ -15,17 +16,20 @@ import UserProfile from './components/userProfile/userprofile.jsx';
 import SearchResults from './components/searchResults/searchResults.jsx';
 import EditPost from './components/homepage/editPost/editPost.jsx';
 import Right from './components/right/right.jsx';
+import { PersistGate } from 'redux-persist/integration/react';
 
 function Layout() {
   return (
     <div className="montserrat-medium">
       <Provider store={store}>
-        <Header />
-        <div className='flex'>
-          <ShowCategories />
-          <Outlet />
-          <Right />
-        </div>
+        <PersistGate loading={null} persistor={persistor}>
+          <Header />
+          <div className='flex'>
+            <ShowCategories />
+            <Outlet />
+            <Right />
+          </div>
+        </PersistGate>
       </Provider>
     </div>
   );

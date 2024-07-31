@@ -3,8 +3,10 @@ import CommentInputReply from './commentInputReply.jsx';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { BsFillReplyFill } from "react-icons/bs";
+import { MdOutlineDeleteOutline } from "react-icons/md";
 
-const url = import.meta.env.VITE_BASE_URL;
+const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
 
 const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedAt, owner, replies }) => {
   const [isReplying, setIsReplying] = useState(false);
@@ -35,8 +37,8 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
   };
 
   return (
-    <div className="comment w-[500px] ml-4  text-white  rounded-2xl">
-      <div className='hover:bg-[#2e2b2b]  py-2 px-4 rounded-2xl'>
+    <div className="comment w-[500px] ml-4  text-white  rounded-2xl bg-[#13181d]">
+      <div className='  py-2 px-4 rounded-2xl'>
         {owner && (
           <div className="owner-info flex items-center mb-4 gap-2 text-white">
             <img
@@ -57,27 +59,38 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
         ) : (
           <div>
             <p>{content}</p>
-            <button onClick={handleReply} className="text-sm text-blue-500 hover:underline">
-              Reply
-            </button>
+            <div className='flex'>
+              <div>
+              {!isReplying && (
+                <div className='flex'>
+                <BsFillReplyFill />
+                <button onClick={handleReply} className="text-sm text-blue-500 hover:underline">
+                Reply
+              </button>
+              </div>
+              )}
             {isReplying && (
               <div className="reply-input">
-                {console.log(_id)}
                 <CommentInputReply postId={postId} parentCommentId={parentCommentId || _id} {...owner} />
               </div>
             )}
-            {owner._id === user && (
-              <div>
+              </div>
+            {!isReplying &&owner._id === user && (
+              <div className='flex'>
+                <MdOutlineDeleteOutline />
                 <button onClick={handleCommentDelete} className="text-sm text-red-500 hover:underline">Delete</button>
               </div>
             )}
+            </div>
             
           </div>
           
         )}
       </div>
       {replies && replies.map((reply) => (
-            <CommentDisplay key={reply._id} {...reply} />
+            <div>
+              <CommentDisplay key={reply._id} {...reply} />
+              </div>
           ))}
     </div>
   );
