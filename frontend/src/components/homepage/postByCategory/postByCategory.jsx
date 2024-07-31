@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { fetchPostsByCategory } from "../../../api/fetchPostsByCategory"
 import PostCard from "../postCard"
+import Shimmer from "../../shimmer/shimmer"
 const PostByCategory=()=>{
     const [posts,setPosts]=useState(null)
     const {categoryId}=useParams();
@@ -18,7 +19,11 @@ const PostByCategory=()=>{
         }
         fetchPosts();
     },[categoryId])
-    
+    if(!posts){
+      return(
+        <Shimmer/>
+      )
+    }
     return(
         <div className="flex flex-col  bg-[#0d1114] items-center w-full justify-center max-h-[100vh] overflow-y-scroll no-scrollbar overflow-x-hidden pt-96 ">
         {
