@@ -3,6 +3,7 @@ import axios from "axios"
 import { useLocation } from 'react-router-dom';
 import PostCard from "../homepage/postCard.jsx"
 import UserCard from "../homepage/userCard/userCard.jsx";
+import Shimmer from "../shimmer/shimmer.jsx";
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 const SearchResults = () => {

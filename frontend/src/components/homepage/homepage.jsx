@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPosts } from "../../api/postsApi.js";
 import PostCard from "./postCard.jsx";
+import Shimmer from "../shimmer/shimmer.jsx"
+
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
 const HomePage = () => {
@@ -13,7 +15,7 @@ const HomePage = () => {
   }, [dispatch]);
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <Shimmer />;
   }
 
   if (status === 'failed') {
