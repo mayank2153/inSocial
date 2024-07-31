@@ -46,12 +46,14 @@ const PostPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center w-full bg-[#0d1114] pt-24 min-h-[100vh]">
+    <div className="flex flex-col items-center w-full bg-[#0d1114]  max-h-[100vh] overflow-y-scroll no-scrollbar py-10">
 
-      
-      <PostCard {...data} />
-      <CommentInput postId={postId} />
-      <ShowComments />
+      <div className="bg-[#13181d] w-fit px-4 py-2 rounded-2xl">
+        
+        <PostCard {...data} />
+        <CommentInput postId={postId} />
+        <ShowComments />
+      </div>
     </div>
   );
 };
