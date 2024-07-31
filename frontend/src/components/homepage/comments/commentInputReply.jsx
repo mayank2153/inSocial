@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
-const url = import.meta.env.VITE_BASE_URL;
+const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
 
 const CommentInputReply = ({ postId , parentCommentId,userName}) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -17,7 +17,6 @@ const CommentInputReply = ({ postId , parentCommentId,userName}) => {
 
   const handleComment = async () => {
     try {
-        // setComment("@"+userName+" "+comment);
         
       const response = await axios.post(`${url}comments/create-comment/${postId}`,
         { content: comment,parentCommentId: parentCommentId },
@@ -29,27 +28,36 @@ const CommentInputReply = ({ postId , parentCommentId,userName}) => {
       alert(error.response?.data?.message || "Unable to add comment");
     }
   };
+  const handleClear=async()=>{
+    setComment("");
+  }
 
   return (
-    <div className="flex flex-col items-center w-full max-w-lg border-2 border-black rounded-full m-2 py-2 px-6">
+    <div className="items-center min-w-full max-w-lg border  border-slate-50 rounded-2xl m-2 px-2 py-1 ">
       <textarea
         ref={textareaRef}
         placeholder="Add a comment"
-        className={`w-full focus:outline-none p-2 rounded-full transition-all duration-200 resize-none ${
-          isInputFocused ? 'h-14' : 'h-12'
-        }`}
+        className={`min-w-[300px] w-full bg-transparent focus:outline-none text-white  transition-all duration-200 resize-none  `}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         onFocus={() => setIsInputFocused(true)}
       />
-      {isInputFocused && (
+      
+        <div className="flex justify-end gap-2">
         <button
-          className="items-center justify-center px-4 py-2 text-base font-semibold text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-full hover:bg-blue-700 focus:bg-blue-700 mt-2"
+          className="items-center justify-center px-2 py-1 text-sm font-semibold  transition-all duration-200 hover:bg-[#2e2b2b] border border-transparent rounded-full  mt-2"
+          onClick={handleClear}
+        >
+          Clear
+        </button>
+        <button
+          className="items-center justify-center px-2 py-1 text-sm   font-semibold  transition-all duration-200 bg-blue-600 border border-transparent rounded-full hover:bg-blue-700 focus:bg-blue-700 mt-2"
           onClick={handleComment}
         >
           Comment
         </button>
-      )}
+      
+        </div>
     </div>
   );
 };
