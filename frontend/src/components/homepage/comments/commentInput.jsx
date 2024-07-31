@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
-const url = import.meta.env.VITE_BASE_URL;
+const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
 const CommentInput = ({ postId }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
