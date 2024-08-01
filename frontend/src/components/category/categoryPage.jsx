@@ -89,9 +89,9 @@ const CategoryPage = () => {
             ))}
           </div>
           <div className="pt-4 pb-7 flex justify-center">
-            
-            <button onClick={handleSubmit} className="bg-[#0d1114] text-white my-2 px-8 py-2 rounded hover:bg-[#13181d] focus:outline-none focus:ring-2 focus:ring-blue-500">Next</button>
-          
+            <Link to = "/">
+            <button onClick={handleSubmit} className="bg-[#0d1114] text-white my-2 px-8 py-2 rounded hover:bg-[#13181d] focus:outline-none focus:ring-2 focus:ring-blue-500">Submit</button>
+            </Link>
             
           </div>
         </>
