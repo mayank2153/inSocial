@@ -2,16 +2,15 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import LikedCategoriesShimmer from "../shimmer/likedCategories.shimmer";
 
 const LikedCategories = () => {
-    const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
+    const [change, setChange] = useState(true);
+    const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
     const userData = useSelector((state) => state.auth.user);
-    const userlikedCategories = userData?.data?.user?.likedCategories || [];
+    const userlikedCategories = userData?.data?.user?.likedCategories;
     const [categories, setCategories] = useState([]);
     const [hoveredCategory, setHoveredCategory] = useState(null);
-    console.log(userData);
-
-    console.log('user liked categories are: ', userlikedCategories);
 
     const fetchingCategoriesByid = async () => {
         try {
@@ -20,41 +19,41 @@ const LikedCategories = () => {
                 const categoryId = userlikedCategories[index];
                 const response = await axios.get(`${url}category/category/${categoryId}`);
                 fetchedCategories.push(response.data);
-                console.log('response from backend ', response);
             }
-            console.log('fetchedCategories are: ', fetchedCategories);
             setCategories(fetchedCategories);
         } catch (error) {
-            console.log('There seems to be an error in fetching categories by Id', error);
+            console.error('Error fetching categories:', error);
         }
     };
 
-    const handleRemoveCategory = async(categoryId) => {
-        
-        console.log('Removing category:', categoryId);
+    const handleRemoveCategory = async (categoryId) => {
         try {
             await axios.post(`${url}users/remove-liked-category`, {
                 userData,
                 categoryId
-            } , {
+            }, {
                 headers: {
                     'Content-Type': 'application/json'
-                  },
-                  withCredentials: true
-            })
-            
+                },
+                withCredentials: true
+            });
+
+            setCategories(categories.filter((category) => category._id !== categoryId));
+            setChange(!change);
         } catch (error) {
-            console.log('there seems to be a problem in removing liked category' , error);
+            console.error('Error removing liked category:', error);
         }
-        
-        
-        // You may need to call an API to update the user's liked categories
-       
     };
 
     useEffect(() => {
         fetchingCategoriesByid();
-    }, [userlikedCategories, url]);
+    }, [userlikedCategories]); // Only userlikedCategories is sufficient for dependencies
+
+    if (userlikedCategories && categories.length < userlikedCategories.length) {
+        return (
+            <LikedCategoriesShimmer />
+        )
+    }
 
     return (
         <div className="w-64 rounded-xl ml-8 my-2 bg-[#13181d] shadow-2xl">

@@ -132,7 +132,9 @@ const deletePost = asyncHandler(async (req, res) => {
 
 const getPostsByUser= asyncHandler(async(req,res)=>{
     const {userId}=req.params;
+    console.log("user:",userId);
     const posts=await Post.find({owner:userId});
+    console.log("posts:",posts);
     if (posts.length === 0) {
         throw new ApiError(404, "No posts found for this user");
     }
