@@ -1,13 +1,12 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { FaUser, FaEdit } from "react-icons/fa";
-import { IoOpenOutline } from "react-icons/io5";
+// import { IoOpenOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 import { MdExitToApp } from "react-icons/md";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { logout } from "../../utils/authslice";
-// import {}
 
 const ProfilePage = () => {
   const dispatch=useDispatch();
