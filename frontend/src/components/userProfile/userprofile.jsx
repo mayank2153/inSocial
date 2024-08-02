@@ -22,7 +22,7 @@ const UserProfile = () => {
     <div className="w-full bg-[rgb(13,17,20)] justify-center overflow-y-scroll no-scrollbar max-h-screen">
       <div className="bg-[#13181d] shadow-md w-[500px] min-w-[600px] h-[400px] rounded-lg mt-8 border-2 border-gray-600 ml-36">
         <div className="relative bg-[#0d1114] w-[500px] min-w-[600px] h-[150px] rounded-t-lg"> 
-          <img src={userData?.data?.user?.coverImage} alt="coverImage" className="h-[150px] w-[600px] object-cover rounded-t-lg"/>
+          <img src={userData?.data?.user?.coverImage} alt="coverImage" className="h-[150px] w-full object-cover rounded-t-lg"/>
         </div>
 
         <div className="flex gap-10">
