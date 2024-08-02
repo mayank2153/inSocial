@@ -1,8 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import LikedCategoriesShimmer from "../shimmer/likedCategories.shimmer";
+import { deleteCategory, setCategories as setCategoriesRedux } from "../../utils/categoryslice";
 
 const LikedCategories = () => {
     const [change, setChange] = useState(true);
@@ -12,20 +13,32 @@ const LikedCategories = () => {
     const [categories, setCategories] = useState([]);
     const [hoveredCategory, setHoveredCategory] = useState(null);
 
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (userlikedCategories) {
+            dispatch(setCategoriesRedux(userlikedCategories));
+        }
+    }, [dispatch, userlikedCategories]);
+
+    const likedCategories_redux = useSelector((state) => state.likedCategories.likesCategory);
+    console.log('from redux:', likedCategories_redux);
+
     const fetchingCategoriesByid = async () => {
         try {
-            const fetchedCategories = [];
-            for (let index = 0; index < userlikedCategories.length; index++) {
-                const categoryId = userlikedCategories[index];
-                const response = await axios.get(`${url}category/category/${categoryId}`);
-                fetchedCategories.push(response.data);
-            }
+            const categoryIds = likedCategories_redux.map(category => category.categoryId);
+            const fetchedCategories = await Promise.all(
+                categoryIds.map(async (categoryId) => {
+                    const response = await axios.get(`${url}category/category/${categoryId}`);
+                    return response.data;
+                })
+            );
             setCategories(fetchedCategories);
         } catch (error) {
             console.error('Error fetching categories:', error);
         }
     };
-
+    console.log('data in category',categories);
     const handleRemoveCategory = async (categoryId) => {
         try {
             await axios.post(`${url}users/remove-liked-category`, {
@@ -37,8 +50,9 @@ const LikedCategories = () => {
                 },
                 withCredentials: true
             });
-
-            setCategories(categories.filter((category) => category._id !== categoryId));
+            dispatch(deleteCategory(categoryId));
+            // console.log(likedCategories_redux);
+            setCategories((prevCategories) => prevCategories.filter((category) => category.data._id !== categoryId));
             setChange(!change);
         } catch (error) {
             console.error('Error removing liked category:', error);
@@ -46,13 +60,15 @@ const LikedCategories = () => {
     };
 
     useEffect(() => {
-        fetchingCategoriesByid();
-    }, [userlikedCategories]); // Only userlikedCategories is sufficient for dependencies
+        if (likedCategories_redux && likedCategories_redux.length > 0) {
+            fetchingCategoriesByid();
+        }
+    }, [likedCategories_redux, change]);
 
-    if (userlikedCategories && categories.length < userlikedCategories.length) {
+    if (likedCategories_redux && categories.length < likedCategories_redux.length) {
         return (
             <LikedCategoriesShimmer />
-        )
+        );
     }
 
     return (
