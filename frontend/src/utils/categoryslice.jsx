@@ -9,8 +9,8 @@ const likedCategoriesSlice = createSlice({
     initialState,
     reducers: {
         addCategory: (state, action) => {
-            state.likesCategory.push({ categoryId: action.payload });
-        },
+            const newCategories = action.payload.map(id => ({ categoryId: id }));
+            state.likesCategory.push(...newCategories);        },
         deleteCategory: (state, action) => {
             state.likesCategory = state.likesCategory.filter(
                 category => category.categoryId !== action.payload
