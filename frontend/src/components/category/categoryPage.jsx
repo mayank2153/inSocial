@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, } from "react-redux";
 
 const CategoryPage = () => {
   const url = import.meta.env.VITE_BASE_URL;
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+
+  const likedCategories_redux = useSelector((state) => state.likedCategories?.likesCategory);
+  console.log('from redux in category Page:', likedCategories_redux);
 
   const userData = useSelector((state) => state.auth.user);
   // const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -39,6 +42,7 @@ const CategoryPage = () => {
   };
 
   const handleSubmit = async () => {
+
     try {
       const response = await axios.post(
         `${url}users/add-liked-categories`,
@@ -74,7 +78,8 @@ const CategoryPage = () => {
             {categories.map((category) => (
               <div
                 key={category._id}
-                className={`max-w-sm rounded-lg overflow-hidden shadow-lg h-28 flex cursor-pointer hover:shadow-xl hover:shadow-black  ${selectedCategories.includes(category._id) ? 'border-2 border-green-500' : ''}`}
+                className={`max-w-sm rounded-lg overflow-hidden shadow-lg h-28 flex cursor-pointer hover:shadow-xl hover:shadow-black  ${selectedCategories.includes(category._id) ? 'border-2 border-green-500' : ''}
+                  ${likedCategories_redux.includes(category._id)?'border-2 border-green-500' : ''}`}
                 style={{ backgroundColor: `${category.color}33` }}
                 onClick={() => handleCategorySelect(category._id)}
               >

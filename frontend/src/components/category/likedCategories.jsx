@@ -4,16 +4,39 @@ import { useSelector, useDispatch } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import LikedCategoriesShimmer from "../shimmer/likedCategories.shimmer";
 import { deleteCategory, setCategories as setCategoriesRedux } from "../../utils/categoryslice";
+import { fetchCategoryDetails } from "../../api/fetchCategoryDetails";
+import { fetchOwnerDetails } from "../../api/fetchOwnerDetails";
 
 const LikedCategories = () => {
     const [change, setChange] = useState(true);
+    const [user, setUser] = useState(null);
     const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
     const userData = useSelector((state) => state.auth.user);
-    const userlikedCategories = userData?.data?.user?.likedCategories;
+    // const userlikedCategories = userData?.data?.user?.likedCategories;
+    const ownerID = userData?.data?.user?._id;
+    // console.log(ownerID);
     const [categories, setCategories] = useState([]);
     const [hoveredCategory, setHoveredCategory] = useState(null);
 
     const dispatch = useDispatch();
+
+    
+        const fetchOwner = async() => {
+            try {
+               const ownerDetail =  await fetchOwnerDetails(ownerID);
+               setUser(ownerDetail);
+            //    console.log('owner details are : ',ownerDetail);
+            } catch (error) {
+                console.log('There seems to be an error while fetching owner details', error);
+            }
+        }
+    useEffect(() => {
+        fetchOwner();
+    }, [ownerID])
+    console.log('owner ', user);
+
+    const userlikedCategories = user?.likedCategories;
+    console.log('user liked categories', userlikedCategories);
 
     useEffect(() => {
         if (userlikedCategories) {
