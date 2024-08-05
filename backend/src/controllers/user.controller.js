@@ -330,6 +330,12 @@ const editUser = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, updatedUser, "User updated successfully"));
 });
 
+// const updateUserName = () => {
+//     const userId = req.params;
+//     const {userName} = req.body
+
+//     if(userName)
+// }
 
 export {
     registerUser,

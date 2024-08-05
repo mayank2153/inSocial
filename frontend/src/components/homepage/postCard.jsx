@@ -6,6 +6,7 @@ import { AiOutlineLike, AiOutlineDislike } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { fetchOwnerDetails } from '../../api/fetchOwnerDetails.js';
 import { fetchCategoryDetails } from '../../api/fetchCategoryDetails.js';
+import { MdEdit } from "react-icons/md";
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
@@ -14,6 +15,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const [categoryDetails, setCategoryDetails] = useState(null);
   const [error, setError] = useState(null);
   const [userVote, setUserVote] = useState(null);
+  const [hoveredPost , setHoveredPost] = useState(null);
 
   const currentUser = useSelector((state) => state.auth.user?.data?.user?._id);
 
@@ -66,14 +68,19 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const voteCount = votes.length;
   const commentCount = comments.length;
   return (
-    <div className="post-card bg-[#13181d] shadow-md w-[500px] max-h-[500px] min-w-[600px] rounded-lg py-1 ">
-      <div className='hover:bg-[#2e2b2b] rounded-2xl py-4 px-8'>
+    <div className="post-card bg-[#13181d] shadow-md w-[500px] max-h-[500px] min-w-[600px] rounded-lg py-1 mt-2 ">
+      <div className=' rounded-2xl py-4 px-8'
+          onMouseEnter={() => setHoveredPost(true)}
+          onMouseLeave={() => setHoveredPost(false)}
+      >
+
         <div className='flex gap-10 justify-between'>
           {ownerDetails && (
             <div className="owner-info flex items-center mb-4 gap-4 text-white">
               <img
                 src={ownerDetails.avatar}
                 alt={`Avatar of ${ownerDetails.userName}`}
+
                 className="w-10 h-10 rounded-full mr-2"
               />
               <div>
@@ -82,9 +89,22 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
               </div>
             </div>
           )}
-          <Link to={`/posts/category/${categoryDetails?._id}`}>
-            <p className='text-sm text-white'>{categoryDetails?.name}</p>
-          </Link>
+          <div className='flex-col '>
+          
+            {/* <Link to={`/posts/category/${categoryDetails?._id}`}> */}
+            <p className='text-sm text-white relative'>{categoryDetails?.name}</p>
+          {/* </Link> */}
+          {
+              hoveredPost === true &&
+              currentUser===owner &&
+              <Link to={`/post/edit-post/${_id}`}>
+              <div className='flex bg-[#13181d]  rounded-full gap-1 cursor-pointer pr-1  justify-end transition-all duration-700'> 
+                  <p className='text-xl text-slate-400'><MdEdit /></p>
+                </div>
+              </Link>
+            }
+          </div>
+          
         </div>
         <div>
           <div>
@@ -105,7 +125,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
               <div className={`flex   rounded-full gap-1 cursor-pointer
               ${userVote===null?'bg-[#222020]':null}
               ${userVote === "upvote" ?  'bg-green-500 text-white': null  }
-              ${userVote==="downvote"?'bg-red-500 text-white':null}
+              ${userVote==="downvote"?'bg-red-600 text-white':null}
               
               `}>
                 <AiOutlineLike
@@ -137,19 +157,12 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
               
             </div>
             <Link to={`/post/${_id}`}>
-              <div className='flex bg-[#222020]  rounded-full gap-1 cursor-pointer pr-1'>
+              <div className='flex bg-[#13181d]  rounded-full gap-1 cursor-pointer pr-1 gap-1'>
                 <FaRegComment size={30} className='hover:text-blue-500 p-1 hover:bg-[#1c1a1a] rounded-full'/>
-                <p className='text-xl'>{commentCount}</p>
+                <p className='text-xl'>Comments</p>
               </div>
             </Link>
-            {
-              currentUser===owner &&
-              <Link to={`/post/edit-post/${_id}`}>
-              <div className='flex bg-[#222020]  rounded-full gap-1 cursor-pointer pr-1'> 
-                  <p className='text-xl'>Edit</p>
-                </div>
-              </Link>
-            }
+            
           </div>
         </div>
       </div>
