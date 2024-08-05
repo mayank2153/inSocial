@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { BsFillReplyFill } from "react-icons/bs";
 import { MdOutlineDeleteOutline } from "react-icons/md";
+import { GoReply } from "react-icons/go";
 
 const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
 
@@ -44,7 +45,7 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
             <img
               src={owner.avatar}
               alt={`Avatar of ${owner.userName}`}
-              className="w-6 h-6 rounded-full mr-2"
+              className="w-8 h-8 rounded-full mr-2 border-2 border-black"
             />
             <div>
               <span>{owner.userName}</span>
@@ -54,31 +55,31 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
         )}
         {deleted ? (
           <div>
-            <p>This comment is deleted</p>
+            <p className='text-sm ml-12 -mt-2'>This comment is deleted</p>
           </div>
         ) : (
           <div>
-            <p>{content}</p>
-            <div className='flex'>
-              <div>
+            <p className='text-sm ml-12 -mt-2'>{content}</p>
+            <div className='flex gap-6 pt-3 '>
+              <div className='ml-12 -mt-2'>
               {!isReplying && (
-                <div className='flex'>
-                <BsFillReplyFill />
-                <button onClick={handleReply} className="text-sm text-blue-500 hover:underline">
+                <div className='flex gap-1'>
+                <GoReply className='text-xl text-gray-500'/>
+                <button onClick={handleReply} className="text-sm hover:underline transition-all duration-300">
                 Reply
               </button>
               </div>
               )}
             {isReplying && (
-              <div className="reply-input">
+              <div className="reply-input ">
                 <CommentInputReply postId={postId} parentCommentId={parentCommentId || _id} {...owner} />
               </div>
             )}
               </div>
             {!isReplying &&owner._id === user && (
-              <div className='flex'>
-                <MdOutlineDeleteOutline />
-                <button onClick={handleCommentDelete} className="text-sm text-red-500 hover:underline">Delete</button>
+              <div className='flex gap-1 -mt-2'>
+                <MdOutlineDeleteOutline className='text-xl text-gray-500'/>
+                <button onClick={handleCommentDelete} className="text-sm">Delete</button>
               </div>
             )}
             </div>
