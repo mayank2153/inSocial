@@ -48,12 +48,16 @@ import commentRouter from "./routes/comment.routes.js";
 import voteRouter from "./routes/vote.routes.js";
 import categoryRouter from "./routes/category.routes.js";
 import searchRouter from "./routes/search.routes.js";
+import conversationRouter from "./routes/conversation.routes.js";
+import messageRouter from "./routes/message.routes.js";
 app.use("/users", userRouter)
 app.use("/posts",postRouter)
 app.use("/comments",commentRouter)
 app.use("/vote",voteRouter)
 app.use("/category", categoryRouter);
 app.use("/search",searchRouter);
+app.use('/conversations', conversationRouter);
+app.use('/messages', messageRouter);
 app.get("/",(req,res)=>{
     res.send("WHISPERHUB")
 })
