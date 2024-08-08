@@ -12,7 +12,7 @@ const CategoryPage = () => {
   const likedCategories_redux = useSelector((state) => state.likedCategories?.likesCategory);
   const userData = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-
+  console.log("into registered")
   const fetchCategories = async () => {
     try {
       const response = await axios.get(`${url}category/category`);
@@ -20,6 +20,7 @@ const CategoryPage = () => {
         const fetchedCategories = response.data.categories;
         setCategories(fetchedCategories);
       }
+      console.log(response)
     } catch (error) {
       console.log('There seems to be an error in fetching Categories:', error);
     }
@@ -27,6 +28,7 @@ const CategoryPage = () => {
 
   useEffect(() => {
     fetchCategories();
+    console.log("cstegoty",categories)
   }, []);
 
   const handleCategorySelect = (categoryId) => {
