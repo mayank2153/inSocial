@@ -5,8 +5,19 @@ import passport from "passport";
 import session from "express-session"
 import "./middlewares/googleauth.middleware.js";
 import "./middlewares/discordauth.middleware.js"
+import { Server } from "socket.io"
+import {createServer} from "http"
+
 
 const app = express();
+const server=createServer(app)
+const io = new Server(server,{
+    cors:{
+        origin: process.env.CORS_ORIGIN,
+        credentials: true,
+    }
+});
+
 app.use(cookieParser())
 app.use(session({
     secret: 'keyboard cat',
@@ -45,6 +56,11 @@ app.use("/category", categoryRouter);
 app.use("/search",searchRouter);
 app.get("/",(req,res)=>{
     res.send("WHISPERHUB")
+})
+
+
+io.on("connection",(socket)=>{
+    console.log("user  connected")
 })
 
 export {app}

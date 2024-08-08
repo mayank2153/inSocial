@@ -37,6 +37,12 @@ const UserSchema = new Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Category',
         }],
+        conversations:[
+            {
+                type: Schema.Types.ObjectId,
+                ref: "Conversation"
+            }
+        ]
     },{
         timestamps:true
     }
