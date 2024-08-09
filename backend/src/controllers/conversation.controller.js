@@ -1,5 +1,5 @@
 
-import {Conversation} from '../models/Conversation.js';
+import {Conversation} from '../models/conversation.model.js';
 import { User } from "../models/user.model.js"
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
@@ -28,13 +28,9 @@ export const getConversations = async (req, res) => {
     const { userId } = req.params;
 
     try {
-        const conversations = await Conversation.find({ participants: userId }).populate('participants', 'username');
+        const conversations = await Conversation.find({ participants: userId }).populate('participants');
         res.status(200).json(conversations);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
-export {
-    getConversations,
-    createConversation
-}
