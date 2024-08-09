@@ -1,6 +1,6 @@
 
-import Message from '../models/Message.js';
-import Conversation from '../models/Conversation.js';
+import {Message} from '../models/message.model.js';
+import {Conversation} from '../models/conversation.model.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { ApiError } from '../utils/ApiError.js';
 
@@ -36,7 +36,3 @@ export const getMessages = async (req, res) => {
         throw new ApiError(500,"Error fetching messages",error);
     }
 };
-export{
-    sendMessage,
-    getMessages
-}
