@@ -17,6 +17,7 @@ import SearchResults from './components/searchResults/searchResults.jsx';
 import EditPost from './components/homepage/editPost/editPost.jsx';
 import Right from './components/right/right.jsx';
 import { PersistGate } from 'redux-persist/integration/react';
+import ChangeCurrentPassword from './components/settings/ChangeCurrentPassword.jsx';
 
 function Layout() {
   return (
@@ -122,6 +123,14 @@ const appRouting = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "/Update-current-password",
+        element: (
+          <ProtectedRoute>
+            <ChangeCurrentPassword />
+          </ProtectedRoute>
+        )
+      }
     ],
   },
 ]);
