@@ -17,33 +17,52 @@ import SearchResults from './components/searchResults/searchResults.jsx';
 import EditPost from './components/homepage/editPost/editPost.jsx';
 import Right from './components/right/right.jsx';
 import { PersistGate } from 'redux-persist/integration/react';
+import ChangeCurrentPassword from './components/settings/ChangeCurrentPassword.jsx';
 
 function Layout() {
   return (
     <div className="montserrat-medium">
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <Header />
-          <div className='flex'>
-            <ShowCategories />
-            <Outlet />
-            <Right />
-          </div>
-        </PersistGate>
-      </Provider>
+      <Header />
+      <div className='flex'>
+        <ShowCategories />
+        <Outlet />
+        <Right />
+      </div>
     </div>
   );
 }
 
 const appRouting = createBrowserRouter([
   {
+    path: "/login",
+    element: (
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <Login />
+        </PersistGate>
+      </Provider>
+    ),
+  },
+  {
+    path: "/register",
+    element: (
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <MultiStepForm />
+        </PersistGate>
+      </Provider>
+    ),
+  },
+  {
     path: "/",
-    element: <Layout />,
+    element: (
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <Layout />
+        </PersistGate>
+      </Provider>
+    ),
     children: [
-      {
-        path: "/login",
-        element: <Login />,
-      },
       {
         path: "/",
         element: (
@@ -51,10 +70,6 @@ const appRouting = createBrowserRouter([
             <HomePage />
           </ProtectedRoute>
         ),
-      },
-      {
-        path: "/register",
-        element: <MultiStepForm />,
       },
       {
         path: "/registerCategory",
@@ -108,6 +123,14 @@ const appRouting = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "/Update-current-password",
+        element: (
+          <ProtectedRoute>
+            <ChangeCurrentPassword />
+          </ProtectedRoute>
+        )
+      }
     ],
   },
 ]);

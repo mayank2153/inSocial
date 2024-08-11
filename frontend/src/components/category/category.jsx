@@ -26,16 +26,16 @@ const ShowCategories = () => {
 
     
     return isAuthenticated ? (
-        <div className=" bg-[#0d1114] min-w-80 h-screen  shadow-xl overflow-y-scroll no-scrollbar border-r-2 border-gray-600">
+        <div className=" bg-[#0d1114] min-w-[400px] h-screen  shadow-xl overflow-y-scroll no-scrollbar border-r-2 border-gray-600">
             <div className="mt-8 border-b-2 border-gray-600 pb-4">
                
-                <h1 className="text-slate-300 flex items-center gap-2 pl-6">
+                <h1 className="text-slate-300 flex items-center gap-2 pl-20 text-xl">
                     <FaHome /> Home
                 </h1>
             </div>
             <div className="mt-2 border-b-2 border-slate-500 pb-4">
-                <h1 className="text pl-6 text-slate-400">Categories</h1>
-                <ul className="mt-3 ml-4">
+                <h1 className="text pl-20 text-slate-400">Categories</h1>
+                <ul className="mt-3  pl-20">
                     {categories.map((category) => (
                         <Link to={`/posts/category/${category._id}`} key={category._id}>
                         
