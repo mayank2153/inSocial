@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser , loginUser , logOutUser , refreshAccessToken, addLikedCategories, removeLikedCategory, getUserById, editUser } from "../controllers/user.controller.js"
+import { registerUser , loginUser , logOutUser , refreshAccessToken, addLikedCategories, removeLikedCategory, getUserById, editUser, updateCurrentPassword, ChangeCurrentEmail, forgetPassword } from "../controllers/user.controller.js"
 import { upload } from "../middlewares/multer.middleware.js";
 import {verifyJWT} from "../middlewares/authjwt.middleware.js";
 import passport from "passport";
@@ -39,6 +39,9 @@ userRouter.route("/edit-user/:userId").post(
     verifyJWT,
     editUser
 );
+userRouter.route("/change-Current-Password/:userId").post(verifyJWT,updateCurrentPassword);
+userRouter.route("/change-current-Email/:userId").post(verifyJWT,ChangeCurrentEmail);
+userRouter.route("/forgetPassword").post(forgetPassword);
 userRouter.get('/auth/google',
     passport.authenticate('google', {scope: ["profile","email"]})
 );
@@ -57,4 +60,5 @@ userRouter.get('/auth/discord/redirect',
         res.send("Authentication successfull")
     }
 )
+
 export default userRouter;

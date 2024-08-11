@@ -337,6 +337,73 @@ const editUser = asyncHandler(async (req, res) => {
 //     if(userName)
 // }
 
+const updateCurrentPassword = asyncHandler(async(req , res) => {
+    const {userId} = req.params;
+    const { Password, newPassword } = req.body;
+    const user = await User.findById(userId);
+
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+
+    const isPasswordCorrect = await user.isPasswordCorrect(Password);
+
+    if(!isPasswordCorrect){
+        throw new ApiError(400, "Incorrect old Password")
+    }
+    user.password = newPassword
+
+    await user.save({validateBeforeSave: false});
+
+    return res.status(200).json(new ApiResponse(200, {}, "Password updated successfully"))
+})
+
+const ChangeCurrentEmail = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const { email, newEmail } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+        console.log(user)
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+
+        if (email !== user.email) {
+            throw new ApiError(400, "Email does not match");
+        }
+
+        user.email = newEmail;
+        await user.save(); // Save the updated email
+
+        const currentUser = await User.findById(userId).select("-password -refreshToken");
+
+        return res.status(200).json(new ApiResponse(200, currentUser, "Email changed Successfully"));
+    } catch (error) {
+        console.error("Error in ChangeCurrentEmail:", error); // Log the actual error
+        throw new ApiError(500, "Error changing Email", error.message);
+    }
+});
+
+
+const forgetPassword = asyncHandler(async(req, res) => {
+    const { email,newPassword } = req.body;
+    if(!email){
+        throw new ApiError(400, "Email is required");
+    }
+    if(!newPassword){
+        throw new ApiError(400, "Password is required");
+    }
+    const user = await User.findOne({email:email});
+    if(!user){
+        throw new ApiError(404, "User not found")
+    }
+
+    user.password = newPassword;
+
+    await user.save({validateBeforeSave: false});
+    return res.status(200).json( new ApiResponse(200, {} , "Password reset Successfully"))
+})
 export {
     registerUser,
     loginUser,
@@ -346,5 +413,8 @@ export {
     addLikedCategories,
     removeLikedCategory,
     getUserById,
-    editUser
+    editUser,
+    updateCurrentPassword,
+    ChangeCurrentEmail,
+    forgetPassword
 }

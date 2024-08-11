@@ -68,7 +68,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const voteCount = votes.length;
   const commentCount = comments.length;
   return (
-    <div className="post-card bg-[#13181d] shadow-md w-[500px] max-h-[500px] min-w-[600px] rounded-lg py-1 mt-2 ">
+    <div className="post-card bg-[#13181d] shadow-md w-[500px] max-h-[500px] min-w-[600px] rounded-lg py-1 mt-2  ">
       <div className=' rounded-2xl py-4 px-8'
           onMouseEnter={() => setHoveredPost(true)}
           onMouseLeave={() => setHoveredPost(false)}
@@ -157,7 +157,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
               
             </div>
             <Link to={`/post/${_id}`}>
-              <div className='flex bg-[#13181d]  rounded-full gap-1 cursor-pointer pr-1 gap-1'>
+              <div className='flex bg-[#13181d]  rounded-full gap-1 cursor-pointer pr-1'>
                 <FaRegComment size={30} className='hover:text-blue-500 p-1 hover:bg-[#1c1a1a] rounded-full'/>
                 <p className='text-xl'>Comments</p>
               </div>
