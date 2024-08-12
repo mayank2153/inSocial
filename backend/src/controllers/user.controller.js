@@ -399,36 +399,53 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
 });
 
 
-const forgetPassword = asyncHandler(async(req, res) => {
+const forgetPassword = asyncHandler(async (req, res) => {
+    console.log('hii');
+
     const { email } = req.body;
-    const user = await User.findOne({email});
 
-    if(!user){
-        return new ApiError(404, "User not found")
-    } 
+    // Finding the user by email
+    const user = await User.findOne({ email });
 
-    const {accessToken} = generateAccessAndRefereshTokens(user._id);
+    // If user is not found, throw an error
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
 
-    const resetlink = `${process.env.CLIENT_URL}users/reset-password/${accessToken}`;
-    await user.save();
+    // Generate access token
+    const { accessToken } = await generateAccessAndRefereshTokens(user._id);
+    console.log('accesstoken in forget password', accessToken);
 
+    // Check if access token was generated successfully
+    if (!accessToken) {
+        throw new ApiError(500, "Failed to generate access token");
+    }
+
+    // Construct the reset link
+    const resetlink = `${process.env.CLIENT_URL}/users/reset-password/${accessToken}`;
+    console.log('Reset link:', resetlink);
+
+    // Email options
     const mailOptions = {
         from: 'hubwhisper@gmail.com',
         to: email,
         subject: 'Here is your password Reset link for Banter.com',
-        text: `Please use this link to reset your password : ${resetlink} `
-    }
+        text: `Please use this link to reset your password: ${resetlink}`
+    };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if(error){
-            throw new ApiError(500, 'Error in sending mail', error.message);
-        }else{
-            res.status(200).json({
-                message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
-            })
-        }
-    })
-}); 
+    // Sending the email using async/await
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+        res.status(200).json({
+            message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
+        });
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw new ApiError(500, 'Error in sending mail', error.message);
+    }
+});
+
 
 const resetPassword = asyncHandler(async(req, res) => {
     const { resetlink, newPassword } = req.body;

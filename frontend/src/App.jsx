@@ -18,6 +18,7 @@ import EditPost from './components/homepage/editPost/editPost.jsx';
 import Right from './components/right/right.jsx';
 import { PersistGate } from 'redux-persist/integration/react';
 import ChangeCurrentPassword from './components/settings/ChangeCurrentPassword.jsx';
+import ForgetPassword from './components/ForgetPassword/ForgetPassword.jsx';
 
 function Layout() {
   return (
@@ -53,6 +54,8 @@ const appRouting = createBrowserRouter([
       </Provider>
     ),
   },
+  
+  
   {
     path: "/",
     element: (
@@ -77,6 +80,12 @@ const appRouting = createBrowserRouter([
           <ProtectedRoute>
             <CategoryPage />
           </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/Forget-Password",
+        element: (
+          <ForgetPassword />
         ),
       },
       {
