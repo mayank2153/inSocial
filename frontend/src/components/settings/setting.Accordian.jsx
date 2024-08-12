@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { IoMdSettings } from "react-icons/io";
+import { Link } from "react-router-dom"
 
 const SettingAccordian = ({ title }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +21,11 @@ const SettingAccordian = ({ title }) => {
             {isOpen && (
                 <div className="accordian-content pb-4">
                     <div className="text-slate-200 pl-12 -mt-3 mb-1 cursor-pointer hover:underline transition-all duration-500">Change Email</div>
-                    <div className="text-slate-200 pl-12 cursor-pointer hover:underline transition-all duration-500">Change Password</div>
+                    <Link to="Update-current-password">
+                    <div className="text-slate-200 pl-12 cursor-pointer hover:underline transition-all duration-500">Change Password</div>    
+                    </Link>
+                    
+                    
                 </div>
             )}
         </div>

@@ -16,6 +16,7 @@ const Login = () => {
         password: ""
     });
     const [showPassword, setShowPassword] = useState(false);
+    const [ forgetPassword, setForgetPassword ] = useState(false);
 
     const handleInput = (e) => {
         const name = e.target.name;
@@ -32,7 +33,9 @@ const Login = () => {
             navigate('/'); // Redirect to the homepage after successful login
         } catch (error) {
             dispatch(loginFailure(error.response.data.message));
-            alert(error.response.data.message || "Login failed");
+            // alert(error.response.data.message || "Login failed");
+            setForgetPassword(true);
+
         }
     };
     const handleGoogleLogin = () => {
@@ -77,7 +80,20 @@ const Login = () => {
                             >
                                 {showPassword ? <FaEyeSlash size={22} /> : <FaEye size={22}/>}
                             </button>
+                            
                         </div>
+                        { forgetPassword && 
+                            <div>
+                            <Link to="/Forget-Password">
+                            <span className=" pl-4 text-sm font-sans pt-1 hover:cursor-pointer text-red-400 hover:text-red-600 transition-all duration-300">
+                                forget Password?
+                            </span>
+                            </Link>
+                            
+                        </div>
+                            
+                        }
+                        
                     </div>
                     <div className="mb-4">
                         <button
