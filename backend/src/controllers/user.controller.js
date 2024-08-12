@@ -4,6 +4,19 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { Category } from "../models/category.model.js"
+import nodemailer from "nodemailer";
+
+
+const transporter = nodemailer.createTransport(
+    {
+        service: 'gmail',
+        auth: {
+            user: 'hubwhisper@gmail.com',
+            pass: 'kdxhvzjikivwqhmp'
+        }
+    }
+);
+
 const generateAccessAndRefereshTokens = async(userId) => {
     try {
         const user = await User.findById(userId)
@@ -12,7 +25,7 @@ const generateAccessAndRefereshTokens = async(userId) => {
         const refreshToken = user.generateRefreshToken()
         user.refreshToken = refreshToken
         await user.save({ validateBeforeSave: false })
-
+        console.log("access token in func:",accessToken)
         return {accessToken , refreshToken}
 
     } catch (error) {
@@ -387,23 +400,74 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
 
 
 const forgetPassword = asyncHandler(async(req, res) => {
-    const { email,newPassword } = req.body;
-    if(!email){
-        throw new ApiError(400, "Email is required");
-    }
-    if(!newPassword){
-        throw new ApiError(400, "Password is required");
-    }
-    const user = await User.findOne({email:email});
+    const { email } = req.body;
+    const user = await User.findOne({email});
+
     if(!user){
-        throw new ApiError(404, "User not found")
+        return new ApiError(404, "User not found")
+    } 
+
+    const {accessToken} =await  generateAccessAndRefereshTokens(user._id);
+    console.log("acess token:",{accessToken})
+    const resetlink = `${process.env.CLIENT_URL}users/reset-password/${accessToken}`;
+    console.log("reset link:",resetlink)
+    user.resetlink=resetlink
+    await user.save();
+
+    const mailOptions = {
+        from: 'hubwhisper@gmail.com',
+        to: email,
+        subject: 'Here is your password Reset link for Banter.com',
+        text: `Please use this link to reset your password : ${resetlink} `
     }
+    console.log(mailOptions)
 
-    user.password = newPassword;
+    transporter.sendMail(mailOptions, (error, info) => {
+        if(error){
+            throw new ApiError(500, 'Error in sending mail', error.message);
+        }else{
+            res.status(200).json({
+                message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
+            })
+        }
+    })
+}); 
 
-    await user.save({validateBeforeSave: false});
-    return res.status(200).json( new ApiResponse(200, {} , "Password reset Successfully"))
-})
+const resetPassword = asyncHandler(async (req, res) => {
+    try {
+      const { resetlink, newPassword } = req.body;
+  
+      if (!resetlink) {
+        throw new ApiError(401, "Authentication error: reset link is missing.");
+      }
+  
+      console.log("Searching for user with reset link:", resetlink);
+  
+      const user = await User.findOneAndUpdate(
+        { resetlink:resetlink },
+        {
+          password: newPassword,
+          resetlink: ""
+        },
+        { new: true } // returns the updated document
+      );
+  
+      if (!user) {
+        throw new ApiError(404, "User not found or reset link invalid.");
+      }
+  
+      console.log("User found and password updated:", user);
+  
+      return res.status(200).json(
+        new ApiResponse(200, user, "Password reset successful")
+      );
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      return res.status(500).json(new ApiError(500, "Error resetting password", error.message));
+    }
+  });
+  
+
 export {
     registerUser,
     loginUser,
@@ -416,5 +480,6 @@ export {
     editUser,
     updateCurrentPassword,
     ChangeCurrentEmail,
-    forgetPassword
+    forgetPassword,
+    resetPassword
 }
