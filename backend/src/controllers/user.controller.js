@@ -495,6 +495,4 @@ export {
     ChangeCurrentEmail,
     forgetPassword,
     resetPassword
-    forgetPassword,
-    resetPassword
 }
