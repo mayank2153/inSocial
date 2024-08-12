@@ -1,11 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react"; // Import useState
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import UserCard from "../homepage/userCard/userCard";
+import ChatComponent from "./chatComponent"; 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
 const Conversations = () => {
     const [conversations, setConversations] = useState([]);
+    const [selectedConversation, setSelectedConversation] = useState(null); // State to track selected conversation
     const userData = useSelector((state) => state.auth.user);
     const ownerID = userData?.data?.user?._id;
 
@@ -15,9 +17,7 @@ const Conversations = () => {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             });
-            console.log(response.data)
-            setConversations(response.data); // Update state with fetched conversations
-            console.log(conversations)
+            setConversations(response.data);
         } catch (error) {
             console.error('Error fetching conversations:', error);
             throw new Error('Error fetching conversations');
@@ -28,30 +28,44 @@ const Conversations = () => {
         if (ownerID) {
             fetchConversations();
         }
-    }, [ownerID]); // Add ownerID as a dependency
+    }, [ownerID]);
+
+    const handleUserCardClick = (conversation) => {
+        setSelectedConversation(conversation); // Set the selected conversation
+    };
 
     return (
         <div className="text-white">
-            {conversations.length > 0 ? (
-                <ul>
-                    {conversations.map((conversation) => (
-                        <li key={conversation._id}>
-                            <h3>{conversation.title}</h3>
-                            <ul>
-                                {conversation.participants
-                                    .filter(participant => participant._id !== ownerID)
-                                    .map(filteredParticipant => (
-                                        <li key={filteredParticipant._id}>
-                                            <UserCard key={filteredParticipant._id} {...filteredParticipant}/>
-                                        </li>
-                                    ))
-                                }
-                            </ul>
-                        </li>
-                    ))}
-                </ul>
+            {selectedConversation ? (
+                <ChatComponent
+                    conversationId={selectedConversation._id}
+                    userId={ownerID}
+                    // participants={selectedConversation.participants.filter(participant => participant._id !== ownerID)}
+                />
             ) : (
-                <p>No conversations found.</p>
+                conversations.length > 0 ? (
+                    <ul>
+                        {conversations.map((conversation) => (
+                            <li key={conversation._id}>
+                                <h3>{conversation.title}</h3>
+                                <ul>
+                                    {conversation.participants
+                                        .filter(participant => participant._id !== ownerID)
+                                        .map(filteredParticipant => (
+                                            <li key={filteredParticipant._id}>
+                                                <div onClick={() => handleUserCardClick(conversation)}>
+                                                    <UserCard key={filteredParticipant._id} {...filteredParticipant} />
+                                                </div>
+                                            </li>
+                                        ))
+                                    }
+                                </ul>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No conversations found.</p>
+                )
             )}
         </div>
     );

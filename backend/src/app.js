@@ -8,6 +8,7 @@ import { Server } from 'socket.io';
 import { createServer } from 'http';
 import "./middlewares/googleauth.middleware.js";
 import "./middlewares/discordauth.middleware.js";
+import { sendMessage, getMessages } from './controllers/message.controller.js'; // Assuming you have these controllers
 
 const app = express();
 const server = createServer(app); // Create an HTTP server
@@ -61,20 +62,38 @@ app.get("/", (req, res) => {
     res.send("WHISPERHUB");
 });
 
+
 io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
 
-    socket.on('sendMessage', (messageData) => {
-        io.to(messageData.conversationId).emit('receiveMessage', messageData);
+    socket.on('joinConversation', async (conversationId) => {
+        socket.join(conversationId);
+
+        try {
+            // Fetch past messages for this conversation and emit them to the user
+            const messages = await getMessages(conversationId);
+            socket.emit('conversationMessages', messages);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
     });
 
-    socket.on('joinConversation', (conversationId) => {
-        socket.join(conversationId);
+    socket.on('sendMessage', async (messageData) => {
+        try {
+            
+
+            // Emit the message to all users in the conversation room
+            console.log(messageData.content)
+            io.to(messageData.conversationId).emit('receiveMessage', messageData);
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
     });
 
     socket.on('disconnect', () => {
         console.log(`User disconnected: ${socket.id}`);
     });
 });
+
 
 export { app, server }; // Export both app and server
