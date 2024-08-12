@@ -4,6 +4,19 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { Category } from "../models/category.model.js"
+import nodemailer from "nodemailer";
+
+
+const transporter = nodemailer.createTransport(
+    {
+        service: 'gmail',
+        auth: {
+            user: 'hubwhisper@gmail.com',
+            pass: 'kdxhvzjikivwqhmp'
+        }
+    }
+);
+
 const generateAccessAndRefereshTokens = async(userId) => {
     try {
         const user = await User.findById(userId)
@@ -387,23 +400,64 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
 
 
 const forgetPassword = asyncHandler(async(req, res) => {
-    const { email,newPassword } = req.body;
-    if(!email){
-        throw new ApiError(400, "Email is required");
-    }
-    if(!newPassword){
-        throw new ApiError(400, "Password is required");
-    }
-    const user = await User.findOne({email:email});
+    const { email } = req.body;
+    const user = await User.findOne({email});
+
     if(!user){
-        throw new ApiError(404, "User not found")
+        return new ApiError(404, "User not found")
+    } 
+
+    const {accessToken} = generateAccessAndRefereshTokens(user._id);
+
+    const resetlink = `${process.env.CLIENT_URL}users/reset-password/${accessToken}`;
+    await user.save();
+
+    const mailOptions = {
+        from: 'hubwhisper@gmail.com',
+        to: email,
+        subject: 'Here is your password Reset link for Banter.com',
+        text: `Please use this link to reset your password : ${resetlink} `
     }
 
-    user.password = newPassword;
+    transporter.sendMail(mailOptions, (error, info) => {
+        if(error){
+            throw new ApiError(500, 'Error in sending mail', error.message);
+        }else{
+            res.status(200).json({
+                message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
+            })
+        }
+    })
+}); 
 
-    await user.save({validateBeforeSave: false});
-    return res.status(200).json( new ApiResponse(200, {} , "Password reset Successfully"))
+const resetPassword = asyncHandler(async(req, res) => {
+    const { resetlink, newPassword } = req.body;
+     
+    if(!resetlink){
+        throw new ApiError(401, "Authentication error")
+    }
+
+    const user = await User.findOne({resetlink})
+
+    const updateFields = {
+        password: newPassword,
+        resetlink: ""
+    }
+
+    user = _.extend(user, updateFields);
+    user.save((err, result) => {
+        if(err){
+            throw new ApiError(400, "Error resetting password")
+        }else{
+            res.status(200).json({
+                message: "Password reset successfull"
+            })
+        }
+    })
+
 })
+
+
 export {
     registerUser,
     loginUser,
@@ -416,5 +470,6 @@ export {
     editUser,
     updateCurrentPassword,
     ChangeCurrentEmail,
-    forgetPassword
+    forgetPassword,
+    resetPassword
 }
