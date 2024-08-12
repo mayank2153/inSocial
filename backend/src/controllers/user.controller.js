@@ -17,6 +17,19 @@ const transporter = nodemailer.createTransport(
     }
 );
 
+import nodemailer from "nodemailer";
+
+
+const transporter = nodemailer.createTransport(
+    {
+        service: 'gmail',
+        auth: {
+            user: 'hubwhisper@gmail.com',
+            pass: 'kdxhvzjikivwqhmp'
+        }
+    }
+);
+
 const generateAccessAndRefereshTokens = async(userId) => {
     try {
         const user = await User.findById(userId)
@@ -480,6 +493,8 @@ export {
     editUser,
     updateCurrentPassword,
     ChangeCurrentEmail,
+    forgetPassword,
+    resetPassword
     forgetPassword,
     resetPassword
 }
