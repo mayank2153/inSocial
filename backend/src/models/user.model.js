@@ -33,6 +33,10 @@ const UserSchema = new Schema(
         refreshToken: {
             type : String,
         },
+        resetlink :{
+            type: String,
+            default: ""
+        },
         likedCategories: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Category',
