@@ -25,7 +25,7 @@ const generateAccessAndRefereshTokens = async(userId) => {
         const refreshToken = user.generateRefreshToken()
         user.refreshToken = refreshToken
         await user.save({ validateBeforeSave: false })
-
+        console.log("access token in func:",accessToken)
         return {accessToken , refreshToken}
 
     } catch (error) {
@@ -407,9 +407,11 @@ const forgetPassword = asyncHandler(async(req, res) => {
         return new ApiError(404, "User not found")
     } 
 
-    const {accessToken} = generateAccessAndRefereshTokens(user._id);
-
+    const {accessToken} =await  generateAccessAndRefereshTokens(user._id);
+    console.log("acess token:",{accessToken})
     const resetlink = `${process.env.CLIENT_URL}users/reset-password/${accessToken}`;
+    console.log("reset link:",resetlink)
+    user.resetlink=resetlink
     await user.save();
 
     const mailOptions = {
@@ -418,6 +420,7 @@ const forgetPassword = asyncHandler(async(req, res) => {
         subject: 'Here is your password Reset link for Banter.com',
         text: `Please use this link to reset your password : ${resetlink} `
     }
+    console.log(mailOptions)
 
     transporter.sendMail(mailOptions, (error, info) => {
         if(error){
@@ -430,33 +433,40 @@ const forgetPassword = asyncHandler(async(req, res) => {
     })
 }); 
 
-const resetPassword = asyncHandler(async(req, res) => {
-    const { resetlink, newPassword } = req.body;
-     
-    if(!resetlink){
-        throw new ApiError(401, "Authentication error")
+const resetPassword = asyncHandler(async (req, res) => {
+    try {
+      const { resetlink, newPassword } = req.body;
+  
+      if (!resetlink) {
+        throw new ApiError(401, "Authentication error: reset link is missing.");
+      }
+  
+      console.log("Searching for user with reset link:", resetlink);
+  
+      const user = await User.findOneAndUpdate(
+        { resetlink:resetlink },
+        {
+          password: newPassword,
+          resetlink: ""
+        },
+        { new: true } // returns the updated document
+      );
+  
+      if (!user) {
+        throw new ApiError(404, "User not found or reset link invalid.");
+      }
+  
+      console.log("User found and password updated:", user);
+  
+      return res.status(200).json(
+        new ApiResponse(200, user, "Password reset successful")
+      );
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      return res.status(500).json(new ApiError(500, "Error resetting password", error.message));
     }
-
-    const user = await User.findOne({resetlink})
-
-    const updateFields = {
-        password: newPassword,
-        resetlink: ""
-    }
-
-    user = _.extend(user, updateFields);
-    user.save((err, result) => {
-        if(err){
-            throw new ApiError(400, "Error resetting password")
-        }else{
-            res.status(200).json({
-                message: "Password reset successfull"
-            })
-        }
-    })
-
-})
-
+  });
+  
 
 export {
     registerUser,
