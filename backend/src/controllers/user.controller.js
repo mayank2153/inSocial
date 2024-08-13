@@ -33,72 +33,56 @@ const generateAccessAndRefereshTokens = async(userId) => {
     }
 }
 
-const registerUser = asyncHandler(async(req, res) => {
-    console.log("req body: ",req.body);
-    console.log("req files: ",req.files);
-    const { username, email, password, bio, likedCategories} = req.body;
-
-    if(
-        [username, email, password].some((field) => field?.trim() === "")
-    ){
-        throw new ApiError(400, "Please provide all fields");
-    }
-    const existedUser = await User.findOne({
-        $or: [{username}, {email}]
-    })
-    console.log("userName, email, password, bio",username, email, password, bio)
-    console.log("existed User:",existedUser);
-
-    if(existedUser){
-        throw new ApiError(409, "User already exists")
-    }
-
-    //images
-
-    const avatarLocalPath = req.files?.avatar[0]?.path;
-
-    let coverImageLocalPath;
-    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0){
-        coverImageLocalPath = req.files.coverImage[0].path;
-    }
-
-
-    if(!avatarLocalPath){
-        throw new ApiError(400, "Please provide an avatar")
-    }
-
-    const avatar = await uploadOnCloudinary(avatarLocalPath)
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
-
-    if(!avatar){
-        throw new ApiError(400, "Avatar file is required")
-    }
-
-    
-
-    //creating user and storing in database:
-
-    const user = await User.create({
-        userName : username,
+const registerUser = asyncHandler(async (req, res, next) => {
+    try {
+      const { username, email, password, bio } = req.body;
+  
+      // Validate required fields
+      if ([username, email, password].some((field) => !field || field.trim() === "")) {
+        return res.status(400).json({ message: "All required fields must be filled." });
+      }
+  
+      if (!req.files || !req.files.avatar) {
+        return res.status(400).json({ message: "Avatar is required." });
+      }
+  
+      const avatarLocalPath = req.files.avatar[0].path;
+      const coverImageLocalPath = req.files.coverImage ? req.files.coverImage[0].path : null;
+  
+      const avatar = await uploadOnCloudinary(avatarLocalPath);
+      if (!avatar) {
+        throw new Error("Failed to upload avatar.");
+      }
+  
+      let coverImage = null;
+      if (coverImageLocalPath) {
+        coverImage = await uploadOnCloudinary(coverImageLocalPath);
+        if (!coverImage) {
+          throw new Error("Failed to upload cover image.");
+        }
+      }
+  
+      const userExists = await User.findOne({ email });
+      if (userExists) {
+        return res.status(400).json({ message: "Email already exists." });
+      }
+  
+      const user = await User.create({
+        username,
         email,
-        password, 
-        avatar : avatar.url,
-        coverImage : coverImage?.url || "",
+        password,
         bio,
-        // likedCategories : likedCategories ? Array.isArray(likedCategories) : [likedCategories]
-    })
-
-    const createdUser = await User.findById(user._id).select("-password -refreshToken")
-
-    if(!createdUser){
-        throw new ApiError(500, "Something went wrong while registering User")
+        avatar: avatar.secure_url,
+        coverImage: coverImage ? coverImage.secure_url : null,
+      });
+  
+      res.status(201).json({ message: "User registered successfully.", user });
+    } catch (error) {
+      console.error("Error during user registration:", error.message);
+      res.status(500).json({ message: error.message || "Internal Server Error." });
     }
-    return res.status(201).json(
-        new ApiResponse(200, createdUser, "User registered Successfully")
-    )
-
-})
-
+  });
+  
 const loginUser = asyncHandler(async(req, res) => {
     const {email, password} = req.body
 
@@ -422,7 +406,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
     }
 
     // Construct the reset link
-    const resetlink = `${process.env.CLIENT_URL}/users/reset-password/${accessToken}`;
+    const resetlink = `${process.env.CLIENT_URL}reset-password/${accessToken}`;
     console.log('Reset link:', resetlink);
 
     // Email options
@@ -447,32 +431,39 @@ const forgetPassword = asyncHandler(async (req, res) => {
 });
 
 
-const resetPassword = asyncHandler(async(req, res) => {
-    const { resetlink, newPassword } = req.body;
-     
-    if(!resetlink){
-        throw new ApiError(401, "Authentication error")
+const resetPassword = asyncHandler(async (req, res) => {
+    try {
+      const { resetlink, newPassword } = req.body;
+  
+      if (!resetlink) {
+        throw new ApiError(401, "Authentication error: reset link is missing.");
+      }
+  
+      console.log("Searching for user with reset link:", resetlink);
+  
+      const user = await User.findOneAndUpdate(
+        { resetlink:resetlink },
+        {
+          password: newPassword,
+          resetlink: ""
+        },
+        { new: true } // returns the updated document
+      );
+  
+      if (!user) {
+        throw new ApiError(404, "User not found or reset link invalid.");
+      }
+  
+      console.log("User found and password updated:", user);
+  
+      return res.status(200).json(
+        new ApiResponse(200, user, "Password reset successful")
+      );
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      return res.status(500).json(new ApiError(500, "Error resetting password", error.message));
     }
-
-    const user = await User.findOne({resetlink})
-
-    const updateFields = {
-        password: newPassword,
-        resetlink: ""
-    }
-
-    user = _.extend(user, updateFields);
-    user.save((err, result) => {
-        if(err){
-            throw new ApiError(400, "Error resetting password")
-        }else{
-            res.status(200).json({
-                message: "Password reset successfull"
-            })
-        }
-    })
-
-})
+  });
 
 
 export {
