@@ -7,17 +7,6 @@ import { Category } from "../models/category.model.js"
 import nodemailer from "nodemailer";
 
 
-const transporter = nodemailer.createTransport(
-    {
-        service: 'gmail',
-        auth: {
-            user: 'hubwhisper@gmail.com',
-            pass: 'kdxhvzjikivwqhmp'
-        }
-    }
-);
-
-import nodemailer from "nodemailer";
 
 
 const transporter = nodemailer.createTransport(

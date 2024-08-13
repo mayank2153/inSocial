@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 const ChangeCurrentPassword = () => {
+
+    const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
     const userData = useSelector((state) => state.auth.user);
     const userId = userData?.data?.user?._id;
 
@@ -24,7 +26,7 @@ const ChangeCurrentPassword = () => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
         // You can add more form submission logic here
         if (!passwordMatch) {
@@ -32,6 +34,14 @@ const ChangeCurrentPassword = () => {
             return;
         }
         // Submit the form if passwords match
+        try {
+            await axios.post(`${url}users/change-Current-Password/${userId}`, formData)
+                
+        } catch (error) {
+            console.log('There seems to be an error while changing password');
+            
+        }
+        
     };
 
     return (
@@ -77,12 +87,16 @@ const ChangeCurrentPassword = () => {
                     {!passwordMatch && formData.confirmPassword && (
                         <p className="text-red-600 font-mono">Passwords do not match</p>
                     )}
+                    
                     <button
-                        type="submit"
+                        type="button"
+                        onClick={handleSubmit}
                         className="mt-4 px-4 py-2 ml-20 w-[200px] bg-blue-500 text-white rounded-full hover:bg-blue-600"
                     >
                         Change Password
                     </button>
+                    
+                    
                 </form>
             </div>
         </div>
