@@ -42,7 +42,8 @@ userRouter.route("/edit-user/:userId").post(
 userRouter.route("/change-Current-Password/:userId").post(verifyJWT,updateCurrentPassword);
 userRouter.route("/change-current-Email/:userId").post(verifyJWT,ChangeCurrentEmail);
 userRouter.route("/forgetPassword").post(forgetPassword);
-userRouter.route("/resetPassword").post(resetPassword)
+userRouter.route("/reset-password").post(resetPassword);
+
 userRouter.get('/auth/google',
     passport.authenticate('google', {scope: ["profile","email"]})
 );
