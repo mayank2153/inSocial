@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 
 const ResetPassword = () => {
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
