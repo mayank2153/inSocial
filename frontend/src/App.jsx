@@ -20,6 +20,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import ChangeCurrentPassword from './components/settings/ChangeCurrentPassword.jsx';
 import ForgetPassword from './components/ForgetPassword/ForgetPassword.jsx';
 import ResetPassword from './components/ForgetPassword/resetPassword.jsx';
+import ChangeCurrentEmail from './components/settings/ChangeCurrentEmail.jsx';
 
 function Layout() {
   return (
@@ -144,6 +145,14 @@ const appRouting = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <ChangeCurrentPassword />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "/change-current-email",
+        element: (
+          <ProtectedRoute>
+            <ChangeCurrentEmail/>
           </ProtectedRoute>
         )
       }
