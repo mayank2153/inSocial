@@ -17,6 +17,19 @@ const transporter = nodemailer.createTransport(
     }
 );
 
+import nodemailer from "nodemailer";
+
+
+const transporter = nodemailer.createTransport(
+    {
+        service: 'gmail',
+        auth: {
+            user: 'hubwhisper@gmail.com',
+            pass: 'kdxhvzjikivwqhmp'
+        }
+    }
+);
+
 const generateAccessAndRefereshTokens = async(userId) => {
     try {
         const user = await User.findById(userId)
@@ -25,7 +38,7 @@ const generateAccessAndRefereshTokens = async(userId) => {
         const refreshToken = user.generateRefreshToken()
         user.refreshToken = refreshToken
         await user.save({ validateBeforeSave: false })
-
+        console.log("access token in func:",accessToken)
         return {accessToken , refreshToken}
 
     } catch (error) {
@@ -382,7 +395,6 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
     }
 });
 
-
 const forgetPassword = asyncHandler(async (req, res) => {
     console.log('hii');
 
@@ -429,8 +441,6 @@ const forgetPassword = asyncHandler(async (req, res) => {
         throw new ApiError(500, 'Error in sending mail', error.message);
     }
 });
-
-
 const resetPassword = asyncHandler(async (req, res) => {
     try {
       const { resetlink, newPassword } = req.body;
@@ -463,7 +473,7 @@ const resetPassword = asyncHandler(async (req, res) => {
       console.error("Error resetting password:", error);
       return res.status(500).json(new ApiError(500, "Error resetting password", error.message));
     }
-  });
+ });
 
 
 export {
