@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import LikedCategories from "../category/likedCategories";
 import SettingAccordian from "../settings/setting.Accordian";
+import SwitchButton from "../modes/DarkAndLight";
 
 const Right = () => {
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -29,9 +30,13 @@ const Right = () => {
                     <FaPlus className="mt-1" /> Add Categories
                 </Link>
             </div>
+            <div className="my-4 border-b-2 border-gray-600 pb-6">
+                <SwitchButton />
+            </div>
             <div>
                 <SettingAccordian title="Settings" />
             </div>
+            
         </div>
     ) : null;
 };
