@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage'; // defaults to localStorage for
 import authReducer from "./authslice.jsx";
 import postsReducer from "./postsSlice.jsx";
 import likedCategoriesReducer from "./categoryslice.jsx"
+import themeReducer from "./darkmodeSlice";
 
 const persistConfig = {
   key: 'root',
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   posts: postsReducer,
   likedCategories : likedCategoriesReducer,
+  theme: themeReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
