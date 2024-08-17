@@ -7,17 +7,6 @@ import { Category } from "../models/category.model.js"
 import nodemailer from "nodemailer";
 
 
-const transporter = nodemailer.createTransport(
-    {
-        service: 'gmail',
-        auth: {
-            user: 'hubwhisper@gmail.com',
-            pass: 'kdxhvzjikivwqhmp'
-        }
-    }
-);
-
-import nodemailer from "nodemailer";
 
 
 const transporter = nodemailer.createTransport(
@@ -46,72 +35,56 @@ const generateAccessAndRefereshTokens = async(userId) => {
     }
 }
 
-const registerUser = asyncHandler(async(req, res) => {
-    console.log("req body: ",req.body);
-    console.log("req files: ",req.files);
-    const { username, email, password, bio, likedCategories} = req.body;
-
-    if(
-        [username, email, password].some((field) => field?.trim() === "")
-    ){
-        throw new ApiError(400, "Please provide all fields");
-    }
-    const existedUser = await User.findOne({
-        $or: [{username}, {email}]
-    })
-    console.log("userName, email, password, bio",username, email, password, bio)
-    console.log("existed User:",existedUser);
-
-    if(existedUser){
-        throw new ApiError(409, "User already exists")
-    }
-
-    //images
-
-    const avatarLocalPath = req.files?.avatar[0]?.path;
-
-    let coverImageLocalPath;
-    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0){
-        coverImageLocalPath = req.files.coverImage[0].path;
-    }
-
-
-    if(!avatarLocalPath){
-        throw new ApiError(400, "Please provide an avatar")
-    }
-
-    const avatar = await uploadOnCloudinary(avatarLocalPath)
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
-
-    if(!avatar){
-        throw new ApiError(400, "Avatar file is required")
-    }
-
-    
-
-    //creating user and storing in database:
-
-    const user = await User.create({
-        userName : username,
+const registerUser = asyncHandler(async (req, res, next) => {
+    try {
+      const { username, email, password, bio } = req.body;
+  
+      // Validate required fields
+      if ([username, email, password].some((field) => !field || field.trim() === "")) {
+        return res.status(400).json({ message: "All required fields must be filled." });
+      }
+  
+      if (!req.files || !req.files.avatar) {
+        return res.status(400).json({ message: "Avatar is required." });
+      }
+  
+      const avatarLocalPath = req.files.avatar[0].path;
+      const coverImageLocalPath = req.files.coverImage ? req.files.coverImage[0].path : null;
+  
+      const avatar = await uploadOnCloudinary(avatarLocalPath);
+      if (!avatar) {
+        throw new Error("Failed to upload avatar.");
+      }
+  
+      let coverImage = null;
+      if (coverImageLocalPath) {
+        coverImage = await uploadOnCloudinary(coverImageLocalPath);
+        if (!coverImage) {
+          throw new Error("Failed to upload cover image.");
+        }
+      }
+  
+      const userExists = await User.findOne({ email });
+      if (userExists) {
+        return res.status(400).json({ message: "Email already exists." });
+      }
+  
+      const user = await User.create({
+        username,
         email,
-        password, 
-        avatar : avatar.url,
-        coverImage : coverImage?.url || "",
+        password,
         bio,
-        // likedCategories : likedCategories ? Array.isArray(likedCategories) : [likedCategories]
-    })
-
-    const createdUser = await User.findById(user._id).select("-password -refreshToken")
-
-    if(!createdUser){
-        throw new ApiError(500, "Something went wrong while registering User")
+        avatar: avatar.secure_url,
+        coverImage: coverImage ? coverImage.secure_url : null,
+      });
+  
+      res.status(201).json({ message: "User registered successfully.", user });
+    } catch (error) {
+      console.error("Error during user registration:", error.message);
+      res.status(500).json({ message: error.message || "Internal Server Error." });
     }
-    return res.status(201).json(
-        new ApiResponse(200, createdUser, "User registered Successfully")
-    )
-
-})
-
+  });
+  
 const loginUser = asyncHandler(async(req, res) => {
     const {email, password} = req.body
 
@@ -411,41 +384,52 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
     }
 });
 
+const forgetPassword = asyncHandler(async (req, res) => {
+    console.log('hii');
 
-const forgetPassword = asyncHandler(async(req, res) => {
     const { email } = req.body;
-    const user = await User.findOne({email});
 
-    if(!user){
-        return new ApiError(404, "User not found")
-    } 
+    // Finding the user by email
+    const user = await User.findOne({ email });
 
-    const {accessToken} =await  generateAccessAndRefereshTokens(user._id);
-    console.log("acess token:",{accessToken})
-    const resetlink = `${process.env.CLIENT_URL}users/reset-password/${accessToken}`;
-    console.log("reset link:",resetlink)
-    user.resetlink=resetlink
-    await user.save();
+    // If user is not found, throw an error
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
 
+    // Generate access token
+    const { accessToken } = await generateAccessAndRefereshTokens(user._id);
+    console.log('accesstoken in forget password', accessToken);
+
+    // Check if access token was generated successfully
+    if (!accessToken) {
+        throw new ApiError(500, "Failed to generate access token");
+    }
+
+    // Construct the reset link
+    const resetlink = `${process.env.CLIENT_URL}reset-password/${accessToken}`;
+    console.log('Reset link:', resetlink);
+
+    // Email options
     const mailOptions = {
         from: 'hubwhisper@gmail.com',
         to: email,
         subject: 'Here is your password Reset link for Banter.com',
-        text: `Please use this link to reset your password : ${resetlink} `
+        text: `Please use this link to reset your password: ${resetlink}`
+    };
+
+    // Sending the email using async/await
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent: ' + info.response);
+        res.status(200).json({
+            message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
+        });
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw new ApiError(500, 'Error in sending mail', error.message);
     }
-    console.log(mailOptions)
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if(error){
-            throw new ApiError(500, 'Error in sending mail', error.message);
-        }else{
-            res.status(200).json({
-                message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
-            })
-        }
-    })
-}); 
-
+});
 const resetPassword = asyncHandler(async (req, res) => {
     try {
       const { resetlink, newPassword } = req.body;
@@ -478,8 +462,8 @@ const resetPassword = asyncHandler(async (req, res) => {
       console.error("Error resetting password:", error);
       return res.status(500).json(new ApiError(500, "Error resetting password", error.message));
     }
-  });
-  
+ });
+
 
 export {
     registerUser,
