@@ -18,6 +18,7 @@ const MultiStepForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [preview, setPreview] = useState(null);
+  const [serverError, setServerError] = useState(""); // State to handle server errors
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -69,10 +70,13 @@ const MultiStepForm = () => {
         data.append(key, formData[key]);
       });
       const response = await axios.post(`${url}users/register`, data);
-      // Redirect to login page after successful registration
       navigate("/login");
     } catch (error) {
-      console.error(error);
+      if (error.response) {
+        setServerError(error.response.data.message || "An error occurred. Please try again.");
+      } else {
+        setServerError("Failed to connect to the server. Please try again.");
+      }
     }
   };
 
@@ -91,7 +95,11 @@ const MultiStepForm = () => {
         <h2 className="text-2xl text-white font-bold mt-20">
           Create Your Account
         </h2>
+        {serverError && (
+          <p className="text-red-500 text-sm text-center mb-4">{serverError}</p>
+        )}
         <form onSubmit={handleSubmit}>
+          {/* Step 1: Email */}
           {step === 1 && (
             <div className="mb-4">
               <label className="block text-white pl-40 font-semibold mt-10 pb-2">
@@ -112,6 +120,8 @@ const MultiStepForm = () => {
               )}
             </div>
           )}
+
+          {/* Step 2: Username and Password */}
           {step === 2 && (
             <>
               <div className="mb-4 mt-4">
@@ -157,6 +167,8 @@ const MultiStepForm = () => {
               </div>
             </>
           )}
+
+          {/* Step 3: Avatar and Bio */}
           {step === 3 && (
             <>
               <div className="mb-4 mt-4">
@@ -192,6 +204,8 @@ const MultiStepForm = () => {
               </div>
             </>
           )}
+
+          {/* Navigation Buttons */}
           <div className="flex justify-between">
             {step > 1 && (
               <button
@@ -212,19 +226,21 @@ const MultiStepForm = () => {
               </button>
             )}
             {step === 3 && (
-              <Link to={"/login"}>
-                <button
+              <button
                 type="submit"
                 className="bg-blue-500 text-white py-2 px-4 mt-6 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Submit
               </button>
-              </Link>
-              
             )}
           </div>
           <div className="text-white flex justify-center py-5">
-            <h1>Already have an Account? <Link to={"/login"}><span className="text-blue-500 hover:underline">Login</span></Link></h1>
+            <h1>
+              Already have an Account?{" "}
+              <Link to={"/login"}>
+                <span className="text-blue-500 hover:underline">Login</span>
+              </Link>
+            </h1>
           </div>
         </form>
       </div>
