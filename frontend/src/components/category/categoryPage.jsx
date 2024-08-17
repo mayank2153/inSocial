@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addCategory } from "../../utils/categoryslice";
 
 const CategoryPage = () => {
-  const url = import.meta.env.VITE_BASE_URL;
+  const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
@@ -28,7 +28,7 @@ const CategoryPage = () => {
 
   useEffect(() => {
     fetchCategories();
-    console.log("cstegoty",categories)
+    console.log("category",categories)
   }, []);
 
   const handleCategorySelect = (categoryId) => {

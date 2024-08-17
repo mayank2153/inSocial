@@ -35,12 +35,12 @@ const Conversations = () => {
     };
 
     return (
-        <div className="text-white">
+        <div className="text-white max-h-screen overflow-y-scroll no-scrollbar">
             {selectedConversation ? (
                 <ChatComponent
                     conversationId={selectedConversation._id}
                     userId={ownerID}
-                    // participants={selectedConversation.participants.filter(participant => participant._id !== ownerID)}
+                    receiver={selectedConversation.participants.filter(participant => participant._id !== ownerID)}
                 />
             ) : (
                 conversations.length > 0 ? (
