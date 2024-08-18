@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { loginSuccess, loginFailure } from "../../utils/authslice.jsx";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
+import { notifyError } from "../../utils/notifications.jsx";
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
@@ -32,6 +33,10 @@ const Login = () => {
             console.log(response.data)
             navigate('/'); // Redirect to the homepage after successful login
         } catch (error) {
+            console.log(error?.response?.data);
+            // Display notification with error message
+            notifyError(error.response.data.message || "Login failed");
+
             dispatch(loginFailure(error.response.data.message));
             // alert(error.response.data.message || "Login failed");
             setForgetPassword(true);
