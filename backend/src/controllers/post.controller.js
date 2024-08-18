@@ -99,7 +99,8 @@ const updatePost = asyncHandler(async (req, res) => {
         post.description = description;
     }
     if (category) {
-        const existingCategory = await Category.findOne({ name: category.toLowerCase() });
+        console.log(category)
+        const existingCategory = await Category.findById(category)
         if (!existingCategory) {
             throw new ApiError(400, "Category does not exist");
         }
