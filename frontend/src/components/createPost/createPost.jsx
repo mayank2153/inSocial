@@ -148,7 +148,10 @@ const PostForm = ({ isEdit }) => {
     }, [isEdit, postId]);
 
     const handleChange = e => {
+        console.log(e.target.value);
         const { name, value } = e.target;
+        console.log({ name, value });
+        
         setFormData(prevData => ({
             ...prevData,
             [name]: value,
@@ -172,8 +175,10 @@ const PostForm = ({ isEdit }) => {
             Object.keys(formData).forEach(key => {
                 data.append(key, formData[key]);
             });
+            console.log(formData)
+            console.log(data);
             const response = isEdit
-                ? await axios.put(`${url}posts/${postId}`, data, { withCredentials: true })
+                ? await axios.put(`${url}posts/update-post/${postId}`, formData, { withCredentials: true })
                 : await axios.post(`${url}posts/create-post`, data, { withCredentials: true });
             console.log("Response", response);
             navigate("/");
