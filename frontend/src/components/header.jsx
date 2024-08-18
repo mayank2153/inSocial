@@ -67,7 +67,7 @@ const Header = () => {
                   className="w-12 h-12 rounded-full object-cover cursor-pointer"
                   onClick={toggleProfile}
                 />
-                {isProfileOpen && <ProfilePage />}
+                {isProfileOpen && <ProfilePage isProfileOpen={isProfileOpen} setIsProfileOpen={setIsProfileOpen} />}
               </div>
             </div>
           ) : (
