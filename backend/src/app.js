@@ -4,7 +4,8 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import session from "express-session"
 import "./middlewares/googleauth.middleware.js";
-import "./middlewares/discordauth.middleware.js"
+import "./middlewares/discordauth.middleware.js";
+// import errorHandler from "./middlewares/errorHandler.middleware.js";
 
 const app = express();
 app.use(cookieParser())
@@ -37,12 +38,15 @@ import commentRouter from "./routes/comment.routes.js";
 import voteRouter from "./routes/vote.routes.js";
 import categoryRouter from "./routes/category.routes.js";
 import searchRouter from "./routes/search.routes.js";
+import errorHandler from "./middlewares/errorHandler.middleware.js";
 app.use("/users", userRouter)
 app.use("/posts",postRouter)
 app.use("/comments",commentRouter)
 app.use("/vote",voteRouter)
 app.use("/category", categoryRouter);
 app.use("/search",searchRouter);
+
+app.use(errorHandler)
 app.get("/",(req,res)=>{
     res.send("WHISPERHUB")
 })
