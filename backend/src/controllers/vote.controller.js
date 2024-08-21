@@ -3,17 +3,21 @@ import { Vote } from "../models/votes.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { User } from "../models/user.model.js";
 
 const createVote = asyncHandler(async (req, res) => {
     const { voteType } = req.body;
     const { postId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.id; 
 
     try {
         const post = await Post.findById(postId);
         if (!post) {
             throw new ApiError(404, "Post not found");
         }
+
+        const user = User.findById(userId)
+        const postOwner = post.owner;
 
         let vote = await Vote.findOne({ user: userId, post: postId });
         if (vote) {
@@ -34,6 +38,13 @@ const createVote = asyncHandler(async (req, res) => {
 
             await post.save();
         }
+        req.app.get('io').emit('likePost', {
+            message: `${user.userName} reacted on your post`,
+            postId: postId,
+            actor: userId,
+            reciecer: postOwner,
+            type: 'like'
+        }) 
 
         return res.status(201).json(
             new ApiResponse(200, { vote, post }, "Vote has been successfully created")
