@@ -24,8 +24,12 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true },
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Only secure in production
+        sameSite: 'None', // Required for cross-site cookies
+    },
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
