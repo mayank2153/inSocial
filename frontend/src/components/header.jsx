@@ -24,7 +24,7 @@ const Header = () => {
   };
 
   return isAuthenticated ? (
-    <header className="bg-[#1e0832]  w-full shadow-lg">
+    <header className="bg-[#0d1114] border-b-2 border-gray-600  w-full shadow-lg">
       <div className="max-w-7xl mx-auto ">
         <nav className="flex items-center h-16 lg:h-20 justify-between">
           <div className="flex items-center justify-end -ml-20">
