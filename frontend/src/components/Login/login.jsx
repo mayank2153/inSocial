@@ -28,16 +28,17 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
+            console.log("1")
             const response = await axios.post(`${url}users/login`, user, { withCredentials: true });
+            console.log("response:",response)
             dispatch(loginSuccess(response.data));
-            console.log(response.data)
             navigate('/'); // Redirect to the homepage after successful login
         } catch (error) {
             console.log(error?.response?.data);
             // Display notification with error message
-            notifyError(error.response.data.message || "Login failed");
+            notifyError(error?.response?.data?.message || "Login failed");
 
-            dispatch(loginFailure(error.response.data.message));
+            dispatch(loginFailure(error?.response?.data?.message));
             // alert(error.response.data.message || "Login failed");
             setForgetPassword(true);
 

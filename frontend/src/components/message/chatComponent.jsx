@@ -10,7 +10,8 @@ const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
 const ChatComponent = ({ conversationId, userId, receiver }) => {
     const dispatch = useDispatch();
-    const socket = useSelector((state) => state.socket?.socket); // Safe access to socket object
+    const socket = useSelector((state) => state.socket?.socket); 
+    console.log(socket)
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const lastMessageRef = useRef(null);
@@ -19,25 +20,27 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
         if (!socket) {
             dispatch(connectSocket());
         }
-
+    }, [socket]);
+    
+    useEffect(() => {
         if (socket) {
             console.log("Joining conversation with ID:", conversationId);
             socket.emit('joinConversation', conversationId);
-
+    
             const handleReceiveMessage = (message) => {
                 console.log("Received message:", message);
                 setMessages((prevMessages) => [...prevMessages, message]);
             };
-
+    
             socket.on('receiveMessage', handleReceiveMessage);
-
+    
             return () => {
                 socket.off('receiveMessage', handleReceiveMessage);
                 dispatch(disconnectSocket());  // Properly disconnect socket
             };
         }
-    }, [conversationId]);
-
+    }, [socket, conversationId]);
+    
     useEffect(() => {
         const fetchMessages = async () => {
             try {
