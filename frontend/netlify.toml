@@ -1,3 +1,4 @@
 [build]
+  base    = "frontend"                    # This is the directory where your frontend code is
   command = "npm install --legacy-peer-deps && npm run build"
-  publish = "build"
+  publish = "frontend/build"              # This is the directory where the build output will be
