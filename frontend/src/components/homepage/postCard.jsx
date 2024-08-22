@@ -29,7 +29,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   })
 
   const currentUser = useSelector((state) => state.auth.user?.data?.user?._id);
-
+  const userName = useSelector((state) => state.auth.user?.data?.user?.userName);
   const handleVote = async (voteType) => {
     try {
       const response = await axios.post(`${url}vote/create-vote/${_id}`, { voteType }, {
@@ -40,7 +40,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
       // Optionally update the UI with the new vote
       if(socket){
         const emitData = {
-          message: `User ${currentUser} voted on post ${_id}`,
+          message: `User ${userName} reacted on your post`,
           postId: _id,
           actor: currentUser,
           receiver: owner,

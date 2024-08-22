@@ -57,14 +57,27 @@ const Notifications = () => {
                 <h3 className="text-2xl font-mono text-slate-200">Notifications</h3>
 
             </div>
-            
-            <ul>
-                {notifications.map((notification, index) => (
-                    <li key={index}>
-                        {notification.message} - {new Date(notification.createdAt).toLocaleString()}
-                    </li>
-                ))}
-            </ul>
+            <div className="mt-4">
+    <ul>
+        {notifications.map((notification, index) => (
+            <div className="text-slate-300  mx-6 rounded-lg bg-[#13181d] shadow-xl h-[50px] cursor-pointer" key={index}>
+                <li className="my-2">
+                    <div className="text-center font-sans pt-1 ">
+                        <span>{notification.message}</span>
+                    </div>
+                    <div className="flex justify-end mr-4">
+                        <span className="text-slate-400 text-sm">
+                            {new Date(notification.createdAt).toLocaleString()}
+                        </span>
+                    </div>
+                    
+                </li>
+            </div>
+        ))}
+    </ul>
+</div>
+
+
         </div>
     );
 };
