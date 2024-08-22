@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { connectSocket } from '../../utils/socketslice.jsx';
+import { useDispatch } from 'react-redux';
+import { useSelector } from "react-redux";
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
@@ -7,6 +10,16 @@ const CommentInput = ({ postId }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [comment, setComment] = useState("");
   const textareaRef = useRef(null);
+
+  const dispatch = useDispatch();
+  const socket = useSelector((state) => state.socket.socket);
+  useEffect(() => {
+    if(!socket){
+      dispatch(connectSocket());
+    }
+  },[socket])
+
+  const userName = useSelector((state) => state.auth.user?.data?.user?.userName);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -21,6 +34,18 @@ const CommentInput = ({ postId }) => {
       setComment(""); // Clear the comment input after successful submission
       setIsInputFocused(false)
       console.log("comment generated", response);
+
+      if(socket){
+        const emitData = {
+          message: `User ${userName} commented on your post`,
+          postId: postId,
+          actor: userName,
+          receiver: response.data.comment.owner,
+          type: 'comment'
+        };
+        socket.emit('commentPost', emitData);
+        console.log('comment emitted', emitData);
+      }
     } catch (error) {
       alert(error.response?.data?.message || "Unable to add comment");
     }
