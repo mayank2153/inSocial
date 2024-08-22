@@ -21,6 +21,7 @@ import ChangeCurrentPassword from './components/settings/ChangeCurrentPassword.j
 import ForgetPassword from './components/ForgetPassword/ForgetPassword.jsx';
 import ResetPassword from './components/ForgetPassword/resetPassword.jsx';
 import ChangeCurrentEmail from './components/settings/ChangeCurrentEmail.jsx';
+import Notifications from './components/notification/notifications.jsx';
 
 function Layout() {
   return (
@@ -153,6 +154,14 @@ const appRouting = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <ChangeCurrentEmail/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "/notification/:userId",
+        element: (
+          <ProtectedRoute>
+            <Notifications />
           </ProtectedRoute>
         )
       }

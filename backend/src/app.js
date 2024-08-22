@@ -9,6 +9,7 @@ import { createServer } from 'http';
 import "./middlewares/googleauth.middleware.js";
 import "./middlewares/discordauth.middleware.js";
 import { sendMessage, getMessages } from './controllers/message.controller.js'; // Assuming you have these controllers
+import { Notification } from './models/notification.model.js';
 
 const app = express();
 const server = createServer(app); // Create an HTTP server
@@ -53,6 +54,7 @@ import searchRouter from "./routes/search.routes.js";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 import conversationRouter from "./routes/conversation.routes.js";
 import messageRouter from "./routes/message.routes.js";
+import notificationRouter from './routes/notification.route.js';
 
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
@@ -62,6 +64,7 @@ app.use("/category", categoryRouter);
 app.use("/search", searchRouter);
 app.use("/conversations", conversationRouter);
 app.use("/messages", messageRouter);
+app.use("/notification", notificationRouter)
 
 app.use(errorHandler)
 app.get("/", (req, res) => {
@@ -95,6 +98,32 @@ io.on('connection', (socket) => {
             console.error('Error sending message:', error);
         }
     });
+
+    // Notification on someone liking post.
+    socket.on('likePost', async(data) => {
+        try {
+            console.log('Notification data before saving', data);
+            
+            const notificationData = {
+                actor: data.actor, // Fixed key name here
+                type: 'like',
+                message: data.message,
+                postId: data.postId,
+                receiver: data.receiver // Fixed key name here
+                
+            }
+            console.log('notificationData:', notificationData);
+            const savedNotification = await Notification.create(notificationData);
+            console.log('Notification saved:', savedNotification); // Add this line
+            
+            io.emit('notification',notificationData);
+            
+            
+        } catch (error) {
+            console.log('seems to be a problem in liking message', error);
+            socket.emit('error', { message: 'Error processing like post notification' });
+        }
+    })
 
     socket.on('disconnect', () => {
         console.log(`User disconnected: ${socket.id}`);

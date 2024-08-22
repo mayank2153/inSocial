@@ -5,7 +5,8 @@ import { useSelector } from "react-redux";
 const ChangeCurrentEmail = () => {
     UserData = useSelector((state) => state.auth.user);
     userId = UserData?.data?.user?._id;
-
+    const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
+    
     const [formData, seyFormData] = useState({
         email: '',
         newEmail: ''

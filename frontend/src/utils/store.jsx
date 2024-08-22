@@ -5,6 +5,7 @@ import authReducer from "./authslice.jsx";
 import postsReducer from "./postsSlice.jsx";
 import likedCategoriesReducer from "./categoryslice.jsx"
 import themeReducer from "./darkmodeSlice";
+import socketReducer from "./socketslice"
 
 const persistConfig = {
   key: 'root',
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   posts: postsReducer,
   likedCategories : likedCategoriesReducer,
   theme: themeReducer,
+  socket: socketReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
