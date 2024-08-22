@@ -46,7 +46,7 @@ const PostPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center w-full bg-[#0d1114]  max-h-[100vh] overflow-y-scroll no-scrollbar py-10">
+    <div className="flex flex-col items-center w-full bg-[#0d1114] h-screen  max-h-[100vh] overflow-y-scroll no-scrollbar py-10">
 
       <div className="bg-[#13181d] w-fit px-4 py-2 rounded-2xl">
         

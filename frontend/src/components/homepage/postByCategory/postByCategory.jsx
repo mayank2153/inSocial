@@ -25,7 +25,7 @@ const PostByCategory=()=>{
       )
     }
     return(
-        <div className="flex flex-col  bg-[#0d1114] items-center w-full justify-center h-[100vh] overflow-y-scroll no-scrollbar overflow-x-hidden pt-[100px]  ">
+        <div className="flex flex-col  bg-[#0d1114] items-center w-full justify-center h-[100vh] overflow-y-scroll no-scrollbar overflow-x-hidden   ">
         {
           posts ? (
             posts.map((item) => (
