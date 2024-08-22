@@ -8,16 +8,26 @@ import { User } from "../models/user.model.js";
 const createVote = asyncHandler(async (req, res) => {
     const { voteType } = req.body;
     const { postId } = req.params;
-    const userId = req.user.id; 
+    const userId = req.user?.id; // Safe navigation operator
+
+    if (!userId) {
+        return res.status(400).json(new ApiError(400, "User ID is required"));
+    }
 
     try {
         const post = await Post.findById(postId);
+        console.log('post data',post);
+        
         if (!post) {
             throw new ApiError(404, "Post not found");
         }
 
-        const user = User.findById(userId)
-        const postOwner = post.owner;
+        const user = await User.findById(userId);
+        console.log('user in vote', user);
+        
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
 
         let vote = await Vote.findOne({ user: userId, post: postId });
         if (vote) {
@@ -38,21 +48,18 @@ const createVote = asyncHandler(async (req, res) => {
 
             await post.save();
         }
-        req.app.get('io').emit('likePost', {
-            message: `${user.userName} reacted on your post`,
-            postId: postId,
-            actor: userId,
-            reciecer: postOwner,
-            type: 'like'
-        }) 
+
+
 
         return res.status(201).json(
             new ApiResponse(200, { vote, post }, "Vote has been successfully created")
         );
     } catch (error) {
-        throw new ApiError(500, "Error creating vote: " + error.message);
+        console.error('Error in createVote controller:', error);
+        return res.status(500).json(new ApiError(500, `Error creating vote: ${error.message}`));
     }
 });
+
 
 const deleteVote = asyncHandler(async (req, res) => {
     const { voteId } = req.params;

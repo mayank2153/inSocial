@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { fetchOwnerDetails } from '../../api/fetchOwnerDetails.js';
 import { fetchCategoryDetails } from '../../api/fetchCategoryDetails.js';
 import { MdEdit } from "react-icons/md";
+import { connectSocket } from '../../utils/socketslice.jsx';
+import { useDispatch } from 'react-redux';
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
@@ -16,6 +18,15 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const [error, setError] = useState(null);
   const [userVote, setUserVote] = useState(null);
   const [hoveredPost , setHoveredPost] = useState(null);
+
+  const dispatch = useDispatch(); // Use dispatch to trigger actions
+  const socket = useSelector((state) => state.socket.socket); // Access the socket instance
+
+  useEffect(() => {
+    if(!socket){
+      dispatch(connectSocket());
+    }
+  })
 
   const currentUser = useSelector((state) => state.auth.user?.data?.user?._id);
 
@@ -27,6 +38,20 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
       console.log('Vote response:', response.data);
       setUserVote(voteType);
       // Optionally update the UI with the new vote
+      if(socket){
+        const emitData = {
+          message: `User ${currentUser} voted on post ${_id}`,
+          postId: _id,
+          actor: currentUser,
+          receiver: owner,
+          type: voteType
+        };
+  
+        socket.emit('likePost', emitData);
+        console.log('vote emitted', emitData);
+        
+      }
+
     } catch (error) {
       console.error('Error casting vote:', error);
       alert(error.response?.data?.message || "Error casting vote");

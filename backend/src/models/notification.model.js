@@ -1,7 +1,7 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const notificationSchema = new Schema({
-    reciever: {
+    receiver: {  // Corrected spelling
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true
@@ -20,17 +20,16 @@ const notificationSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Post",
     },
-    message:{
+    message: {
         type: String,
         required: true
     },
-    isRead:{
+    isRead: {
         type: Boolean,
         default: false
     },
-    
-    },{
-        timestamps: true
-})
+}, {
+    timestamps: true
+});
 
 export const Notification = mongoose.model("Notification", notificationSchema);
