@@ -41,6 +41,7 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
         }
     }, [socket, conversationId]);
     
+    
     useEffect(() => {
         const fetchMessages = async () => {
             try {

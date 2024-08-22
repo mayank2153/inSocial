@@ -3,9 +3,9 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import authReducer from "./authslice.jsx";
 import postsReducer from "./postsSlice.jsx";
-import socketReducer from "./socketslice.jsx"
 import likedCategoriesReducer from "./categoryslice.jsx"
 import themeReducer from "./darkmodeSlice";
+import socketReducer from "./socketslice"
 
 const persistConfig = {
   key: 'root',
@@ -18,7 +18,7 @@ const rootReducer = combineReducers({
   posts: postsReducer,
   likedCategories : likedCategoriesReducer,
   theme: themeReducer,
-  socket: socketReducer
+  socket: socketReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

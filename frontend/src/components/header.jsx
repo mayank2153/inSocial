@@ -24,7 +24,7 @@ const Header = () => {
   };
 
   return isAuthenticated ? (
-    <header className="bg-[#1e0832]  w-full shadow-lg">
+    <header className="bg-[#0d1114]  w-full shadow-lg border-b-2 border-gray-600">
       <div className="max-w-7xl mx-auto ">
         <nav className="flex items-center h-16 lg:h-20 justify-between">
           <div className="flex items-center justify-end -ml-20">
@@ -40,9 +40,9 @@ const Header = () => {
 
           {isAuthenticated ? (
             <div className="flex items-center justify-end space-x-4 -mr-20">
-              <a href="#" title="Notifications" className="text-white hover:text-blue-600">
-                <IoIosNotificationsOutline size={30} />
-              </a>
+              <Link to="/notification/:userId">
+                <IoIosNotificationsOutline size={30} className='text-white' />
+              </Link>
               
               <div className="relative">
                 <img
