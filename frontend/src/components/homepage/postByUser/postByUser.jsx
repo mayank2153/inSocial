@@ -28,7 +28,7 @@ const PostByUser = () => {
     }, [userId]);
 
     return(
-        <div className="flex flex-col   bg-[#0d1114] items-center w-full justify-center max-h-[100vh] overflow-y-scroll no-scrollbar overflow-x-hidden mt-[50px] mb-[50px] pt-[3600px]">
+        <div className="flex flex-col   bg-[#0d1114] items-center w-full justify-center max-h-[100vh] overflow-y-scroll no-scrollbar overflow-x-hidden mt-[50px] mb-[50px] pt-[1500px]">
         {
           posts ? (
             posts.map((item) => (
