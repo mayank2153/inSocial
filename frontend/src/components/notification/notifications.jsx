@@ -15,8 +15,8 @@ const Notifications = () => {
     const fetchNotifications = async () => {
         try {
             const response = await axios.get(`${url}notification/notifications/${userId}`);
-            setNotifications(response?.data?.data || []); // Handle empty response
             console.log("Notification response", response.data);
+            setNotifications(response?.data?.data || []); // Handle empty response
         } catch (error) {
             console.error('Error fetching notifications:', error);
         }
@@ -38,6 +38,7 @@ const Notifications = () => {
             socket.on('notification', (notificationData) => {
                 console.log('Notification received:', notificationData);
                 setNotifications((prevNotifications) => [notificationData, ...prevNotifications]);
+                console.log(notifications)
             });
         }
 

@@ -7,8 +7,8 @@ const getNotifications = asyncHandler(async(req, res) => {
     const { userId } = req.params;
 
     try {
-        const notifications= await Notification.find({reciever: userId}).sort({createdAt : -1});
-
+        const notifications= await Notification.find({receiver: userId}).sort({createdAt : -1});
+        console.log("notification:",notifications)
         if(!notifications){
             throw new ApiError(404, 'notifications not found')
         }

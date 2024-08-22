@@ -14,6 +14,7 @@ const Header = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const userData = useSelector((state) => state.auth.user);
   const userProfileImage = userData?.data?.user?.avatar;
+  const userId=userData?.data?.user?._id
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
@@ -40,7 +41,7 @@ const Header = () => {
 
           {isAuthenticated ? (
             <div className="flex items-center justify-end space-x-4 -mr-20">
-              <Link to="/notification/:userId">
+              <Link to={`/notification/${userId}`}>
                 <IoIosNotificationsOutline size={30} className='text-white' />
               </Link>
               
