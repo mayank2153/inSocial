@@ -17,6 +17,7 @@ const Conversations = () => {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             });
+            console.log("fetched conversations:",response.data)
             setConversations(response.data);
         } catch (error) {
             console.error('Error fetching conversations:', error);

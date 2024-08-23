@@ -71,7 +71,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const commentCount = comments.length;
 
   return (
-    <div className="post-card bg-[#13181d] shadow-md rounded-lg py-2 mt-2 mx-4 sm:mx-2 w-full max-w-[650px]">
+    <div className="post-card  shadow-md rounded-lg py-2  mx-4 sm:mx-2 w-full max-w-[650px]">
       <div
         className='p-4'
         onMouseEnter={() => setHoveredPost(true)}
