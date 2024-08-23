@@ -45,11 +45,11 @@ const ChangeCurrentPassword = () => {
     };
 
     return (
-        <div className="w-full bg-black">
+        <div className=" bg-[#0d1114] min-h-screen overflow-y-scroll no-scrollbar flex flex-col items-center px-16">
             <div className="text-slate-200 text-center mt-20">
                 <h2 className="text-2xl font-mono">Change Password</h2>
             </div>
-            <div className="w-1/2 justify-center ml-44 mt-10">
+            <div className="justify-center  mt-10">
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="text-slate-300 mb-2">Current Password</label>
@@ -87,15 +87,17 @@ const ChangeCurrentPassword = () => {
                     {!passwordMatch && formData.confirmPassword && (
                         <p className="text-red-600 font-mono">Passwords do not match</p>
                     )}
-                    
-                    <button
+                   <div className="flex justify-center">
+                     
+                   <button
                         type="button"
                         onClick={handleSubmit}
-                        className="mt-4 px-4 py-2 ml-20 w-[200px] bg-blue-500 text-white rounded-full hover:bg-blue-600"
+                        className="mt-4 px-4 py-2  w-[200px] bg-blue-500 text-white rounded-full hover:bg-blue-600"
                     >
                         Change Password
                     </button>
                     
+                   </div>
                     
                 </form>
             </div>
