@@ -12,19 +12,27 @@ import Conversations from "../message/conversations.jsx";
 const Right = () => {
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
     const [showConversations, setShowConversations] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
 
     const handleMessagesClick = () => {
         setShowConversations(true);
+        setShowSettings(false);
+    };
+
+    const handleSettingsClick = () => {
+        setShowSettings(true);
+        setShowConversations(false);
     };
 
     const handleBackClick = () => {
         setShowConversations(false);
+        setShowSettings(false);
     };
 
     return isAuthenticated ? (
         <div className="lg:w-1/4 flex flex-col lg:block">
             {/* Full content for large screens */}
-            <div className={`hidden lg:block min-w-[400px] bg-[#0d1114] min-h-[100vh] h-full border-l border-gray-600 overflow-y-scroll no-scrollbar ${showConversations ? 'overflow-hidden' : ''}`}>
+            <div className={`hidden lg:block min-w-[400px] bg-[#0d1114] min-h-[100vh] h-full border-l border-gray-600 overflow-y-scroll no-scrollbar ${showConversations || showSettings ? 'overflow-hidden' : ''}`}>
                 {showConversations ? (
                     <>
                         <div className="py-3 my-6 border-b-2 border-gray-600 flex items-center">
@@ -35,6 +43,17 @@ const Right = () => {
                             <span className="pl-6 text-slate-200 font-mono text-lg">Messages</span>
                         </div>
                         <Conversations />
+                    </>
+                ) : showSettings ? (
+                    <>
+                        <div className="py-3 my-6 border-b-2 border-gray-600 flex items-center">
+                            <IoMdArrowBack 
+                                className="text-slate-200 cursor-pointer ml-4 text-2xl hover:text-white transition-all duration-300"
+                                onClick={handleBackClick}
+                            />
+                            <span className="pl-6 text-slate-200 font-mono text-lg">Settings</span>
+                        </div>
+                        <SettingAccordian title="Settings" />
                     </>
                 ) : (
                     <>
@@ -88,6 +107,17 @@ const Right = () => {
                         </div>
                         <Conversations />
                     </div>
+                ) : showSettings ? (
+                    <div className="w-full bg-[#0d1114] min-h-[calc(100vh-3.5rem)] pt-4">
+                        <div className="py-3 my-6 border-b-2 border-gray-600 flex items-center">
+                            <IoMdArrowBack 
+                                className="text-slate-200 cursor-pointer ml-4 text-2xl hover:text-white transition-all duration-300"
+                                onClick={handleBackClick}
+                            />
+                            <span className="pl-6 text-slate-200 font-mono text-lg">Settings</span>
+                        </div>
+                        <SettingAccordian title="Settings" />
+                    </div>
                 ) : (
                     <>
                         <button onClick={handleMessagesClick} className="focus:outline-none">
@@ -96,9 +126,9 @@ const Right = () => {
                         <Link to="/createPost" className="focus:outline-none">
                             <IoMdAddCircle size={25} />
                         </Link>
-                        <Link to="/settings" className="focus:outline-none">
+                        <button onClick={handleSettingsClick} className="focus:outline-none">
                             <IoMdSettings size={25} />
-                        </Link>
+                        </button>
                     </>
                 )}
             </div>
