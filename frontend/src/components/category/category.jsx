@@ -26,7 +26,7 @@ const ShowCategories = () => {
 
     
     return isAuthenticated ? (
-        <div className=" bg-[#0d1114] min-w-[400px] h-screen  shadow-xl overflow-y-scroll no-scrollbar border-r-2 border-gray-600">
+        <div className=" bg-[#0d1114]  h-screen  shadow-xl overflow-y-scroll no-scrollbar border-r border-gray-600">
             <div className="mt-8 border-b-2 border-gray-600 pb-4">
                
                 <h1 className="text-slate-300 flex items-center gap-2 pl-20 text-xl">
