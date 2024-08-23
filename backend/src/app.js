@@ -102,19 +102,76 @@ io.on('connection', (socket) => {
     // Notification on someone liking post.
     socket.on('likePost', async(data) => {
         try {
-
+            console.log('Notification data before saving', data);
+            
             const notificationData = {
                 actor: data.actor, // Fixed key name here
                 type: 'like',
                 message: data.message,
                 postId: data.postId,
                 receiver: data.receiver // Fixed key name here
+                
             }
+            console.log('notificationData:', notificationData);
+            const savedNotification = await Notification.create(notificationData);
+            console.log('Notification saved:', savedNotification); // Add this line
+            
             io.emit('notification',notificationData);
             
-            await Notification.create(notificationData)
+            
         } catch (error) {
             console.log('seems to be a problem in liking message', error);
+            socket.emit('error', { message: 'Error processing like post notification' });
+        }
+    })
+
+    socket.on('commentPost', async(data) => {
+        try {
+            console.log('Notification data before saving', data);
+            
+            const notificationData = {
+                actor: data.actor, // Fixed key name here
+                type: 'comment',
+                message: data.message,
+                postId: data.postId,
+                receiver: data.receiver // Fixed key name here
+                
+            }
+            console.log('notificationData:', notificationData);
+            const savedNotification = await Notification.create(notificationData);
+            console.log('Notification saved:', savedNotification); // Add this line
+            
+            io.emit('notification',notificationData);
+            
+            
+        } catch (error) {
+            console.log('seems to be a problem in commenting message', error);
+            socket.emit('error', { message: 'Error processing comment post notification' });
+        }
+    })
+
+    socket.on('ReplyComment', async(data) => {
+        try {
+            console.log('Notification data before saving', data);
+            
+            const notificationData = {
+                actor: data.actor, // Fixed key name here
+                type: 'Reply',
+                message: data.message,
+                postId: data.postId,
+                receiver: data.receiver // Fixed key name here
+                
+            }
+            console.log('notificationData:', notificationData);
+            const savedNotification = await Notification.create(notificationData);
+            console.log('Notification saved:', savedNotification); // Add this line
+            
+            io.emit('notification',notificationData);
+            
+            
+        } catch (error) {
+            console.log('seems to be a problem in replying message', error);
+            socket.emit('error', { message: 'Error processing reply comment notification' });
         }
     })
 
