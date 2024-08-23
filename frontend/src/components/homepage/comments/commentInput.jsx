@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { connectSocket } from '../../utils/socketslice.jsx';
+// import { connectSocket } from '../../utils/socketslice.jsx';
+import {connectSocket} from "../../../utils/socketslice.jsx"
 import { useDispatch } from 'react-redux';
 import { useSelector } from "react-redux";
 
