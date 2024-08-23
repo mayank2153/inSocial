@@ -96,13 +96,13 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const commentCount = comments.length;
 
   return (
-    <div className="post-card  shadow-md rounded-lg py-2  mx-4 sm:mx-2 w-full max-w-[650px]">
+    <div className="post-card  shadow-md rounded-lg py-1 bg-[#13181d]  mx-4 sm:mx-2 w-full max-w-[650px]">
       <div
         className='p-4'
         onMouseEnter={() => setHoveredPost(true)}
         onMouseLeave={() => setHoveredPost(false)}
       >
-        <div className='flex  sm:flex-row gap-4 sm:gap-6'>
+        <div className='flex  sm:flex-row gap-4 sm:gap-6 justify-between '>
           {ownerDetails && (
             <div className="owner-info flex items-center mb-4 gap-4 text-white">
               <img
@@ -117,7 +117,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
             </div>
           )}
           <div className='flex-1'>
-            <p className='text-sm text-white'>{categoryDetails?.name}</p>
+            <p className='text-sm text-white flex justify-end mr-4'>{categoryDetails?.name}</p>
             {hoveredPost === true && currentUser === owner && (
               <Link to={`/post/edit-post/${_id}`}>
                 <div className='flex bg-[#13181d] rounded-full gap-1 cursor-pointer pr-1 justify-end transition-all duration-700'>

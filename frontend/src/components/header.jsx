@@ -14,6 +14,7 @@ const Header = ({ toggleCategories }) => {
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const userData = useSelector((state) => state.auth.user);
+  const userId=userData?.data?.user?._id;
   const userProfileImage = userData?.data?.user?.avatar;
 
   const toggleProfile = () => {
@@ -25,7 +26,7 @@ const Header = ({ toggleCategories }) => {
   };
 
   return isAuthenticated ? (
-    <header className="bg-[#1e0832] w-full shadow-lg">
+    <header className="bg-[#0d1114] w-full shadow-lg border-b border-gray-600">
       <div className="container mx-auto px-4 lg:px-6 max-w-full">
       <nav className="flex items-center justify-between h-16 lg:h-20 overflow-hidden">
           <div className="flex items-center">
@@ -36,7 +37,7 @@ const Header = ({ toggleCategories }) => {
               <FaBars size={25} />
             </button>
             <Link to="/" title="Home" className="flex items-center ml-4">
-              <img className="w-auto h-8 lg:h-10 hidden lg:block" src={logo} alt="Logo" />
+              <img className=" h-12 lg:h-14 lg:w-28 hidden lg:block" src={logo} alt="Logo" />
               <img className={`w-auto h-8 lg:h-10 lg:hidden `} src={logo_img} alt="Logo" />
             </Link>
           </div>
@@ -53,9 +54,9 @@ const Header = ({ toggleCategories }) => {
             >
               <IoIosSearch size={25} />
             </button>
-            <a href="#" title="Notifications" className="text-white hover:text-blue-600">
+            <Link to={`/notification/${userId}`} title="Notifications" className="text-white hover:text-blue-600">
               <IoIosNotificationsOutline size={30} />
-            </a>
+            </Link>
 
             <div className="relative overflow-hidden">
               <img

@@ -24,7 +24,7 @@ const Right = () => {
     return isAuthenticated ? (
         <div className="lg:w-1/4 flex flex-col lg:block">
             {/* Full content for large screens */}
-            <div className={`hidden lg:block min-w-[400px] bg-[#0d1114] min-h-[100vh] h-full border-l-2 border-gray-600 overflow-y-scroll no-scrollbar ${showConversations ? 'overflow-hidden' : ''}`}>
+            <div className={`hidden lg:block min-w-[400px] bg-[#0d1114] min-h-[100vh] h-full border-l border-gray-600 overflow-y-scroll no-scrollbar ${showConversations ? 'overflow-hidden' : ''}`}>
                 {showConversations ? (
                     <>
                         <div className="py-3 my-6 border-b-2 border-gray-600 flex items-center">
