@@ -12,6 +12,7 @@ const UserSchema = new Schema(
         lowercase:false,
         trim:true,
         index:true,
+        require: true
         },
         email:{
         type:String,
