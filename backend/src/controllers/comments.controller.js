@@ -10,9 +10,13 @@ const createComment=asyncHandler(async(req,res)=>{
     const {postId}=req.params;
     const userId=req.user.id;
     const post=await Post.findById(postId);
+
     if (!post) {
         throw new ApiError(404, "Post not found or there was an error in finding the post");
     }
+
+    // console.log('postdata', post);
+    
     let parentCommentPosted=null;
     if (parentCommentId){
         const parentComment=await Comment.findById(parentCommentId);
@@ -26,7 +30,8 @@ const createComment=asyncHandler(async(req,res)=>{
         owner: userId,
         post: postId,
         parentCommentId:parentCommentPosted,
-        deleted: false
+        deleted: false,
+        postOwner: post.owner
     })
     const createdComment = await Comment.findById(comment._id)
 

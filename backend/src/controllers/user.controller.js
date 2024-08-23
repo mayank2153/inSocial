@@ -32,6 +32,7 @@ const generateAccessAndRefereshTokens = async(userId) => {
 
     } catch (error) {
         throw new ApiError(500, "something went wrong while generating refresh and access tokens")
+        
     }
 }
 

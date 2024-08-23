@@ -4,6 +4,6 @@ import { getNotifications } from "../controllers/notification.controller.js";
 
 const notificationRouter = Router();
 
-notificationRouter.route('/notifications').get(verifyJWT,getNotifications);
+notificationRouter.route('/notifications/:userId').get(getNotifications);
 
 export default notificationRouter;
