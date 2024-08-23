@@ -35,7 +35,7 @@ const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   } 
 
   return  (
-    <div className="absolute -right-20 top-16  bg-[#0d1114]  rounded shadow-md w-[280px] mr-12 ">
+    <div className="fixed top-20 right-1  bg-[#0d1114]  rounded shadow-md w-[280px] ">
       <div className="flex items-center mb-2 mt-6 ml-6">
         <img src={userProfileImage} alt="User Profile" className="w-12 h-12 rounded-full mr-1"/>
         <div>

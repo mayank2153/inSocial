@@ -59,13 +59,13 @@ const Header = ({ toggleCategories }) => {
             </Link>
 
             <div className="relative overflow-hidden">
-              <img
-                src={userProfileImage}
-                alt="User Profile"
-                className="w-12 h-12 rounded-full object-cover cursor-pointer"
-                onClick={toggleProfile}
-              />
-              {isProfileOpen && <ProfilePage />}
+            <img
+                  src={userProfileImage}
+                  alt="user Profile"
+                  className="w-12 h-12 rounded-full object-cover cursor-pointer"
+                  onClick={toggleProfile}
+                />
+                {isProfileOpen && <ProfilePage isProfileOpen={isProfileOpen} setIsProfileOpen={setIsProfileOpen} />}
             </div>
 
           </div>
