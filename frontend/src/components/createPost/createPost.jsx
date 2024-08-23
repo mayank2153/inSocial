@@ -13,11 +13,8 @@ function Previews({ setFormData, initialMedia }) {
     useEffect(() => {
         if (initialMedia) {
             if (typeof initialMedia === 'string') {
-                console.log("string")
                 setFiles([{ url: initialMedia }]);
-                console.log(files)
             } else {
-                console.log("any")
                 setFiles([initialMedia]);
             }
         }
@@ -26,7 +23,6 @@ function Previews({ setFormData, initialMedia }) {
     const { getRootProps, getInputProps } = useDropzone({
         accept: 'image/*',
         onDrop: acceptedFiles => {
-            console.log("Accepted Files:", acceptedFiles);
             setFiles(acceptedFiles.map(file => Object.assign(file, {
                 preview: URL.createObjectURL(file)
             })));
@@ -50,7 +46,6 @@ function Previews({ setFormData, initialMedia }) {
 
     const thumbs = files.map(file => (
         <div className="relative inline-flex rounded border border-gray-300 mb-2 mr-2 p-1 box-border min-w-max" key={file.name || file.url || file}>
-            
             <button onClick={handleDelete} className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">X</button>
             <div className="flex min-w-0 overflow-hidden">
                 <img
@@ -83,9 +78,6 @@ function Previews({ setFormData, initialMedia }) {
         </section>
     );
 }
-
-
-
 
 const PostForm = ({ isEdit }) => {
     const [categories, setCategories] = useState([]);
@@ -131,7 +123,6 @@ const PostForm = ({ isEdit }) => {
                         headers: { 'Content-Type': 'application/json' },
                         withCredentials:true
                     })
-                    console.log("post:",data)
                     setFormData({
                         category: data.data.category,
                         title: data.data.title,
@@ -148,9 +139,7 @@ const PostForm = ({ isEdit }) => {
     }, [isEdit, postId]);
 
     const handleChange = e => {
-        console.log(e.target.value);
         const { name, value } = e.target;
-        console.log({ name, value });
         
         setFormData(prevData => ({
             ...prevData,
@@ -175,12 +164,9 @@ const PostForm = ({ isEdit }) => {
             Object.keys(formData).forEach(key => {
                 data.append(key, formData[key]);
             });
-            console.log(formData)
-            console.log(data);
             const response = isEdit
-                ? await axios.put(`${url}posts/update-post/${postId}`, formData, { withCredentials: true })
+                ? await axios.put(`${url}posts/update-post/${postId}`, data, { withCredentials: true })
                 : await axios.post(`${url}posts/create-post`, data, { withCredentials: true });
-            console.log("Response", response);
             navigate("/");
         } catch (error) {
             console.error(error);
@@ -188,17 +174,17 @@ const PostForm = ({ isEdit }) => {
     };
 
     return (
-        <div className="w-full flex bg-[#13181d] justify-center py-8">
-            <div className="flex flex-col bg-[#0d1114] items-center  rounded-2xl max-h-[100vh] text-white  px-10 py-5 min-w-[600px] gap-4 ">
-                <h1 className="text-3xl">{isEdit ? "Edit Post" : "Create Post"}</h1>
+        <div className="w-full flex justify-center py-8 bg-[#13181d] min-h-[100vh] overflow-y-scroll no-scrollbar">
+            <div className="flex flex-col items-center bg-[#0d1114] rounded-2xl max-h-[100vh] text-white px-6 py-5 md:px-10 md:py-8 gap-4 w-full max-w-[600px]">
+                <h1 className="text-2xl md:text-3xl">{isEdit ? "Edit Post" : "Create Post"}</h1>
                 <div>
-                    <form onSubmit={handleSubmit} className="flex flex-col text-2xl gap-8 min-w-[400px] w-[400px]">
+                    <form onSubmit={handleSubmit} className="flex flex-col text-lg md:text-2xl gap-6 md:gap-8 w-full">
                         <select 
                             name="category" 
                             id="category" 
                             onChange={handleChange} 
                             value={formData.category} 
-                            className="rounded-full w-min items-center text-xl py-1 px-1 focus:outline-none"
+                            className="rounded-full w-full md:w-min text-lg md:text-xl py-2 px-2 md:py-1 focus:outline-none"
                             style={{ backgroundColor: selectedColor }}
                         >
                             <option value="" disabled className='bg-[#13181d]'>Select Category</option>
@@ -233,12 +219,11 @@ const PostForm = ({ isEdit }) => {
                             required
                         />
                         <div className='rounded border-dashed border-2 h-40 px-5 py-3 border-slate-300'>
-                            {console.log("form:",formData.media)}
                             <Previews setFormData={setFormData} initialMedia={formData.media} />
                         </div>
 
                         <div className='flex justify-end'>
-                            <input type="submit" value="Submit" className="rounded-full text-lg bg-blue-600 text-white cursor-pointer w-20 hover:bg-blue-700"/>
+                            <input type="submit" value="Submit" className="rounded-full text-lg bg-blue-600 text-white cursor-pointer w-full md:w-20 hover:bg-blue-700"/>
                         </div>
                     </form>
                 </div>
