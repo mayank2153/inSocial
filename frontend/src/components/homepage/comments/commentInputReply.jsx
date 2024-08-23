@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { connectSocket } from '../../utils/socketslice.jsx';
+// import { connectSocket } from '../../utils/socketslice.jsx';
+import {connectSocket} from "../../../utils/socketslice.jsx"
 
 const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
 
 const CommentInputReply = ({ postId , parentCommentId,userName}) => {
+
+
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [comment, setComment] = useState("@"+userName);
   const textareaRef = useRef(null);
@@ -35,14 +38,14 @@ const CommentInputReply = ({ postId , parentCommentId,userName}) => {
         { withCredentials: true });
       setComment(""); // Clear the comment input after successful submission
       setIsInputFocused(false)
-      console.log("comment generated", response);
+      console.log("comment generated", response.data);
 
       if(socket){
         const emitData = {
           message: `User ${userName} replied to your comment`,
           postId: postId,
           actor: userId,
-          receiver: parentCommentId,
+          receiver: response?.data?.data?.postOwner,
           type: 'Reply'
         }
         socket.emit('ReplyComment', emitData);
