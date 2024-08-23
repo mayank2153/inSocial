@@ -29,7 +29,7 @@ const HomePage = () => {
     {
       items && items.data && items.data.length > 0 ? (
         items.data.map((item) => (
-          <div className="border-slate-200 border-b w-full mb-4 box-border" key={item._id}>
+          <div className=" w-full my-2 " key={item._id}>
             <PostCard {...item} />
           </div>
         ))
