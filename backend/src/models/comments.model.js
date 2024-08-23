@@ -21,6 +21,11 @@ const CommentSchema = new Schema({
     deleted: {
         type: Boolean,
         required:true
+    },
+    postOwner: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required:true
     }
     
 },{
