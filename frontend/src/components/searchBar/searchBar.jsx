@@ -23,22 +23,24 @@ const SearchBar = () => {
       }
     }
   };
+  const handleSubmit=()=>{
+    if (searchQuery.trim()) {
+      navigate(`/searchresults?query=${searchQuery}`);
+    }
+  }
 
   return (
-    <div className="flex-grow px-4 lg:px-8 max-w-[35rem]">
+    <div className=" px-4 lg:px-8 lg:max-w-[35rem] max-w-[12rem] flex">
       <input
         type="text"
         placeholder="Search..."
         value={searchQuery}
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
-        className={`w-full py-2 px-4 border border-gray-300 rounded-md outline-none ${isSearchOpen ? 'block' : 'hidden'} lg:block`}
+        className={`w-full py-2 px-4 border border-gray-300 rounded-md outline-none lg:block`}
       />
-      <button
-        type="button"
-        className="inline-flex p-2 text-white rounded-md lg:hidden"
-        onClick={toggleSearch}
-      >
+      <button onClick={handleSubmit}
+      className={`inline-flex lg:hidden p-2 text-white rounded-md ${isSearchOpen ? 'block' : 'hidden'}`}>
         <IoIosSearch size={25} />
       </button>
     </div>
