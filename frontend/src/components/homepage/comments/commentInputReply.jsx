@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { connectSocket } from '../../utils/socketslice.jsx';
+// import { connectSocket } from '../../utils/socketslice.jsx';
+import {connectSocket} from "../../../utils/socketslice.jsx"
 
 const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
 
