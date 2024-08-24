@@ -9,10 +9,16 @@ const SettingAccordian = ({ title }) => {
         setIsOpen(!isOpen);
     };
 
+    const handleLinkClick = () => {
+        // Close the accordion when the link is clicked
+        setIsOpen(false);
+    };
+
+
     return (
         <div className="accordian border-b-2 border-gray-600">
             <div 
-                className="accordian-header cursor-pointer flex items-center gap-2 pl-6 pb-6"
+                className="accordian-header cursor-pointer lg:flex  items-center gap-2 pl-6 pb-6 hidden "
                 onClick={toggleAccordian}
             >
                 <IoMdSettings className="text-white text-xl" />
@@ -28,6 +34,14 @@ const SettingAccordian = ({ title }) => {
                     
                 </div>
             )}
+            <div className="accordian-content pb-4 lg:hidden">
+                    <div className="text-slate-200 pl-12 -mt-3 mb-1 cursor-pointer hover:underline transition-all duration-500">Change Email</div>
+                    <Link to="Update-current-password" onClick={handleLinkClick}>
+                        <div className="text-slate-200 pl-12 cursor-pointer hover:underline transition-all duration-500">Change Password</div>    
+                    </Link>
+                    
+                    
+                </div>
         </div>
     );
 };
