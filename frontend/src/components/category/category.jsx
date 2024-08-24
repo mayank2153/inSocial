@@ -28,10 +28,12 @@ const ShowCategories = () => {
     return isAuthenticated ? (
         <div className=" bg-[#0d1114]  h-screen  shadow-xl overflow-y-scroll no-scrollbar border-r border-gray-600">
             <div className="mt-8 border-b-2 border-gray-600 pb-4">
-               
-                <h1 className="text-slate-300 flex items-center gap-2 pl-20 text-xl">
-                    <FaHome /> Home
-                </h1>
+                <Link to="/">
+                    <h1 className="text-slate-300 flex items-center gap-2 pl-20 text-xl">
+                        <FaHome /> Home
+                    </h1>
+                </Link>
+                
             </div>
             <div className="mt-2 border-b-2 border-slate-500 pb-4">
                 <h1 className="text pl-20 text-slate-400">Categories</h1>
