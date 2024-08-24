@@ -5,7 +5,9 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { Category } from "../models/category.model.js"
 import nodemailer from "nodemailer";
-
+import mailSender from "../utils/mailSender.js";
+import otpGenerator from "otp-generator";
+import { OTP } from "../models/otp.model.js";
 
 
 
@@ -13,8 +15,8 @@ const transporter = nodemailer.createTransport(
     {
         service: 'gmail',
         auth: {
-            user: 'hubwhisper@gmail.com',
-            pass: 'kdxhvzjikivwqhmp'
+            user: process.env.COMPANY_MAIL,
+            pass: process.env.COMPANY_PASSWORD
         }
     }
 );
@@ -38,10 +40,11 @@ const generateAccessAndRefereshTokens = async(userId) => {
 
 const registerUser = asyncHandler(async (req, res, next) => {
     try {
-      const { username, email, password, bio } = req.body;
+      const { userName, email, password, bio ,otp} = req.body;
+        console.log('otp',otp);
   
       // Validate required fields
-      if ([username, email, password].some((field) => !field || field.trim() === "")) {
+      if ([userName, email, password].some((field) => !field || field.trim() === "")) {
         return res.status(400).json({ message: "All required fields must be filled." });
       }
   
@@ -69,16 +72,33 @@ const registerUser = asyncHandler(async (req, res, next) => {
       if (userExists) {
         return res.status(400).json({ message: "Email already exists." });
       }
-  
+      
+      const response = await OTP.find({email}).sort({createdAt: -1}).limit(1);
+      console.log('otp response', response);
+
+      if(response.length === 0){
+        return res.status(400).json({
+            success: false,
+            message: "OTP not valid"
+        })
+      }else if(otp !== response[0].otp){
+        return res.status(400).json({
+            success: false,
+            message: "OTP not valid"
+        })
+      }
+      
       const user = await User.create({
-        username,
+        userName,
         email,
         password,
         bio,
         avatar: avatar.secure_url,
         coverImage: coverImage ? coverImage.secure_url : null,
       });
-  
+      
+      console.log('registered user',user);
+      
       res.status(201).json({ message: "User registered successfully.", user });
     } catch (error) {
       console.error("Error during user registration:", error.message);
@@ -465,6 +485,51 @@ const resetPassword = asyncHandler(async (req, res) => {
     }
  });
 
+ const sendOtp = asyncHandler(async(req, res) => {
+
+    try {
+        const {email} = req.body;
+    
+        const user = await User.findOne({email})
+        if(user){
+            throw new ApiError(404, "User is already Registered")
+        }
+        console.log('email here', email);
+        
+    
+        let otp = otpGenerator.generate(6,{
+            upperCaseAlphabets: false,
+            lowerCaseAlphabets: false,
+            specialChars: false,
+        })
+    
+        const result = await OTP.findOne({otp: otp})
+        console.log("otp", otp);
+        console.log("result", result);
+    
+        while(result) {
+            otp = otpGenerator.generate(6, {
+                upperCaseAlphabets: false,
+                lowerCaseAlphabets: false,
+                specialChars: false,
+            });
+        }
+    
+        const otpPayload = {email, otp}
+        const otpBody = await OTP.create(otpPayload)
+    
+        res.status(200).json(
+            new ApiResponse(200, otpBody, "OTP sent successfully")
+        )
+                
+    } catch (error) {
+        console.error("Error sending OTP:", error);
+        throw new ApiError(500, "Error sending OTP", error.message);   
+    }
+
+    
+ })
+
 
 export {
     registerUser,
@@ -479,5 +544,6 @@ export {
     updateCurrentPassword,
     ChangeCurrentEmail,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    sendOtp
 }

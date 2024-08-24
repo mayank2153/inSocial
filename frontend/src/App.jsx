@@ -22,6 +22,7 @@ import ForgetPassword from './components/ForgetPassword/ForgetPassword.jsx';
 import ResetPassword from './components/ForgetPassword/resetPassword.jsx';
 import ChangeCurrentEmail from './components/settings/ChangeCurrentEmail.jsx';
 import Notifications from './components/notification/notifications.jsx';
+import VerifyEmail from './components/Signup/verifyEmail.jsx';
 
 function Layout() {
   return (
@@ -56,6 +57,16 @@ const appRouting = createBrowserRouter([
         </PersistGate>
       </Provider>
     ),
+  },
+  {
+    path: "/verifyEmail",
+    element:(
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <VerifyEmail />
+        </PersistGate>
+      </Provider>
+    )
   },
   {
     path: "/Forget-Password",
