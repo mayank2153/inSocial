@@ -23,7 +23,7 @@ const SearchResults = () => {
             });
             setPosts(response.data.data.posts);
             setUsers(response.data.data.users);
-            console.log(users)
+            console.log("user",users)
             console.log(posts)
             console.log("users")
         } catch (error) {
@@ -43,8 +43,8 @@ const SearchResults = () => {
     }
     return(
         <div className="w-full h-[100vh] overflow-y-scroll no-scrollbar flex bg-[#0d1114] flex-col items-center py-4 ">
-            <div className="bg-[#13181d] py-2 px-8 flex flex-col gap-4">
-            <div className="flex text-white justify-start w-[600px]  text-xl font-bold border-b">
+            <div className=" lg:min-w-[500px] min-w-[350px] h-[500px] bg-[#13181d] py-2 px-8 flex flex-col gap-4">
+            <div className="flex text-white justify-start  text-xl font-bold border-b">
                 <div className={`border-r px-2 hover:bg-[#2e2b2b] py-1
                     ${openUser===true?'bg-[#2e2b2b]':null}
                     `}>
@@ -64,7 +64,7 @@ const SearchResults = () => {
                     </div>
                 }
                 {openUser && users.map((user) => (
-                    <UserCard key={user._id} {...user}/>
+                    <UserCard key={user._id} {...user} bio=""/>
                 ))}
             </div>
             <div>
@@ -79,7 +79,7 @@ const SearchResults = () => {
                         <div>
 
                             {console.log("hey")}
-                            <PostCard key={post._id} {...post}></PostCard>
+                            <PostCard key={post._id} {...post} ></PostCard>
                         </div>
                     ))
                 }

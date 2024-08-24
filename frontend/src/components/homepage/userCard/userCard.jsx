@@ -1,11 +1,12 @@
 import { createConversation } from "../../../api/createConversation";
 import { useSelector } from "react-redux";
+import { FaRegPaperPlane } from "react-icons/fa";
 
 const UserCard = ({ avatar, bio, userName, _id }) => {
     const userData = useSelector((state) => state.auth.user);
-    console.log("user:",userData)
+    // console.log("user:",userData)
     const userId = userData?.data?.user?._id;
-    console.log(userId);
+    // console.log(userId);
 
     const handleCreateConversation = async () => {
         try {
@@ -28,8 +29,8 @@ const UserCard = ({ avatar, bio, userName, _id }) => {
                     <div className="text-[16px] text-slate-200">{userName}</div>
                     <div className="text-sm text-slate-200">{bio}</div>
                 </div>
-                <button onClick={handleCreateConversation} className="ml-auto bg-blue-500 text-white px-2 py-1 rounded">
-                    Create Conversation
+                <button onClick={handleCreateConversation} className="ml-auto text-white px-2 py-1 rounded">
+                    <FaRegPaperPlane />
                 </button>
             </div>
         </div>
