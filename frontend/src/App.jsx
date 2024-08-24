@@ -21,21 +21,47 @@ import ChangeCurrentPassword from './components/settings/ChangeCurrentPassword.j
 import ForgetPassword from './components/ForgetPassword/ForgetPassword.jsx';
 import ResetPassword from './components/ForgetPassword/resetPassword.jsx';
 import ChangeCurrentEmail from './components/settings/ChangeCurrentEmail.jsx';
+import { useState } from 'react';
 import Notifications from './components/notification/notifications.jsx';
 import VerifyEmail from './components/Signup/verifyEmail.jsx';
 
 function Layout() {
+  const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
+
+  const toggleCategories = () => {
+    setIsCategoriesVisible(!isCategoriesVisible);
+  };
+
   return (
-    <div className="montserrat-medium">
-      <Header />
-      <div className='flex'>
-        <ShowCategories />
-        <Outlet />
+    <div className="montserrat-medium ">
+      <Header toggleCategories={toggleCategories} /> 
+
+      <div className="flex flex-col lg:flex-row  ">
+        {/* Categories section, visible by default on large screens */}
+        <div className={`lg:block ${isCategoriesVisible ? 'block' : 'hidden'} lg:w-1/4 lg:max-w-xs`}>
+          <ShowCategories />
+        </div>
+
+        <div className="flex-grow">
+          <Outlet />
+        </div>
+
+        {/* Right section, moved to footer on small screens */}
+        <div className="hidden lg:block lg:w-1/4 lg:max-w-xs overflow-x-hidden">
+          <Right />
+        </div>
+      </div>
+
+      {/* Right section as footer on small screens */}
+      <div className="lg:hidden fixed bottom-0 w-full">
         <Right />
       </div>
     </div>
   );
 }
+
+
+
 
 const appRouting = createBrowserRouter([
   {
