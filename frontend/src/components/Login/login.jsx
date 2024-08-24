@@ -6,6 +6,7 @@ import { loginSuccess, loginFailure } from "../../utils/authslice.jsx";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import { notifyError } from "../../utils/notifications.jsx";
+import logo from "../../assets/images/logo (3)-removebg-preview.jpg"
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
@@ -53,8 +54,11 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center justify-end min-h-screen bg-black w-full max-w-screen-2xl">
-            <div className="bg-black  mr-40 w-full max-w-md">
+        <div className="flex items-center justify-evenly min-h-screen bg-black w-full max-w-screen-2xl">
+            <div className="mt-14">
+                <img src={logo} alt="logo.png"/>
+            </div>
+            <div className="bg-black  mr-0 w-full max-w-md">
                 <h2 className="text-5xl text-center text-white mb-6">Login</h2>
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">

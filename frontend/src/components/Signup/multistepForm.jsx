@@ -1,16 +1,30 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { FaEye, FaEyeSlash, FaEdit } from "react-icons/fa";
+import { useNavigate, Link } from "react-router-dom";
+import avatar1 from "./avatar/avatar-1.webp";
+import avatar2 from "./avatar/avatar-2.webp";
+import avatar3 from "./avatar/avatar-3.webp";
+import avatar4 from "./avatar/avatar-4.jpeg";
+import logo from "../../assets/images/logo (3)-removebg-preview.jpg";
+import { setTempUserData, clearTempUserData } from "../../utils/authslice";
+import { useDispatch, useSelector } from "react-redux";
+import { sendOtp } from "../../api/sendOtp";
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
-const MultiStepForm = () => {
+const predefinedAvatars = [avatar1, avatar2, avatar3, avatar4];
+
+const TwoStepForm = () => {
+  const dispatch = useDispatch();
+  // const navigate = useNavigate();
+  const tempUserData = useSelector((state) => state.auth.tempUserData);
+
+
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(tempUserData || {
     email: "",
-    username: "",
+    userName: "",
     password: "",
     bio: "",
     avatar: null,
@@ -18,7 +32,8 @@ const MultiStepForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [preview, setPreview] = useState(null);
-  const [serverError, setServerError] = useState(""); // State to handle server errors
+  const [serverError, setServerError] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState(null); // Updated to handle file type
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -37,40 +52,65 @@ const MultiStepForm = () => {
     }
   };
 
-  const validateStep = () => {
-    let stepErrors = {};
-    switch (step) {
-      case 1:
-        if (!formData.email) {
-          stepErrors.email = "Email is required";
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-          stepErrors.email = "Email is invalid";
-        }
-        break;
-      case 2:
-        if (!formData.username) {
-          stepErrors.username = "Username is required";
-        }
-        if (!formData.password) {
-          stepErrors.password = "Password is required";
-        }
-        break;
-      default:
-        break;
+  const validateForm = () => {
+    let formErrors = {};
+    if (!formData.email) {
+      formErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      formErrors.email = "Email is invalid";
     }
-    setErrors(stepErrors);
-    return Object.keys(stepErrors).length === 0;
+
+    if (!formData.userName) {
+      formErrors.userName = "Username is required";
+    }
+
+    if (!formData.password) {
+      formErrors.password = "Password is required";
+    }
+
+    setErrors(formErrors);
+    return Object.keys(formErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
+        if (key !== "avatar") {
+          data.append(key, formData[key]);
+        }
       });
-      const response = await axios.post(`${url}users/register`, data);
-      navigate("/login");
+
+      // Append the avatar based on the selection
+      if (selectedAvatar) {
+        data.append("avatar", selectedAvatar);
+      } else if (formData.avatar) {
+        // Append uploaded file if there is one
+        data.append("avatar", formData.avatar);
+      }
+
+      // const response = await axios.post(`${url}users/register`, data, {
+      //   headers: {
+      //     "Content-Type": "multipart/form-data",
+      //   },
+      // });
+      const signUpData = {
+        ...formData
+      }
+
+      dispatch(setTempUserData(signUpData));
+      
+      try {
+          const otp = await sendOtp(formData.email)
+      } catch (error) {
+        console.log('error in sending otp', error);
+         
+      }
+
+      navigate("/verifyEmail");
     } catch (error) {
       if (error.response) {
         setServerError(error.response.data.message || "An error occurred. Please try again.");
@@ -81,67 +121,82 @@ const MultiStepForm = () => {
   };
 
   const nextStep = () => {
-    if (validateStep()) setStep((prevStep) => prevStep + 1);
+    if (validateForm()) setStep(2);
   };
-  const prevStep = () => setStep((prevStep) => prevStep - 1);
+
+  const prevStep = () => setStep(1);
+
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
+  const handleAvatarSelect = async (avatarUrl) => {
+    const avatarFile = await convertUrlToFile(avatarUrl, "avatar.png");
+    setSelectedAvatar(avatarFile);
+    setPreview(avatarUrl);
+  };
+
+  const convertUrlToFile = async (url, filename) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], filename, { type: blob.type });
+  };
+
   return (
-    <div className="flex items-center justify-end min-h-screen bg-black w-full">
-      <div
-        className="bg-black shadow-xl rounded-lg p-8 w-full max-w-md mr-40"
-        style={{ height: "500px", width: "450px" }}
-      >
-        <h2 className="text-2xl text-white font-bold mt-20">
+    <div className="flex items-center justify-evenly min-h-screen bg-black w-full">
+      <div className="mt-14">
+        <img src={logo} alt="logo.png" />
+      </div>
+
+      <div className="bg-black shadow-xl rounded-lg p-8 w-full max-w-md mr-40">
+        <h2 className="text-2xl text-white font-mono mt-10 ml-16">
           Create Your Account
         </h2>
         {serverError && (
           <p className="text-red-500 text-sm text-center mb-4">{serverError}</p>
         )}
         <form onSubmit={handleSubmit}>
-          {/* Step 1: Email */}
           {step === 1 && (
-            <div className="mb-4">
-              <label className="block text-white pl-40 font-semibold mt-10 pb-2">
-                Email *
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm pl-2 mt-2">
-                  *{errors.email}
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Step 2: Username and Password */}
-          {step === 2 && (
             <>
+              {/* Email */}
+              <div className="mb-4">
+                <label className="block text-white font-semibold mt-10 pb-2 ml-4">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm pl-2 mt-2">
+                    *{errors.email}
+                  </p>
+                )}
+              </div>
+
+              {/* Username */}
               <div className="mb-4 mt-4">
-                <label className="block text-white pl-4">Username</label>
+                <label className="block text-white ml-4">Username *</label>
                 <input
                   type="text"
-                  name="username"
-                  value={formData.username}
+                  name="userName"
+                  value={formData.userName}
                   onChange={handleChange}
                   className="w-full px-3 py-2 mt-1 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-                {errors.username && (
+                {errors.userName && (
                   <p className="text-red-500 text-sm mt-1">
-                    {errors.username}
+                    {errors.userName}
                   </p>
                 )}
               </div>
+
+              {/* Password */}
               <div className="mb-4">
-                <label className="block text-white pl-4">Password</label>
+                <label className="block text-white ml-4">Password *</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -165,87 +220,117 @@ const MultiStepForm = () => {
                   </p>
                 )}
               </div>
-            </>
-          )}
 
-          {/* Step 3: Avatar and Bio */}
-          {step === 3 && (
-            <>
-              <div className="mb-4 mt-4">
-                <label className="block text-white">Avatar</label>
-                {!preview && (
-                  <input
-                    type="file"
-                    name="avatar"
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border mt-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                  />
-                )}
-                {preview && (
-                  <div className="mt-4 border-2 border-slate-400 rounded-full w-fit">
-                    <img
-                      src={preview}
-                      alt="Avatar Preview"
-                      className="block w-24 h-24 rounded-full object-cover "
-                    />
-                  </div>
-                )}
-              </div>
-
+              {/* Bio */}
               <div className="mb-4">
-                <label className="block text-white">Bio</label>
+                <label className="block text-white ml-4 mb-1">Bio</label>
                 <textarea
                   name="bio"
                   value={formData.bio}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
                 />
+              </div>
+
+              {/* Next Step Button */}
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={nextStep}
+                  className="bg-blue-500 w-[100px] h-[40px] text-white pt-[2px] mt-6 rounded-full text-lg font-mono hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  Next
+                </button>
               </div>
             </>
           )}
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between">
-            {step > 1 && (
-              <button
-                type="button"
-                onClick={prevStep}
-                className="bg-gray-300 text-gray-700 py-2 px-4 mt-6 rounded-full hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                Back
-              </button>
-            )}
-            {step < 3 && (
-              <button
-                type="button"
-                onClick={nextStep}
-                className="bg-blue-500 text-white py-2 mt-6 px-4 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                Next
-              </button>
-            )}
-            {step === 3 && (
-              <button
-                type="submit"
-                className="bg-blue-500 text-white py-2 px-4 mt-6 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                Submit
-              </button>
-            )}
-          </div>
-          <div className="text-white flex justify-center py-5">
-            <h1>
-              Already have an Account?{" "}
-              <Link to={"/login"}>
-                <span className="text-blue-500 hover:underline">Login</span>
-              </Link>
-            </h1>
-          </div>
+          {step === 2 && (
+            <>
+              {/* Predefined Avatars */}
+              <div className="mb-4 mt-4">
+                <label className="block text-white">Choose an Avatar</label>
+                <div className="flex space-x-4 mt-2">
+                  {predefinedAvatars.map((avatarUrl) => (
+                    <img
+                      key={avatarUrl}
+                      src={avatarUrl}
+                      alt="Predefined Avatar"
+                      className={`w-16 h-16 rounded-full cursor-pointer border-2 ${
+                        selectedAvatar === avatarUrl
+                          ? "border-blue-500"
+                          : "border-gray-300"
+                      }`}
+                      onClick={() => handleAvatarSelect(avatarUrl)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Upload Custom Avatar */}
+              <div className="mb-4 mt-4">
+                <label className="block text-white">
+                  Or Upload Your Own Avatar
+                </label>
+                <div className="relative w-24 h-24 rounded-full overflow-hidden bg-black cursor-pointer mt-2">
+                  <label
+                    htmlFor="avatar-upload"
+                    className="cursor-pointer w-full h-full"
+                  >
+                    {preview ? (
+                      <img
+                        src={preview}
+                        alt="Selected Avatar"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex justify-center items-center w-full h-full">
+                        <FaEdit className="text-gray-500 text-2xl" />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      id="avatar-upload"
+                      name="avatar"
+                      accept="image/*"
+                      onChange={handleChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Previous and Submit Buttons */}
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={prevStep}
+                  className="bg-gray-500 w-[100px] h-[40px] text-white rounded-full text-lg font-mono hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  Previous
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-500 w-[100px] h-[40px] text-white pt-[2px] mt-6 rounded-full text-lg font-mono hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  Submit
+                </button>
+              </div>
+
+              {/* Login Redirect */}
+              <p className="text-center text-white mt-4">
+                Already have an account?{" "}
+                <Link to="/login" className="text-blue-500">
+                  Login
+                </Link>
+              </p>
+            </>
+          )}
         </form>
       </div>
     </div>
   );
 };
 
-export default MultiStepForm;
+export default TwoStepForm;
+
