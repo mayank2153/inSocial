@@ -1,26 +1,28 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import avatar1 from "./avatar/avatar-1.webp"
-import avatar2 from "./avatar/avatar-2.webp"
-import avatar3 from "./avatar/avatar-3.webp"
-import avatar4 from "./avatar/avatar-4.jpeg"
-import { FaEdit } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaEdit } from "react-icons/fa";
+import { useNavigate, Link } from "react-router-dom";
+import avatar1 from "./avatar/avatar-1.webp";
+import avatar2 from "./avatar/avatar-2.webp";
+import avatar3 from "./avatar/avatar-3.webp";
+import avatar4 from "./avatar/avatar-4.jpeg";
+import logo from "../../assets/images/logo (3)-removebg-preview.jpg";
+import { setTempUserData, clearTempUserData } from "../../utils/authslice";
+import { useDispatch, useSelector } from "react-redux";
+import { sendOtp } from "../../api/sendOtp";
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
-const predefinedAvatars = [
-  avatar1,
-  avatar2,
-  avatar3,
-  avatar4,
-];
+const predefinedAvatars = [avatar1, avatar2, avatar3, avatar4];
 
 const TwoStepForm = () => {
+  const dispatch = useDispatch();
+  // const navigate = useNavigate();
+  const tempUserData = useSelector((state) => state.auth.tempUserData);
+
+
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(tempUserData || {
     email: "",
     userName: "",
     password: "",
@@ -30,8 +32,8 @@ const TwoStepForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [preview, setPreview] = useState(null);
-  const [serverError, setServerError] = useState(""); 
-  const [selectedAvatar, setSelectedAvatar] = useState(""); // New state for selecting predefined avatar
+  const [serverError, setServerError] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState(null); // Updated to handle file type
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -77,14 +79,38 @@ const TwoStepForm = () => {
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
+        if (key !== "avatar") {
+          data.append(key, formData[key]);
+        }
       });
+
+      // Append the avatar based on the selection
       if (selectedAvatar) {
-        data.append("avatar", selectedAvatar);  // Append selected avatar if chosen
+        data.append("avatar", selectedAvatar);
+      } else if (formData.avatar) {
+        // Append uploaded file if there is one
+        data.append("avatar", formData.avatar);
       }
 
-      const response = await axios.post(`${url}users/register`, data);
-      navigate("/login");
+      // const response = await axios.post(`${url}users/register`, data, {
+      //   headers: {
+      //     "Content-Type": "multipart/form-data",
+      //   },
+      // });
+      const signUpData = {
+        ...formData
+      }
+
+      dispatch(setTempUserData(signUpData));
+      
+      try {
+          const otp = await sendOtp(formData.email)
+      } catch (error) {
+        console.log('error in sending otp', error);
+         
+      }
+
+      navigate("/verifyEmail");
     } catch (error) {
       if (error.response) {
         setServerError(error.response.data.message || "An error occurred. Please try again.");
@@ -97,18 +123,31 @@ const TwoStepForm = () => {
   const nextStep = () => {
     if (validateForm()) setStep(2);
   };
+
   const prevStep = () => setStep(1);
+
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  const handleAvatarSelect = (avatarUrl) => {
-    setSelectedAvatar(avatarUrl);
+  const handleAvatarSelect = async (avatarUrl) => {
+    const avatarFile = await convertUrlToFile(avatarUrl, "avatar.png");
+    setSelectedAvatar(avatarFile);
     setPreview(avatarUrl);
   };
 
+  const convertUrlToFile = async (url, filename) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], filename, { type: blob.type });
+  };
+
   return (
-    <div className="flex items-center justify-end min-h-screen bg-black w-full">
+    <div className="flex items-center justify-evenly min-h-screen bg-black w-full">
+      <div className="mt-14">
+        <img src={logo} alt="logo.png" />
+      </div>
+
       <div className="bg-black shadow-xl rounded-lg p-8 w-full max-w-md mr-40">
-        <h2 className="text-2xl text-white font-mono  mt-10 ml-16">
+        <h2 className="text-2xl text-white font-mono mt-10 ml-16">
           Create Your Account
         </h2>
         {serverError && (
@@ -198,7 +237,7 @@ const TwoStepForm = () => {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="bg-blue-500 w-[100px] h-[40px] text-white pt-[2px]  mt-6 rounded-full text-lg font-mono hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="bg-blue-500 w-[100px] h-[40px] text-white pt-[2px] mt-6 rounded-full text-lg font-mono hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   Next
                 </button>
@@ -210,77 +249,81 @@ const TwoStepForm = () => {
             <>
               {/* Predefined Avatars */}
               <div className="mb-4 mt-4">
-        <label className="block text-white">Choose an Avatar</label>
-        <div className="flex space-x-4 mt-2">
-          {predefinedAvatars.map((avatarUrl) => (
-            <img
-              key={avatarUrl}
-              src={avatarUrl}
-              alt="Predefined Avatar"
-              className={`w-16 h-16 rounded-full cursor-pointer border-2 ${
-                selectedAvatar === avatarUrl ? "border-blue-500" : "border-gray-300"
-              }`}
-              onClick={() => handleAvatarSelect(avatarUrl)}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Upload Custom Avatar */}
-      <div className="mb-4 mt-4">
-        <label className="block text-white">Or Upload Your Own Avatar</label>
-        <div className="relative w-24 h-24 rounded-full overflow-hidden bg-black cursor-pointer mt-2">
-          <label htmlFor="avatar-upload" className="cursor-pointer w-full h-full">
-            {preview ? (
-              <img
-                src={preview}
-                alt="Avatar Preview"
-                className="block w-full h-full object-cover"
-              />
-            ) : (
-              <div className="flex items-center justify-center w-full h-full text-white">
-                {selectedAvatar ? (
-                  <img
-                    src={selectedAvatar}
-                    alt="Selected Avatar"
-                    className="block w-full h-full object-cover"
-                  />
-                ) : (
-                  "Upload Avatar"
-                )}
+                <label className="block text-white">Choose an Avatar</label>
+                <div className="flex space-x-4 mt-2">
+                  {predefinedAvatars.map((avatarUrl) => (
+                    <img
+                      key={avatarUrl}
+                      src={avatarUrl}
+                      alt="Predefined Avatar"
+                      className={`w-16 h-16 rounded-full cursor-pointer border-2 ${
+                        selectedAvatar === avatarUrl
+                          ? "border-blue-500"
+                          : "border-gray-300"
+                      }`}
+                      onClick={() => handleAvatarSelect(avatarUrl)}
+                    />
+                  ))}
+                </div>
               </div>
-            )}
-            {/* Edit icon */}
-            <div className="absolute top-1 right-1 bg-black text-white rounded-full p-1">
-              <FaEdit />
-            </div>
-          </label>
-          <input
-            type="file"
-            name="avatar"
-            id="avatar-upload"
-            onChange={handleChange}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-          />
-        </div>
-        </div>
 
-              {/* Submit Button */}
+              {/* Upload Custom Avatar */}
+              <div className="mb-4 mt-4">
+                <label className="block text-white">
+                  Or Upload Your Own Avatar
+                </label>
+                <div className="relative w-24 h-24 rounded-full overflow-hidden bg-black cursor-pointer mt-2">
+                  <label
+                    htmlFor="avatar-upload"
+                    className="cursor-pointer w-full h-full"
+                  >
+                    {preview ? (
+                      <img
+                        src={preview}
+                        alt="Selected Avatar"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex justify-center items-center w-full h-full">
+                        <FaEdit className="text-gray-500 text-2xl" />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      id="avatar-upload"
+                      name="avatar"
+                      accept="image/*"
+                      onChange={handleChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Previous and Submit Buttons */}
               <div className="flex justify-between">
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="bg-gray-300 text-gray-700 py-2 px-4 mt-6 rounded-full hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="bg-gray-500 w-[100px] h-[40px] text-white rounded-full text-lg font-mono hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  Back
+                  Previous
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 text-white py-2 px-4 mt-6 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="bg-blue-500 w-[100px] h-[40px] text-white pt-[2px] mt-6 rounded-full text-lg font-mono hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   Submit
                 </button>
               </div>
+
+              {/* Login Redirect */}
+              <p className="text-center text-white mt-4">
+                Already have an account?{" "}
+                <Link to="/login" className="text-blue-500">
+                  Login
+                </Link>
+              </p>
             </>
           )}
         </form>
@@ -290,3 +333,4 @@ const TwoStepForm = () => {
 };
 
 export default TwoStepForm;
+

@@ -41,6 +41,7 @@ const generateAccessAndRefereshTokens = async(userId) => {
 const registerUser = asyncHandler(async (req, res, next) => {
     try {
       const { userName, email, password, bio ,otp} = req.body;
+        console.log('otp',otp);
   
       // Validate required fields
       if ([userName, email, password].some((field) => !field || field.trim() === "")) {
@@ -95,7 +96,9 @@ const registerUser = asyncHandler(async (req, res, next) => {
         avatar: avatar.secure_url,
         coverImage: coverImage ? coverImage.secure_url : null,
       });
-  
+      
+      console.log('registered user',user);
+      
       res.status(201).json({ message: "User registered successfully.", user });
     } catch (error) {
       console.error("Error during user registration:", error.message);
@@ -491,6 +494,8 @@ const resetPassword = asyncHandler(async (req, res) => {
         if(user){
             throw new ApiError(404, "User is already Registered")
         }
+        console.log('email here', email);
+        
     
         let otp = otpGenerator.generate(6,{
             upperCaseAlphabets: false,
