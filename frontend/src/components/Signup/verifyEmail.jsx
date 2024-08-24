@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import OtpInput from "react-otp-input";
 import { Link, useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
@@ -10,43 +11,30 @@ import { sendOtp } from "../../api/sendOtp";
 function VerifyEmail() {
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
-  const tempUserData = useSelector((state) => state.auth.tempUserData);
-
+  const location = useLocation();
+  const signUpData = location.state;
+  console.log("signudtaa:",signUpData)
   useEffect(() => {
-    if (!tempUserData) {
+    if (!signUpData) {
       navigate('/register');
     }
-  }, [tempUserData, navigate]);
-
+  }, [signUpData, navigate]);
   const handleVerifyAndSignup = async () => {
+
     try {
-        const userData = {
-            ...tempUserData,
-            otp: otp,
-        };
-        
-
-      console.log(userData);
-      
-
-      // Send the data to the backend
-      const response = await UserRegister(userData);
-
-      if (!response) {
-        console.log('Error in generating response');
-      } else {
-        console.log('response', response.data);
-        // Handle success, e.g., navigate to a different page
-        // navigate('/some-other-page'); // Replace with your actual navigation
-      }
+     
+      console.log("data before sending:",signUpData)
+      const response = await UserRegister({ ...signUpData, otp });
+      console.log(response)
+      navigate("/login")
     } catch (error) {
-      console.log('Error in generating response', error);
+      console.error("Error verifying OTP and signing up:", error);
     }
   };
 
   const resendOtp = async () => {
     try {
-      await sendOtp(tempUserData.email);
+      await sendOtp(signUpData.email);
       console.log('OTP resent successfully');
     } catch (error) {
       console.log('Error in sending OTP', error);

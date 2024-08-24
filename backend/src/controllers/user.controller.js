@@ -41,13 +41,16 @@ const generateAccessAndRefereshTokens = async(userId) => {
 const registerUser = asyncHandler(async (req, res, next) => {
     try {
       const { userName, email, password, bio ,otp} = req.body;
+      console.log("req body:",req.body)
         console.log('otp',otp);
-  
+        console.log("req files:",req.files)
       // Validate required fields
       if ([userName, email, password].some((field) => !field || field.trim() === "")) {
         return res.status(400).json({ message: "All required fields must be filled." });
       }
-  
+      
+
+
       if (!req.files || !req.files.avatar) {
         return res.status(400).json({ message: "Avatar is required." });
       }
