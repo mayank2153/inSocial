@@ -72,53 +72,26 @@ const TwoStepForm = () => {
     return Object.keys(formErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    try {
-      const data = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (key !== "avatar") {
-          data.append(key, formData[key]);
-        }
-      });
+  try {
+    const signUpData = {
+      ...formData,
+      avatar: selectedAvatar || formData.avatar,
+    };
 
-      // Append the avatar based on the selection
-      if (selectedAvatar) {
-        data.append("avatar", selectedAvatar);
-      } else if (formData.avatar) {
-        // Append uploaded file if there is one
-        data.append("avatar", formData.avatar);
-      }
-
-      // const response = await axios.post(`${url}users/register`, data, {
-      //   headers: {
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // });
-      const signUpData = {
-        ...formData
-      }
-
-      dispatch(setTempUserData(signUpData));
-      
-      try {
-          const otp = await sendOtp(formData.email)
-      } catch (error) {
-        console.log('error in sending otp', error);
-         
-      }
-
-      navigate("/verifyEmail");
-    } catch (error) {
-      if (error.response) {
-        setServerError(error.response.data.message || "An error occurred. Please try again.");
-      } else {
-        setServerError("Failed to connect to the server. Please try again.");
-      }
+    // Instead of dispatching to Redux, pass the data using navigate
+    navigate("/verifyEmail", { state: signUpData });
+  } catch (error) {
+    if (error.response) {
+      setServerError(error.response.data.message || "An error occurred. Please try again.");
+    } else {
+      setServerError("Failed to connect to the server. Please try again.");
     }
-  };
+  }
+};
 
   const nextStep = () => {
     if (validateForm()) setStep(2);
@@ -129,7 +102,9 @@ const TwoStepForm = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleAvatarSelect = async (avatarUrl) => {
+    console.log("avatar url:",avatarUrl)
     const avatarFile = await convertUrlToFile(avatarUrl, "avatar.png");
+    console.log("avatar file:",avatarFile)
     setSelectedAvatar(avatarFile);
     setPreview(avatarUrl);
   };
