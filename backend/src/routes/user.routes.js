@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser , loginUser , logOutUser , refreshAccessToken, addLikedCategories, removeLikedCategory, getUserById, editUser, updateCurrentPassword, ChangeCurrentEmail, forgetPassword, resetPassword } from "../controllers/user.controller.js"
+import { registerUser , loginUser , logOutUser , refreshAccessToken, addLikedCategories, removeLikedCategory, getUserById, editUser, updateCurrentPassword, ChangeCurrentEmail, forgetPassword, resetPassword, sendOtp } from "../controllers/user.controller.js"
 import { upload } from "../middlewares/multer.middleware.js";
 import {verifyJWT} from "../middlewares/authjwt.middleware.js";
 import passport from "passport";
@@ -44,6 +44,7 @@ userRouter.route("/change-current-Email/:userId").post(verifyJWT,ChangeCurrentEm
 userRouter.route("/forgetPassword").post(forgetPassword);
 
 userRouter.route("/reset-password").post(resetPassword);
+userRouter.route("/otp-request").post(sendOtp);
 
 userRouter.get('/auth/google',
     passport.authenticate('google', {scope: ["profile","email"]})

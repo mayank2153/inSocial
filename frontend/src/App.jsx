@@ -23,6 +23,7 @@ import ResetPassword from './components/ForgetPassword/resetPassword.jsx';
 import ChangeCurrentEmail from './components/settings/ChangeCurrentEmail.jsx';
 import { useState } from 'react';
 import Notifications from './components/notification/notifications.jsx';
+import VerifyEmail from './components/Signup/verifyEmail.jsx';
 
 function Layout() {
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
@@ -82,6 +83,16 @@ const appRouting = createBrowserRouter([
         </PersistGate>
       </Provider>
     ),
+  },
+  {
+    path: "/verifyEmail",
+    element:(
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <VerifyEmail />
+        </PersistGate>
+      </Provider>
+    )
   },
   {
     path: "/Forget-Password",
