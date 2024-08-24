@@ -54,9 +54,9 @@ function VerifyEmail() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-3.5rem)] grid place-items-center">
-      <div className="max-w-[500px] p-4 lg:p-8">
-        <h1 className="text-richblack-5 font-semibold text-[1.875rem] leading-[2.375rem]">
+    <div className="min-h-[100vh] grid place-items-center bg-black">
+      <div className="max-w-[500px] p-4 lg:p-8 text-center">
+        <h1 className="text-richblack-5 font-mono text-slate-200  text-[1.875rem] leading-[2.375rem]">
           Verify Email
         </h1>
         <p className="text-[1.125rem] leading-[1.625rem] my-4 text-richblack-100">
@@ -85,19 +85,19 @@ function VerifyEmail() {
           <button
             type="button"
             onClick={handleVerifyAndSignup}
-            className="w-full bg-yellow-50 py-[12px] px-[12px] rounded-[8px] mt-6 font-medium text-richblack-900"
+            className="w-full bg-blue-500 py-[12px] px-[12px] rounded-[8px] mt-6 font-medium text-slate-300 hover:bg-blue-700 transition-all duration-300 hover:text-slate-100"
           >
             Verify Email
           </button>
         </form>
         <div className="mt-6 flex items-center justify-between">
           <Link to="/signup">
-            <p className="text-richblack-5 flex items-center gap-x-2">
+            <p className="text-slate-200 font-mono flex items-center gap-x-2">
               <BiArrowBack /> Back To Signup
             </p>
           </Link>
           <button
-            className="flex items-center text-blue-100 gap-x-2"
+            className="flex items-center text-blue-600 gap-x-2"
             onClick={resendOtp}
           >
             <RxCountdownTimer />
