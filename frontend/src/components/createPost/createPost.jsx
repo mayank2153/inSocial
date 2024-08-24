@@ -83,6 +83,7 @@ const PostForm = ({ isEdit }) => {
     const [categories, setCategories] = useState([]);
     const currentUser = useSelector((state) => state.auth.user?.data?.user?._id);
     const [selectedColor, setSelectedColor] = useState('#13181d'); 
+    const [selectSize,setSelectSize]=useState(10)
     const navigate = useNavigate();
     const { postId } = useParams();
 
@@ -155,6 +156,7 @@ const PostForm = ({ isEdit }) => {
                 setSelectedColor('#13181d'); // Reset to default if no category is selected
             }
         }
+        setSelectSize(1)
     };
 
     const handleSubmit = async e => {
@@ -174,30 +176,36 @@ const PostForm = ({ isEdit }) => {
     };
 
     return (
-        <div className="w-full flex justify-center py-8 bg-[#13181d] min-h-[100vh] overflow-y-scroll no-scrollbar">
+        <div className="w-full flex justify-center lg:py-8 bg-[#13181d] min-h-[100vh] overflow-y-scroll no-scrollbar " >
             <div className="flex flex-col items-center bg-[#0d1114] rounded-2xl max-h-[100vh] text-white px-6 py-5 md:px-10 md:py-8 gap-4 w-full max-w-[600px]">
                 <h1 className="text-2xl md:text-3xl">{isEdit ? "Edit Post" : "Create Post"}</h1>
                 <div>
                     <form onSubmit={handleSubmit} className="flex flex-col text-lg md:text-2xl gap-6 md:gap-8 w-full">
+                       <div className='lg:max-h-20 overflow-auto no-scrollbar max-h-20'>
                         <select 
                             name="category" 
                             id="category" 
                             onChange={handleChange} 
-                            value={formData.category} 
-                            className="rounded-full w-full md:w-min text-lg md:text-xl py-2 px-2 md:py-1 focus:outline-none"
-                            style={{ backgroundColor: selectedColor }}
+                            value={formData.category}
+                            className=" w-min md:w-min text-sm md:text-xl py-2 px-2 md:py-1 focus:outline-none "
+                            style={{ 
+                                backgroundColor: selectedColor,
+                            }}
                         >
                             <option value="" disabled className='bg-[#13181d]'>Select Category</option>
                             {categories.map(category => (
                                 <option 
                                     key={category._id} 
                                     value={category.name} 
-                                    style={{  backgroundColor:"#13181d" }}
+                                    style={{ 
+                                         backgroundColor:"#13181d"
+                                        }}
                                 >
                                     {category.name}
                                 </option>
                             ))}
                         </select>
+                       </div>
 
                         <input
                             type="text"

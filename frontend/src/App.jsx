@@ -35,18 +35,18 @@ function Layout() {
     <div className="montserrat-medium ">
       <Header toggleCategories={toggleCategories} /> 
 
-      <div className="flex flex-col lg:flex-row overflow-x-hidden ">
+      <div className="flex flex-col lg:flex-row  ">
         {/* Categories section, visible by default on large screens */}
         <div className={`lg:block ${isCategoriesVisible ? 'block' : 'hidden'} lg:w-1/4 lg:max-w-xs`}>
           <ShowCategories />
         </div>
 
-        <div className="flex-grow overflow-x-hidden">
+        <div className="flex-grow">
           <Outlet />
         </div>
 
         {/* Right section, moved to footer on small screens */}
-        <div className="hidden lg:block lg:w-1/4 lg:max-w-xs">
+        <div className="hidden lg:block lg:w-1/4 lg:max-w-xs overflow-x-hidden">
           <Right />
         </div>
       </div>
