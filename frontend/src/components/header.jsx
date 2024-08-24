@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfilePage from './userProfile/profilePage';
 import SearchBar from './searchBar/searchBar.jsx';
+import { IoNotifications } from "react-icons/io5";
 
 const Header = ({ toggleCategories }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -54,8 +55,8 @@ const Header = ({ toggleCategories }) => {
             >
               <IoIosSearch size={25} />
             </button>
-            <Link to={`/notification/${userId}`} title="Notifications" className="text-white hover:text-blue-600">
-              <IoIosNotificationsOutline size={30} />
+            <Link to={`/notification/${userId}`} title="Notifications" className="text-slate-200">
+              <IoNotifications size={30} />
             </Link>
 
             <div className="relative overflow-hidden">
