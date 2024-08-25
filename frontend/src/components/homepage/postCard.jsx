@@ -12,13 +12,15 @@ import { useDispatch } from 'react-redux';
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
-const PostCard = ({ title, description, owner, votes, updatedAt, media, comments, category, _id }) => {
+const PostCard = ({ title, description, owner, votes, updatedAt, media, comments, category, _id ,bg_color}) => {
   const [ownerDetails, setOwnerDetails] = useState(null);
   const [categoryDetails, setCategoryDetails] = useState(null);
   const [error, setError] = useState(null);
   const [userVote, setUserVote] = useState(null);
   const [hoveredPost, setHoveredPost] = useState(null);
-
+  if (!bg_color) {
+    bg_color = '#13181d';
+  }
   const dispatch = useDispatch(); // Use dispatch to trigger actions
   const socket = useSelector((state) => state.socket.socket); // Access the socket instance
 
@@ -96,7 +98,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const commentCount = comments.length;
 
   return (
-    <div className="post-card  shadow-md rounded-lg py-1 bg-[#13181d] w-full lg:max-w-[650px] min-w-[350px]">
+    <div className='post-card  shadow-md rounded-lg py-1  w-full lg:max-w-[650px] min-w-[350px]' style={{ backgroundColor: bg_color }}>
       <div
         className='p-4'
         onMouseEnter={() => setHoveredPost(true)}
