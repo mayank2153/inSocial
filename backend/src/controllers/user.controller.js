@@ -283,6 +283,8 @@ const removeLikedCategory = asyncHandler(async (req, res) => {
 
 const getUserById = asyncHandler(async (req, res) => {
     const { userId } = req.params;
+    console.log('userId in backend ', userId);
+    
     try {
         const user = await User.findById(userId);
         if (!user) {
