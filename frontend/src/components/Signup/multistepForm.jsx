@@ -7,9 +7,11 @@ import avatar2 from "./avatar/avatar-2.webp";
 import avatar3 from "./avatar/avatar-3.webp";
 import avatar4 from "./avatar/avatar-4.jpeg";
 import logo from "../../assets/images/logo (3)-removebg-preview.jpg";
+import { FaSyncAlt } from "react-icons/fa";
 import { setTempUserData, clearTempUserData } from "../../utils/authslice";
 import { useDispatch, useSelector } from "react-redux";
 import { sendOtp } from "../../api/sendOtp";
+import usernameGenerator from "../../api/usernameGenerator.js";
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
@@ -71,27 +73,39 @@ const TwoStepForm = () => {
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
-
-  try {
-    const signUpData = {
-      ...formData,
-      avatar: selectedAvatar || formData.avatar,
-    };
-
-    // Instead of dispatching to Redux, pass the data using navigate
-    navigate("/verifyEmail", { state: signUpData });
-  } catch (error) {
-    if (error.response) {
-      setServerError(error.response.data.message || "An error occurred. Please try again.");
-    } else {
-      setServerError("Failed to connect to the server. Please try again.");
+  const uniqueUsername = async () => {
+    try {
+      const username = await usernameGenerator();
+      setFormData((prevData) => ({
+        ...prevData,
+        userName: username,
+      }));
+    } catch (error) {
+      console.error("Error generating unique username:", error);
     }
-  }
-};
+  };
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    try {
+      const signUpData = {
+        ...formData,
+        avatar: selectedAvatar || formData.avatar,
+      };
+
+      // Instead of dispatching to Redux, pass the data using navigate
+      navigate("/verifyEmail", { state: signUpData });
+    } catch (error) {
+      if (error.response) {
+        setServerError(error.response.data.message || "An error occurred. Please try again.");
+      } else {
+        setServerError("Failed to connect to the server. Please try again.");
+      }
+    }
+  };
 
   const nextStep = () => {
     if (validateForm()) setStep(2);
@@ -154,20 +168,30 @@ const handleSubmit = async (e) => {
               {/* Username */}
               <div className="mb-4 mt-4">
                 <label className="block text-white ml-4">Username *</label>
-                <input
-                  type="text"
-                  name="userName"
-                  value={formData.userName}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 mt-1 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
+                <div className="flex items-center bg-white rounded-full focus-within:ring-2   focus-within:ring-blue-500 " >
+                  <input
+                    type="text"
+                    name="userName"
+                    value={formData.userName}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 rounded-full focus:outline-none "
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={uniqueUsername}
+                    className="px-4 py-2 ml-2  text-grey-600 rounded-full "
+                  >
+                    <FaSyncAlt />
+                  </button>
+                </div>
                 {errors.userName && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.userName}
                   </p>
                 )}
               </div>
+
 
               {/* Password */}
               <div className="mb-4">
