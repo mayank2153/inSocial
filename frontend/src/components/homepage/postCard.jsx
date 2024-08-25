@@ -111,7 +111,10 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
                 className="w-12 h-12 rounded-full"
               />
               <div>
-                <span className="font-bold">{ownerDetails.userName}</span>
+                <Link to={`/UserProfile/${owner}`}>
+                  <span className="font-bold">{ownerDetails.userName}</span>
+                </Link>
+                
                 <p className='text-sm'>{new Date(updatedAt).toLocaleDateString()}</p>
               </div>
             </div>
