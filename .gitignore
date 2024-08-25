@@ -1,4 +1,5 @@
-.env
+backend/.env
+frontend/.env
 
 # Logs
 logs
