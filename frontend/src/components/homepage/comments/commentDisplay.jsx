@@ -38,10 +38,10 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
   };
 
   return (
-    <div className="comment w-[500px] ml-4  text-white  rounded-2xl bg-[#13181d]">
+    <div className="comment w-[700px] ml-4  text-white  rounded-2xl bg-[#0d1114]">
       <div className='  py-2 px-4 rounded-2xl'>
         {owner && (
-          <div className="owner-info flex items-center mb-4 gap-2 text-white">
+          <div className="owner-info flex items-center  gap-2 text-white">
             <img
               src={owner.avatar}
               alt={`Avatar of ${owner.userName}`}
@@ -55,11 +55,11 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
         )}
         {deleted ? (
           <div>
-            <p className='text-sm ml-12 -mt-2'>This comment is deleted</p>
+            <p className='text-sm  text-gray-400  pl-1 pt-1 ml-12 -mt-2'>This comment is deleted</p>
           </div>
         ) : (
           <div>
-            <p className='text-sm ml-12 -mt-2'>{content}</p>
+            <p className='text-sm ml-12 -mt-2 pl-1 pt-1 text-gray-200'>{content}</p>
             <div className='flex gap-6 pt-3 '>
               <div className='ml-12 -mt-2'>
               {!isReplying && (
