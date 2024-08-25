@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { connectSocket, disconnectSocket } from '../../utils/socketslice.jsx';
+import { IoArrowBackOutline } from "react-icons/io5";
+import { Link } from "react-router-dom"
 
 const Notifications = () => {
     const dispatch = useDispatch();
@@ -53,11 +55,15 @@ const Notifications = () => {
 
     return (
         <div className="w-full bg-[#0d1114] h-[100vh] overflow-y-scroll no-scrollbar ">
-            <div className="mt-4 text-center">
-                <h3 className="text-2xl font-mono text-slate-200">Notifications</h3>
+            <div className="mt-4 flex text-center">
+                <Link to="/">
+                    <h3 className="text-white pt-1 ml-10"><IoArrowBackOutline  size={25}/></h3>
+                </Link>
+                
+                <h3 className="text-2xl font-mono text-slate-200 ml-72">Notifications</h3>
 
             </div>
-            <div className="mt-4">
+            <div className="mt-10"> 
     <ul>
         {notifications.map((notification, index) => (
             <div className="text-slate-300  mx-6 rounded-lg bg-[#13181d] shadow-xl h-[50px] cursor-pointer" key={index}>
