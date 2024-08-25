@@ -43,8 +43,9 @@ const SearchResults = () => {
     }
     return(
         <div className="w-full h-[100vh] overflow-y-scroll no-scrollbar flex bg-[#0d1114] flex-col items-center py-4 ">
-            <div className=" lg:min-w-[500px] min-w-[350px] h-[500px] bg-[#13181d] py-2 px-8 flex flex-col gap-4">
-            <div className="flex text-white justify-start  text-xl font-bold border-b">
+            <div className=" lg:min-w-[500px] min-w-[350px] h-[500px] bg-[#0d1114] py-2 px-8 flex flex-col gap-4">
+            <div className="flex text-white justify-start  text-xl font-mono border-b border-gray-600
+            ">
                 <div className={`border-r px-2 hover:bg-[#2e2b2b] py-1
                     ${openUser===true?'bg-[#2e2b2b]':null}
                     `}>
@@ -64,7 +65,7 @@ const SearchResults = () => {
                     </div>
                 }
                 {openUser && users.map((user) => (
-                    <UserCard key={user._id} {...user} bio=""/>
+                    <UserCard key={user._id} {...user} />
                 ))}
             </div>
             <div>
