@@ -36,7 +36,7 @@ const Conversations = () => {
     };
 
     return (
-        <div className="text-white max-h-screen overflow-y-scroll no-scrollbar">
+        <div className="text-white max-w-[400px] max-h-screen overflow-y-scroll no-scrollbar">
             {selectedConversation ? (
                 <ChatComponent
                     conversationId={selectedConversation._id}

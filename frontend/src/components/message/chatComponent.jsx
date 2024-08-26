@@ -2,8 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { connectSocket, disconnectSocket } from '../../utils/socketslice.jsx';
-import "react-chat-elements/dist/main.css";
-import { MessageBox } from "react-chat-elements";
 import UserCard from '../homepage/userCard/userCard.jsx';
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
@@ -11,7 +9,6 @@ const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 const ChatComponent = ({ conversationId, userId, receiver }) => {
     const dispatch = useDispatch();
     const socket = useSelector((state) => state.socket?.socket); 
-    console.log(socket)
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const lastMessageRef = useRef(null);
@@ -24,11 +21,9 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
     
     useEffect(() => {
         if (socket) {
-            console.log("Joining conversation with ID:", conversationId);
             socket.emit('joinConversation', conversationId);
     
             const handleReceiveMessage = (message) => {
-                console.log("Received message:", message);
                 setMessages((prevMessages) => [...prevMessages, message]);
             };
     
@@ -36,12 +31,11 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
     
             return () => {
                 socket.off('receiveMessage', handleReceiveMessage);
-                dispatch(disconnectSocket());  // Properly disconnect socket
+                dispatch(disconnectSocket());
             };
         }
     }, [socket, conversationId]);
-    
-    
+
     useEffect(() => {
         const fetchMessages = async () => {
             try {
@@ -65,14 +59,13 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
     }, [messages]);
 
     const sendMessage = async () => {
-        if (!newMessage.trim()) return; // Prevent sending empty messages
+        if (!newMessage.trim()) return;
         const messageData = {
             conversationId,
             sender: userId,
             content: newMessage,
         };
         try {
-            console.log("Sending message:", messageData);
             await axios.post(`${url}messages`, messageData, {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true,
@@ -91,8 +84,21 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
         }
     };
 
+    const CustomMessage = ({ content, date, isSent }) => {
+        return (
+            <div className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-xs p-3 rounded-lg ${isSent ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'} shadow-lg mb-2`}>
+                    <p className="text-sm">{content}</p>
+                    {/* <span className="text-xs text-gray-400 mt-1 block">
+                        {new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span> */}
+                </div>
+            </div>
+        );
+    };
+
     return (
-        <div className='max-h-[85vh] overflow-y-scroll no-scrollbar'>
+        <div className='max-h-[85vh] max-w-[400px] overflow-y-scroll no-scrollbar'>
             <div className='top-0 sticky z-10 bg-[#0d1114]'>
                 {receiver && receiver[0] ? (
                     <UserCard {...receiver[0]} />
@@ -103,26 +109,16 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
             <div className='px-4 pb-20'>
                 {messages.map((msg, index) => (
                     <div key={index} ref={index === messages.length - 1 ? lastMessageRef : null}>
-                        {msg.sender && msg.sender._id === userId ? (
-                            <MessageBox
-                                position='right'
-                                title={msg.content}
-                                date={new Date(msg.date)}
-                                type='text'
-                            />
-                        ) : (
-                            <MessageBox
-                                position='left'
-                                title={msg.content}
-                                date={new Date(msg.date)}
-                                type='text'
-                            />
-                        )}
+                        <CustomMessage
+                            content={msg.content}
+                            
+                            isSent={msg.sender && msg.sender._id === userId}
+                        />
                     </div>
                 ))}
             </div>
             <div className='flex justify-center'>
-                <div className='fixed bottom-0 py-4 px-8 text-lg bg-slate-600 rounded-2xl w-full max-w-[390px] mx-2 flex justify-between'>
+                <div className='fixed bottom-0 w-full max-w-[400px]  py-4  text-lg bg-slate-600 rounded-2xl flex justify-between '>
                     <input
                         type="text"
                         value={newMessage}
