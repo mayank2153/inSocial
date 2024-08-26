@@ -1,10 +1,10 @@
-const otpTemplate = (otp) => {
+const EmailChangeTemplate = (otp) => {
 	return `<!DOCTYPE html>
 	<html>
 	
 	<head>
 		<meta charset="UTF-8">
-		<title>OTP Verification Email</title>
+		<title>New Email Verification</title>
 		<style>
 			body {
 				background-color: #ffffff;
@@ -66,15 +66,13 @@ const otpTemplate = (otp) => {
 	
 	<body>
 		<div class="container">
-			<div class="message">OTP Verification Email</div>
-			<div class="body">
-				<p>Dear User,</p>
-				<p>Thank you for registering with InSocial. To complete your registration, please use the following OTP
-					(One-Time Password) to verify your account:</p>
-				<h2 class="highlight">${otp}</h2>
-				<p>This OTP is valid for 2 minutes. If you did not request this verification, please disregard this email.
-				Once your account is verified, you will have access to our platform and its features.</p>
-			</div>
+			<div class="message">New Email Verification</div>
+			 <div class="body">
+                <p>Dear User,</p>
+                <p>You have requested to change your email address on InSocial. To complete this change, please use the following OTP (One-Time Password) to verify your new email address:</p>
+                <h2 class="highlight">${otp}</h2>
+                <p>This OTP is valid for 2 minutes. If you did not request this change, please disregard this email and make sure your account is secure.</p>
+            </div>
 			<div class="support">If you have any questions or need assistance, please feel free to reach out to us at <a
 					href="mailto:developer@insocial.tech">developer@insocial.tech</a>. We are here to help!</div>
 		</div>
@@ -83,4 +81,4 @@ const otpTemplate = (otp) => {
 	</html>`;
 };
 
-export default otpTemplate;
+export default EmailChangeTemplate;

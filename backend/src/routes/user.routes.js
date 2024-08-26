@@ -39,12 +39,13 @@ userRouter.route("/edit-user/:userId").post(
     verifyJWT,
     editUser
 );
-userRouter.route("/change-Current-Password/:userId").post(verifyJWT,updateCurrentPassword);
-userRouter.route("/change-current-Email/:userId").post(verifyJWT,ChangeCurrentEmail);
+userRouter.route("/change-Current-Password/:userId").post(updateCurrentPassword);
+userRouter.route("/change-current-Email/:userId").post(ChangeCurrentEmail);
 userRouter.route("/forgetPassword").post(forgetPassword);
 
 userRouter.route("/reset-password").post(resetPassword);
 userRouter.route("/otp-request").post(sendOtp);
+
 
 userRouter.get('/auth/google',
     passport.authenticate('google', {scope: ["profile","email"]})
