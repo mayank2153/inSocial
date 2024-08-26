@@ -9,6 +9,7 @@ import mailSender from "../utils/mailSender.js";
 import otpGenerator from "otp-generator";
 import { OTP } from "../models/otp.model.js";
 import PasswordSuccessfullyChanged from "../Template/changePassword.template.js";
+import PasswordResetTemplate from "../Template/PasswordReset.template.js";
 
 
 
@@ -465,59 +466,93 @@ const forgetPassword = asyncHandler(async (req, res) => {
     const resetlink = `${process.env.CLIENT_URL}reset-password/${accessToken}`;
     console.log('Reset link:', resetlink);
 
-    // Email options
-    const mailOptions = {
-        from: 'hubwhisper@gmail.com',
-        to: email,
-        subject: 'Here is your password Reset link for Banter.com',
-        text: `Please use this link to reset your password: ${resetlink}`
-    };
+    user.resetlink = accessToken;
+    await user.save({validateBeforeSave: false});
+    
+    try {
+        const mailContent = await mailSender(
+            email,
+            "Password Reset Link",
+            PasswordResetTemplate(resetlink)
+        );
+        console.log(`mail sent to ${email}`, mailContent);
+        
+    } catch (error) {
+        console.log('seems to be an error sending mail', error);
+        
+    }
 
-    // Sending the email using async/await
-    try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent: ' + info.response);
-        res.status(200).json({
-            message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
-        });
-    } catch (error) {
-        console.error('Error sending email:', error);
-        throw new ApiError(500, 'Error in sending mail', error.message);
-    }
+    // Email options
+    // const mailOptions = {
+    //     from: 'hubwhisper@gmail.com',
+    //     to: email,
+    //     subject: 'Here is your password Reset link for Banter.com',
+    //     text: `Please use this link to reset your password: ${resetlink}`
+    // };
+
+    // // Sending the email using async/await
+    // try {
+    //     const info = await transporter.sendMail(mailOptions);
+    //     console.log('Email sent: ' + info.response);
+    //     res.status(200).json({
+    //         message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
+    //     });
+    // } catch (error) {
+    //     console.error('Error sending email:', error);
+    //     throw new ApiError(500, 'Error in sending mail', error.message);
+    // }
 });
+
+import bcrypt from "bcrypt"; // Ensure bcrypt is imported
+
 const resetPassword = asyncHandler(async (req, res) => {
-    try {
-      const { resetlink, newPassword } = req.body;
-  
-      if (!resetlink) {
-        throw new ApiError(401, "Authentication error: reset link is missing.");
-      }
-  
-      console.log("Searching for user with reset link:", resetlink);
-  
-      const user = await User.findOneAndUpdate(
-        { resetlink:resetlink },
-        {
-          password: newPassword,
-          resetlink: ""
-        },
-        { new: true } // returns the updated document
-      );
-  
-      if (!user) {
-        throw new ApiError(404, "User not found or reset link invalid.");
-      }
-  
-      console.log("User found and password updated:", user);
-  
-      return res.status(200).json(
-        new ApiResponse(200, user, "Password reset successful")
-      );
-    } catch (error) {
-      console.error("Error resetting password:", error);
-      return res.status(500).json(new ApiError(500, "Error resetting password", error.message));
+  try {
+    const { resetlink, newPassword } = req.body;
+    console.log('pass', newPassword);
+
+    if (!resetlink) {
+      throw new ApiError(401, "Authentication error: reset link is missing.");
     }
- });
+
+    console.log("Searching for user with reset link:", resetlink);
+
+    // Manually hash the new password before updating
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const user = await User.findOneAndUpdate(
+      { resetlink: resetlink },
+      {
+        password: hashedPassword,  // Update with hashed password
+        resetlink: ""
+      },
+      { new: true } // returns the updated document
+    );
+
+    if (!user) {
+      throw new ApiError(404, "User not found or reset link invalid.");
+    }
+
+    console.log("User found and password updated:", user);
+
+    const mailContent  = await mailSender(
+        user.email,
+        "Password Reset Successful",
+        PasswordSuccessfullyChanged()
+        
+    )
+    console.log(`mail has been sent to ${user.email}`, mailContent);
+    
+
+    return res.status(200).json(
+      new ApiResponse(200, user, "Password reset successful")
+    );
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    return res.status(500).json(new ApiError(500, "Error resetting password", error.message));
+  }
+});
+
+  
 
  const sendOtp = asyncHandler(async (req, res) => {
     try {
