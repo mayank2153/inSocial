@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { FaRegComment } from 'react-icons/fa';
 import { AiOutlineLike, AiOutlineDislike } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
@@ -8,65 +8,99 @@ import { fetchOwnerDetails } from '../../api/fetchOwnerDetails.js';
 import { fetchCategoryDetails } from '../../api/fetchCategoryDetails.js';
 import { MdEdit } from "react-icons/md";
 import { connectSocket } from '../../utils/socketslice.jsx';
-import { useDispatch } from 'react-redux';
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
-const PostCard = ({ title, description, owner, votes, updatedAt, media, comments, category, _id }) => {
+const PostCard = ({ title, description, owner, votes, updatedAt, media, comments, category, _id,bgColor="#13181d" }) => {
   const [ownerDetails, setOwnerDetails] = useState(null);
   const [categoryDetails, setCategoryDetails] = useState(null);
   const [error, setError] = useState(null);
   const [userVote, setUserVote] = useState(null);
   const [hoveredPost, setHoveredPost] = useState(null);
+  const voteCount = votes.length;
+  const [voteNumber, setVoteNumber] = useState(voteCount);
 
-  const dispatch = useDispatch(); // Use dispatch to trigger actions
-  const socket = useSelector((state) => state.socket.socket); // Access the socket instance
-
-  useEffect(() => {
-    if(!socket){
-      dispatch(connectSocket());
-    }
-  })
-
+  const dispatch = useDispatch();
+  const socket = useSelector((state) => state.socket.socket);
   const currentUser = useSelector((state) => state.auth.user?.data?.user?._id);
   const userName = useSelector((state) => state.auth.user?.data?.user?.userName);
-  const handleVote = async (voteType) => {
-    try {
-      const response = await axios.post(`${url}vote/create-vote/${_id}`, { voteType }, {
-        withCredentials: true
-      });
-      console.log('Vote response:', response.data);
-      setUserVote(voteType);
-      // Optionally update the UI with the new vote
-      if(socket){
-        const emitData = {
-          message: `User ${userName} reacted on your post`,
-          postId: _id,
-          actor: currentUser,
-          receiver: owner,
-          type: voteType
-        };
-  
-        socket.emit('likePost', emitData);
-        console.log('vote emitted', emitData);
-        
-      }
 
+  useEffect(() => {
+    if (!socket) {
+      dispatch(connectSocket());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      const userVote = votes.find(vote => vote.voteOwner === currentUser);
+      if (userVote) {
+        setUserVote(userVote.voteType);
+      }
+      console.log("currentUser:", currentUser);
+    }
+  }, [currentUser, votes]);
+  const handleVote = async (voteType) => {
+    if (userVote === voteType) {
+      // If the user is clicking the same vote type again, remove the vote
+      const voteId = votes.find(vote => vote.voteOwner === currentUser)?.voteId;
+      console.log("vote is",voteId)
+      await removeVote(voteId);
+      setUserVote(null);
+      setVoteNumber(voteNumber - 1);
+    } else {
+      // Otherwise, cast the vote
+      try {
+        const response = await axios.post(`${url}vote/create-vote/${_id}`, { voteType }, {
+          withCredentials: true
+        });
+        console.log('Vote response:', response.data);
+        setUserVote(voteType);
+
+        if (socket) {
+          const emitData = {
+            message: `User ${userName} reacted on your post`,
+            postId: _id,
+            actor: currentUser,
+            receiver: owner,
+            type: voteType
+          };
+
+          socket.emit('likePost', emitData);
+          console.log('vote emitted', emitData);
+        }
+
+        if (voteNumber <= voteCount) {
+          setVoteNumber(voteNumber + 1);
+        }
+
+      } catch (error) {
+        console.error('Error casting vote:', error);
+        alert(error.response?.data?.message || "Error casting vote");
+      }
+    }
+  };
+
+  const removeVote = async (voteId) => {
+    try {
+      const deleteVote = await axios.post(`${url}vote/delete-vote/${voteId}`,{},
+       { withCredentials: true} 
+      
+      );
+      console.log("deleteVote", deleteVote);
     } catch (error) {
-      console.error('Error casting vote:', error);
-      alert(error.response?.data?.message || "Error casting vote");
+      console.error('Error deleting vote:', error);
+      alert(error.response?.data?.message || "Error deleting vote");
     }
   };
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        console.log("1")
         const [ownerResponse, categoryResponse] = await Promise.all([
           fetchOwnerDetails(owner),
           fetchCategoryDetails(category)
         ]);
-        console.log("answer",ownerResponse)
         setOwnerDetails(ownerResponse);
         setCategoryDetails(categoryResponse);
       } catch (error) {
@@ -78,31 +112,20 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
     fetchDetails();
   }, [owner, category]);
 
-  useEffect(() => {
-    if (currentUser) {
-      const userVote = votes.find(vote => vote.voteOwner === currentUser);
-      if (userVote) {
-        setUserVote(userVote.voteType);
-      }
-      console.log("currentUser:", currentUser);
-    }
-  }, [currentUser, votes]);
-
   if (error) {
     return <div className="error-message">{error}</div>;
   }
 
-  const voteCount = votes.length;
-  const commentCount = comments.length;
-
   return (
-    <div className="post-card  shadow-md rounded-lg py-1 bg-[#13181d] w-full lg:max-w-[650px] min-w-[350px]">
+    <div className="post-card shadow-md rounded-lg py-1  w-full lg:max-w-[650px] min-w-[350px]" style={
+      {backgroundColor: bgColor}
+    }>
       <div
         className='p-4'
         onMouseEnter={() => setHoveredPost(true)}
         onMouseLeave={() => setHoveredPost(false)}
       >
-        <div className='flex  sm:flex-row gap-4 sm:gap-6 justify-between '>
+        <div className='flex sm:flex-row gap-4 sm:gap-6 justify-between'>
           {ownerDetails && (
             <div className="owner-info flex items-center mb-4 gap-4 text-white">
               <img
@@ -114,7 +137,6 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
                 <Link to={`/UserProfile/${owner}`}>
                   <span className="font-bold">{ownerDetails.userName}</span>
                 </Link>
-                
                 <p className='text-sm'>{new Date(updatedAt).toLocaleDateString()}</p>
               </div>
             </div>
@@ -123,7 +145,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
             <p className='text-sm text-white flex justify-end mr-0 lg:mr-4'>{categoryDetails?.name}</p>
             {hoveredPost === true && currentUser === owner && (
               <Link to={`/post/edit-post/${_id}`}>
-                <div className='flex bg-[#13181d] rounded-full gap-1 cursor-pointer pr-1 justify-end transition-all duration-700 '>
+                <div className='flex bg-[#13181d] rounded-full gap-1 cursor-pointer pr-1 justify-end transition-all duration-700'>
                   <p className='text-xl text-slate-400'><MdEdit /></p>
                 </div>
               </Link>
@@ -161,7 +183,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
                 onClick={() => handleVote("upvote")}
               />
               <Link to={`/post/${_id}`}>
-                <p className='text-lg'>{voteCount}</p>
+                <p className='text-lg'>{voteNumber}</p>
               </Link>
               <AiOutlineDislike
                 size={24}
