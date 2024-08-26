@@ -47,7 +47,7 @@ useEffect(() => {
   }
 
   return (
-    <div className="w-full bg-[rgb(13,17,20)]  overflow-y-scroll no-scrollbar max-h-screen flex flex-col items-center">
+    <div className="w-full bg-[rgb(13,17,20)]  overflow-y-scroll no-scrollbar max-h-screen flex flex-col items-center h-screen">
       <div className="bg-[#13181d] shadow-md lg:max-w-[650px] max-w-[350px] lg:min-h-[400px] rounded-lg mt-8 border-2 border-gray-600  min-h-[300px]">
         <div className="relative bg-[#0d1114] lg:w-[480px] lg:min-w-[595px] w-[345px] h-[100px] lg:h-[150px] rounded-t-lg"> 
           {
@@ -79,10 +79,11 @@ useEffect(() => {
         </div>
       </div>
 
-      <div>
-      <div className="border-b-2 border-gray-600 w-full mt-10">
-      <span className="text-slate-300 ml-40 text-xl">Posts</span>
-      </div>
+      <div className="flex flex-col items-center w-full lg:max-w-[650px] max-w-[350px] lg:min-h-[400px]">
+        <div className=" border-gray-600 w-full mt-10 flex justify-center border-b-2 ">
+          <p className="text-slate-300  text-xl ">Posts</p>
+        </div>
+
         <div>
           <PostByUser />
         </div>
