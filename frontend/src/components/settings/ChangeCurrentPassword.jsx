@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { ChangecurrentPassword } from "../../api/changeCurrentPassword";
 
 const ChangeCurrentPassword = () => {
 
@@ -35,7 +36,7 @@ const ChangeCurrentPassword = () => {
         }
         // Submit the form if passwords match
         try {
-            await axios.post(`${url}users/change-Current-Password/${userId}`, formData)
+            await ChangecurrentPassword(formData, userId);
                 
         } catch (error) {
             console.log('There seems to be an error while changing password');

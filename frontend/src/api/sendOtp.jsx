@@ -1,10 +1,13 @@
 import axios from "axios";
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
-export const sendOtp = async(email) => {
+export const sendOtp = async(email,scenario) => {
+    console.log('scenario', scenario);
+    
        try {
             const response = await axios.post(` ${url}users/otp-request`, {
                 email,
+                scenario
             })
             console.log('otp api response', response.data);
             if(!response){

@@ -26,8 +26,11 @@ const SettingAccordian = ({ title }) => {
             </div>
             {isOpen && (
                 <div className="accordian-content pb-4">
+                    <Link to="/change-current-email">
                     <div className="text-slate-200 pl-12 -mt-3 mb-1 cursor-pointer hover:underline transition-all duration-500">Change Email</div>
-                    <Link to="Update-current-password">
+                    </Link>
+                    
+                    <Link to="/Update-current-password">
                     <div className="text-slate-200 pl-12 cursor-pointer hover:underline transition-all duration-500">Change Password</div>    
                     </Link>
                     
@@ -35,15 +38,17 @@ const SettingAccordian = ({ title }) => {
                 </div>
             )}
             <div className="accordian-content pb-4 lg:hidden">
-                    <div className="text-slate-200 pl-12 -mt-3 mb-1 cursor-pointer font-mono hover:underline transition-all duration-500">Change Email</div>
-                    <Link to="Update-current-password" onClick={handleLinkClick}>
+                    <Link to="/change-current-email" onClick={handleLinkClick}>
+                        <div className="text-slate-200 pl-12 -mt-3 mb-1 cursor-pointer hover:underline transition-all duration-500">Change Email</div>
+                    </Link>
+                    <Link to="/Update-current-password" onClick={handleLinkClick}>
                         <div className="text-slate-200 pl-12  font-mono cursor-pointer hover:underline transition-all duration-500">Change Password</div>    
                     </Link>
                     
                     
                 </div>
         </div>
-        
+
     );
 };
 

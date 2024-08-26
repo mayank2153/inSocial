@@ -24,6 +24,7 @@ import ChangeCurrentEmail from './components/settings/ChangeCurrentEmail.jsx';
 import { useState } from 'react';
 import Notifications from './components/notification/notifications.jsx';
 import VerifyEmail from './components/Signup/verifyEmail.jsx';
+import VerifyNewEmail from './components/settings/verifyChangeEmail.jsx';
 
 function Layout() {
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
@@ -99,6 +100,24 @@ const appRouting = createBrowserRouter([
     element: (
       <ForgetPassword />
     ),
+  },
+  {
+    path: "/change-current-email",
+    element: (
+      <ProtectedRoute>
+        <ChangeCurrentEmail/>
+      </ProtectedRoute>
+    )
+
+  },
+  {
+    path: "/change-current-email/verify-otp",
+    element: (
+      <ProtectedRoute>
+        <VerifyNewEmail />
+      </ProtectedRoute>
+    )
+
   },
   {
     path: "/reset-password/:accessToken",
@@ -186,14 +205,7 @@ const appRouting = createBrowserRouter([
           </ProtectedRoute>
         )
       },
-      {
-        path: "/change-current-email",
-        element: (
-          <ProtectedRoute>
-            <ChangeCurrentEmail/>
-          </ProtectedRoute>
-        )
-      },
+      
       {
         path: "/notification/:userId",
         element: (

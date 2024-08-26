@@ -8,6 +8,7 @@ import nodemailer from "nodemailer";
 import mailSender from "../utils/mailSender.js";
 import otpGenerator from "otp-generator";
 import { OTP } from "../models/otp.model.js";
+import PasswordSuccessfullyChanged from "../Template/changePassword.template.js";
 
 
 
@@ -76,7 +77,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
         return res.status(400).json({ message: "Email already exists." });
       }
       
-      const response = await OTP.find({email}).sort({createdAt: -1}).limit(1);
+      const response = await OTP.find({email, scenario: "registration"}).sort({createdAt: -1}).limit(1);
       console.log('otp response', response);
 
       if(response.length === 0){
@@ -364,28 +365,41 @@ const editUser = asyncHandler(async (req, res) => {
 
 const updateCurrentPassword = asyncHandler(async(req , res) => {
     const {userId} = req.params;
-    const { Password, newPassword } = req.body;
+    const { currentPassword, newPassword } = req.body;
+
+    console.log('password', currentPassword);
+    console.log('newPassword', newPassword);
+    
+    
     const user = await User.findById(userId);
 
     if(!user){
         throw new ApiError(404, "User not found");
     }
 
-    const isPasswordCorrect = await user.isPasswordCorrect(Password);
+    const isPasswordCorrect = await user.isPasswordCorrect(currentPassword);
 
     if(!isPasswordCorrect){
-        throw new ApiError(400, "Incorrect old Password")
+        throw new ApiError(400, "Incorrect old currentPassword")
     }
     user.password = newPassword
 
     await user.save({validateBeforeSave: false});
 
-    return res.status(200).json(new ApiResponse(200, {}, "Password updated successfully"))
+    const mailResponsne = await mailSender(
+        user.email,
+        "Password Successfully Changed",
+        PasswordSuccessfullyChanged()
+    );
+
+    console.log('Password successfully Changed',mailResponsne);
+
+    return res.status(200).json(new ApiResponse(200, {}, "currentPassword updated successfully"))
 })
 
 const ChangeCurrentEmail = asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    const { email, newEmail } = req.body;
+    const { email, newEmail ,otp} = req.body;
 
     try {
         const user = await User.findById(userId);
@@ -398,6 +412,21 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Email does not match");
         }
 
+
+        const response = await OTP.find({ email: newEmail }).sort({ createdAt: -1 }).limit(1);
+      console.log('otp response', response);
+        console.log('otp saved in backend',response[0].otp)
+      if(response.length === 0){
+        return res.status(400).json({
+            success: false,
+            message: "OTP not valid"
+        })
+      }else if(otp !== response[0].otp){
+        return res.status(400).json({
+            success: false,
+            message: "OTP not valid"
+        })
+      }
         user.email = newEmail;
         await user.save(); // Save the updated email
 
@@ -490,50 +519,47 @@ const resetPassword = asyncHandler(async (req, res) => {
     }
  });
 
- const sendOtp = asyncHandler(async(req, res) => {
-
+ const sendOtp = asyncHandler(async (req, res) => {
     try {
-        const {email} = req.body;
-    
-        const user = await User.findOne({email})
-        if(user){
-            throw new ApiError(404, "User is already Registered")
+        const { email, scenario } = req.body;
+        console.log('Request email:', email);
+        console.log('Scenario:', scenario);
+
+        const user = await User.findOne({ email });
+        if (user) {
+            throw new ApiError(404, "User is already registered");
         }
-        console.log('email here', email);
-        
-    
-        let otp = otpGenerator.generate(6,{
+
+        let otp = otpGenerator.generate(6, {
             upperCaseAlphabets: false,
             lowerCaseAlphabets: false,
             specialChars: false,
-        })
-    
-        const result = await OTP.findOne({otp: otp})
-        console.log("otp", otp);
-        console.log("result", result);
-    
-        while(result) {
+        });
+
+        // Check if OTP already exists
+        const existingOtp = await OTP.findOne({ otp });
+        console.log("Generated OTP:", otp);
+        console.log("Existing OTP:", existingOtp);
+
+        while (existingOtp) {
             otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
                 lowerCaseAlphabets: false,
                 specialChars: false,
             });
         }
-    
-        const otpPayload = {email, otp}
-        const otpBody = await OTP.create(otpPayload)
-    
-        res.status(200).json(
-            new ApiResponse(200, otpBody, "OTP sent successfully")
-        )
-                
+
+        const otpPayload = { email, otp, scenario };
+        const otpBody = await OTP.create(otpPayload);
+
+        console.log("OTP created successfully:", otpBody);
+
+        res.status(200).json(new ApiResponse(200, otpBody, "OTP sent successfully"));
     } catch (error) {
         console.error("Error sending OTP:", error);
-        throw new ApiError(500, "Error sending OTP", error.message);   
+        throw new ApiError(500, "Error sending OTP", error.message);
     }
-
-    
- })
+});
 
 
 export {
