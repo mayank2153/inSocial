@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { ChangecurrentPassword } from "../../api/changeCurrentPassword";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import {Link} from "react-router-dom";
 
 const ChangeCurrentPassword = () => {
 
@@ -35,7 +38,7 @@ const ChangeCurrentPassword = () => {
         }
         // Submit the form if passwords match
         try {
-            await axios.post(`${url}users/change-Current-Password/${userId}`, formData)
+            await ChangecurrentPassword(formData, userId);
                 
         } catch (error) {
             console.log('There seems to be an error while changing password');
@@ -46,7 +49,12 @@ const ChangeCurrentPassword = () => {
 
     return (
         <div className=" bg-[#0d1114] min-h-screen overflow-y-scroll no-scrollbar flex flex-col items-center px-16">
-            <div className="text-slate-200 text-center mt-20">
+
+            <div className="text-slate-200 text-center mt-20 flex gap-28">
+                <Link to="/">
+                    <IoMdArrowRoundBack className="-ml-32 mt-2" size={25}/>
+                </Link>
+                
                 <h2 className="text-2xl font-mono">Change Password</h2>
             </div>
             <div className="justify-center  mt-10">

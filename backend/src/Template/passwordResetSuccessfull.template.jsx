@@ -1,10 +1,10 @@
-const otpTemplate = (otp) => {
+const PasswordResetSuccessTemplate = () => {
 	return `<!DOCTYPE html>
 	<html>
 	
 	<head>
 		<meta charset="UTF-8">
-		<title>OTP Verification Email</title>
+		<title>Password Reset Successful</title>
 		<style>
 			body {
 				background-color: #ffffff;
@@ -66,21 +66,17 @@ const otpTemplate = (otp) => {
 	
 	<body>
 		<div class="container">
-			<div class="message">OTP Verification Email</div>
+			<div class="message">Password Reset Successful</div>
 			<div class="body">
-				<p>Dear User,</p>
-				<p>Thank you for registering with InSocial. To complete your registration, please use the following OTP
-					(One-Time Password) to verify your account:</p>
-				<h2 class="highlight">${otp}</h2>
-				<p>This OTP is valid for 2 minutes. If you did not request this verification, please disregard this email.
-				Once your account is verified, you will have access to our platform and its features.</p>
-			</div>
-			<div class="support">If you have any questions or need assistance, please feel free to reach out to us at <a
-					href="mailto:developer@insocial.tech">developer@insocial.tech</a>. We are here to help!</div>
+                <p>Dear User,</p>
+                <p>We wanted to let you know that your password has been successfully reset. You can now log in to your InSocial account using your new password.</p>
+                <p>If you did not reset your password or if you have any concerns, please contact our support team immediately.</p>
+            </div>
+			<div class="support">If you have any questions or need assistance, please feel free to reach out to us at <a href="mailto:developer@insocial.tech">developer@insocial.tech</a>. We are here to help!</div>
 		</div>
 	</body>
 	
 	</html>`;
 };
 
-export default otpTemplate;
+export default PasswordResetSuccessTemplate;

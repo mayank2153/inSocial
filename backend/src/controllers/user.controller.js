@@ -8,6 +8,8 @@ import nodemailer from "nodemailer";
 import mailSender from "../utils/mailSender.js";
 import otpGenerator from "otp-generator";
 import { OTP } from "../models/otp.model.js";
+import PasswordSuccessfullyChanged from "../Template/changePassword.template.js";
+import PasswordResetTemplate from "../Template/PasswordReset.template.js";
 
 
 
@@ -76,7 +78,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
         return res.status(400).json({ message: "Email already exists." });
       }
       
-      const response = await OTP.find({email}).sort({createdAt: -1}).limit(1);
+      const response = await OTP.find({email, scenario: "registration"}).sort({createdAt: -1}).limit(1);
       console.log('otp response', response);
 
       if(response.length === 0){
@@ -364,28 +366,41 @@ const editUser = asyncHandler(async (req, res) => {
 
 const updateCurrentPassword = asyncHandler(async(req , res) => {
     const {userId} = req.params;
-    const { Password, newPassword } = req.body;
+    const { currentPassword, newPassword } = req.body;
+
+    console.log('password', currentPassword);
+    console.log('newPassword', newPassword);
+    
+    
     const user = await User.findById(userId);
 
     if(!user){
         throw new ApiError(404, "User not found");
     }
 
-    const isPasswordCorrect = await user.isPasswordCorrect(Password);
+    const isPasswordCorrect = await user.isPasswordCorrect(currentPassword);
 
     if(!isPasswordCorrect){
-        throw new ApiError(400, "Incorrect old Password")
+        throw new ApiError(400, "Incorrect old currentPassword")
     }
     user.password = newPassword
 
     await user.save({validateBeforeSave: false});
 
-    return res.status(200).json(new ApiResponse(200, {}, "Password updated successfully"))
+    const mailResponsne = await mailSender(
+        user.email,
+        "Password Successfully Changed",
+        PasswordSuccessfullyChanged()
+    );
+
+    console.log('Password successfully Changed',mailResponsne);
+
+    return res.status(200).json(new ApiResponse(200, {}, "currentPassword updated successfully"))
 })
 
 const ChangeCurrentEmail = asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    const { email, newEmail } = req.body;
+    const { email, newEmail ,otp} = req.body;
 
     try {
         const user = await User.findById(userId);
@@ -398,6 +413,21 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Email does not match");
         }
 
+
+        const response = await OTP.find({ email: newEmail }).sort({ createdAt: -1 }).limit(1);
+      console.log('otp response', response);
+        console.log('otp saved in backend',response[0].otp)
+      if(response.length === 0){
+        return res.status(400).json({
+            success: false,
+            message: "OTP not valid"
+        })
+      }else if(otp !== response[0].otp){
+        return res.status(400).json({
+            success: false,
+            message: "OTP not valid"
+        })
+      }
         user.email = newEmail;
         await user.save(); // Save the updated email
 
@@ -436,104 +466,135 @@ const forgetPassword = asyncHandler(async (req, res) => {
     const resetlink = `${process.env.CLIENT_URL}reset-password/${accessToken}`;
     console.log('Reset link:', resetlink);
 
-    // Email options
-    const mailOptions = {
-        from: 'hubwhisper@gmail.com',
-        to: email,
-        subject: 'Here is your password Reset link for Banter.com',
-        text: `Please use this link to reset your password: ${resetlink}`
-    };
-
-    // Sending the email using async/await
-    try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent: ' + info.response);
-        res.status(200).json({
-            message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
-        });
-    } catch (error) {
-        console.error('Error sending email:', error);
-        throw new ApiError(500, 'Error in sending mail', error.message);
-    }
-});
-const resetPassword = asyncHandler(async (req, res) => {
-    try {
-      const { resetlink, newPassword } = req.body;
-  
-      if (!resetlink) {
-        throw new ApiError(401, "Authentication error: reset link is missing.");
-      }
-  
-      console.log("Searching for user with reset link:", resetlink);
-  
-      const user = await User.findOneAndUpdate(
-        { resetlink:resetlink },
-        {
-          password: newPassword,
-          resetlink: ""
-        },
-        { new: true } // returns the updated document
-      );
-  
-      if (!user) {
-        throw new ApiError(404, "User not found or reset link invalid.");
-      }
-  
-      console.log("User found and password updated:", user);
-  
-      return res.status(200).json(
-        new ApiResponse(200, user, "Password reset successful")
-      );
-    } catch (error) {
-      console.error("Error resetting password:", error);
-      return res.status(500).json(new ApiError(500, "Error resetting password", error.message));
-    }
- });
-
- const sendOtp = asyncHandler(async(req, res) => {
-
-    try {
-        const {email} = req.body;
+    user.resetlink = accessToken;
+    await user.save({validateBeforeSave: false});
     
-        const user = await User.findOne({email})
-        if(user){
-            throw new ApiError(404, "User is already Registered")
-        }
-        console.log('email here', email);
+    try {
+        const mailContent = await mailSender(
+            email,
+            "Password Reset Link",
+            PasswordResetTemplate(resetlink)
+        );
+        console.log(`mail sent to ${email}`, mailContent);
         
+    } catch (error) {
+        console.log('seems to be an error sending mail', error);
+        
+    }
+
+    // Email options
+    // const mailOptions = {
+    //     from: 'hubwhisper@gmail.com',
+    //     to: email,
+    //     subject: 'Here is your password Reset link for Banter.com',
+    //     text: `Please use this link to reset your password: ${resetlink}`
+    // };
+
+    // // Sending the email using async/await
+    // try {
+    //     const info = await transporter.sendMail(mailOptions);
+    //     console.log('Email sent: ' + info.response);
+    //     res.status(200).json({
+    //         message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
+    //     });
+    // } catch (error) {
+    //     console.error('Error sending email:', error);
+    //     throw new ApiError(500, 'Error in sending mail', error.message);
+    // }
+});
+
+import bcrypt from "bcrypt"; // Ensure bcrypt is imported
+
+const resetPassword = asyncHandler(async (req, res) => {
+  try {
+    const { resetlink, newPassword } = req.body;
+    console.log('pass', newPassword);
+
+    if (!resetlink) {
+      throw new ApiError(401, "Authentication error: reset link is missing.");
+    }
+
+    console.log("Searching for user with reset link:", resetlink);
+
+    // Manually hash the new password before updating
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const user = await User.findOneAndUpdate(
+      { resetlink: resetlink },
+      {
+        password: hashedPassword,  // Update with hashed password
+        resetlink: ""
+      },
+      { new: true } // returns the updated document
+    );
+
+    if (!user) {
+      throw new ApiError(404, "User not found or reset link invalid.");
+    }
+
+    console.log("User found and password updated:", user);
+
+    const mailContent  = await mailSender(
+        user.email,
+        "Password Reset Successful",
+        PasswordSuccessfullyChanged()
+        
+    )
+    console.log(`mail has been sent to ${user.email}`, mailContent);
     
-        let otp = otpGenerator.generate(6,{
+
+    return res.status(200).json(
+      new ApiResponse(200, user, "Password reset successful")
+    );
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    return res.status(500).json(new ApiError(500, "Error resetting password", error.message));
+  }
+});
+
+  
+
+ const sendOtp = asyncHandler(async (req, res) => {
+    try {
+        const { email, scenario } = req.body;
+        console.log('Request email:', email);
+        console.log('Scenario:', scenario);
+
+        const user = await User.findOne({ email });
+        if (user) {
+            throw new ApiError(404, "User is already registered");
+        }
+
+        let otp = otpGenerator.generate(6, {
             upperCaseAlphabets: false,
             lowerCaseAlphabets: false,
             specialChars: false,
-        })
-    
-        const result = await OTP.findOne({otp: otp})
-        console.log("otp", otp);
-        console.log("result", result);
-    
-        while(result) {
+        });
+
+        // Check if OTP already exists
+        const existingOtp = await OTP.findOne({ otp });
+        console.log("Generated OTP:", otp);
+        console.log("Existing OTP:", existingOtp);
+
+        while (existingOtp) {
             otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
                 lowerCaseAlphabets: false,
                 specialChars: false,
             });
         }
-    
-        const otpPayload = {email, otp}
-        const otpBody = await OTP.create(otpPayload)
-    
-        res.status(200).json(
-            new ApiResponse(200, otpBody, "OTP sent successfully")
-        )
-                
+
+        const otpPayload = { email, otp, scenario };
+        const otpBody = await OTP.create(otpPayload);
+
+        console.log("OTP created successfully:", otpBody);
+
+        res.status(200).json(new ApiResponse(200, otpBody, "OTP sent successfully"));
     } catch (error) {
         console.error("Error sending OTP:", error);
-        throw new ApiError(500, "Error sending OTP", error.message);   
+        throw new ApiError(500, "Error sending OTP", error.message);
     }
-
-    
- })
+});
 
 
 export {
