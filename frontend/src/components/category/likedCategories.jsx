@@ -6,14 +6,15 @@ import LikedCategoriesShimmer from "../shimmer/likedCategories.shimmer";
 import { deleteCategory, setCategories as setCategoriesRedux } from "../../utils/categoryslice";
 import { fetchCategoryDetails } from "../../api/fetchCategoryDetails";
 import { fetchOwnerDetails } from "../../api/fetchOwnerDetails";
+import { UserData } from "../../api/getUserbyId";
 
 const LikedCategories = () => {
     const [change, setChange] = useState(true);
     const [user, setUser] = useState(null);
     const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
-    const userData = useSelector((state) => state.auth.user);
+    const userD = useSelector((state) => state.auth.user);
     // const userlikedCategories = userData?.data?.user?.likedCategories;
-    const ownerID = userData?.data?.user?._id;
+    const ownerID = userD?.data?.user?._id;
     // console.log(ownerID);
     const [categories, setCategories] = useState([]);
     const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -23,7 +24,8 @@ const LikedCategories = () => {
     
         const fetchOwner = async() => {
             try {
-               const ownerDetail =  await fetchOwnerDetails(ownerID);
+                console.log("in liked category,",ownerID)
+               const ownerDetail =  await UserData(ownerID);
                setUser(ownerDetail);
             //    console.log('owner details are : ',ownerDetail);
             } catch (error) {
@@ -33,10 +35,10 @@ const LikedCategories = () => {
     useEffect(() => {
         fetchOwner();
     }, [ownerID])
-    console.log('owner ', user);
+    // console.log('owner ', user);
 
     const userlikedCategories = user?.likedCategories;
-    console.log('user liked categories', userlikedCategories);
+    // console.log('user liked categories', userlikedCategories);
 
     useEffect(() => {
         if (userlikedCategories) {
@@ -45,7 +47,7 @@ const LikedCategories = () => {
     }, [dispatch, userlikedCategories]);
 
     const likedCategories_redux = useSelector((state) => state.likedCategories.likesCategory);
-    console.log('from redux:', likedCategories_redux);
+    // console.log('from redux:', likedCategories_redux);
 
     const fetchingCategoriesByid = async () => {
         try {
@@ -61,7 +63,7 @@ const LikedCategories = () => {
             console.error('Error fetching categories:', error);
         }
     };
-    console.log('data in category',categories);
+    // console.log('data in category',categories);
     const handleRemoveCategory = async (categoryId) => {
         try {
             await axios.post(`${url}users/remove-liked-category`, {

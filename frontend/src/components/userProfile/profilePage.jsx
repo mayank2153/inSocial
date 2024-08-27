@@ -20,6 +20,7 @@ const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   console.log('control reaching here');
   const userLogOut = async() => {
     try {
+      console.log("in logout")
       await axios.post(`${url}users/logout`,userData,{
         headers: {
           'Content-Type': 'application/json'

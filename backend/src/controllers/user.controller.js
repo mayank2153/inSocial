@@ -184,6 +184,7 @@ const handleGoogleLogin = async (user, res) => {
 };
 
 const logOutUser = asyncHandler(async(req, res) => {
+    console.log("in backend logout")
     console.log("req user:",req.user)
     // const {user}=req.body
     await User.findByIdAndUpdate(
@@ -307,7 +308,7 @@ const removeLikedCategory = asyncHandler(async (req, res) => {
 
 const getUserById = asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    console.log('userId in backend ', userId);
+    // console.log('userId in backend ', userId);
     
     try {
         const user = await User.findById(userId);

@@ -23,7 +23,7 @@ userRouter.route("/login").post(loginUser)
 userRouter.route("/logout").post(verifyJWT, logOutUser);
 userRouter.route("/add-liked-categories").post(verifyJWT,addLikedCategories);
 userRouter.route("/remove-liked-category").post(verifyJWT,removeLikedCategory);
-userRouter.route("/get-user/:userId").get(verifyJWT,getUserById);
+userRouter.route("/get-user/:userId").get(getUserById);
 userRouter.route("/edit-user/:userId").post(
     upload.fields([
         {
