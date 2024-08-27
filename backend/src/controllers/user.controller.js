@@ -174,7 +174,9 @@ const handleGoogleLogin = async (user, res) => {
         
         res.cookie("accessToken", accessToken, options);
         res.cookie("refreshToken", refreshToken, options);
-        res.redirect(`${process.env.CORS_ORIGIN}/redirect`);
+
+        // Redirect with a query parameter
+        res.redirect(`${process.env.CORS_ORIGIN}/redirect?userId=${user._id}`);
     } catch (error) {
         console.error("Error handling Google login:", error);
         res.redirect('/login'); // Redirect to login on error

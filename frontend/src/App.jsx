@@ -25,6 +25,8 @@ import { useState } from 'react';
 import Notifications from './components/notification/notifications.jsx';
 import VerifyEmail from './components/Signup/verifyEmail.jsx';
 import VerifyNewEmail from './components/settings/verifyChangeEmail.jsx';
+import GoogleRedirectHandler from './components/redirect/redirectHandler.jsx';
+
 
 function Layout() {
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
@@ -71,6 +73,16 @@ const appRouting = createBrowserRouter([
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <Login />
+        </PersistGate>
+      </Provider>
+    ),
+  },
+  {
+    path: "/redirect",
+    element: (
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <GoogleRedirectHandler />
         </PersistGate>
       </Provider>
     ),

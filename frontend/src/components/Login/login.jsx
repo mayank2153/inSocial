@@ -32,8 +32,9 @@ const Login = () => {
         try {
             console.log("1")
             const response = await axios.post(`${url}users/login`, user, { withCredentials: true });
-            console.log("response:",response)
+            console.log("response:",response.data)
             dispatch(loginSuccess(response.data));
+            
             navigate('/'); // Redirect to the homepage after successful login
         } catch (error) {
             console.log(error?.response?.data);
