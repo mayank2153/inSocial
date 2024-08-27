@@ -3,12 +3,13 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { connectSocket, disconnectSocket } from '../../utils/socketslice.jsx';
 import UserCard from '../homepage/userCard/userCard.jsx';
+import { FaRegPaperPlane } from "react-icons/fa";
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
 const ChatComponent = ({ conversationId, userId, receiver }) => {
     const dispatch = useDispatch();
-    const socket = useSelector((state) => state.socket?.socket); 
+    const socket = useSelector((state) => state.socket?.socket);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const lastMessageRef = useRef(null);
@@ -18,17 +19,17 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
             dispatch(connectSocket());
         }
     }, [socket]);
-    
+
     useEffect(() => {
         if (socket) {
             socket.emit('joinConversation', conversationId);
-    
+
             const handleReceiveMessage = (message) => {
                 setMessages((prevMessages) => [...prevMessages, message]);
             };
-    
+
             socket.on('receiveMessage', handleReceiveMessage);
-    
+
             return () => {
                 socket.off('receiveMessage', handleReceiveMessage);
                 dispatch(disconnectSocket());
@@ -87,18 +88,15 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
     const CustomMessage = ({ content, date, isSent }) => {
         return (
             <div className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-xs p-3 rounded-lg ${isSent ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'} shadow-lg mb-2`}>
+                <div className={`max-w-[70%] p-3 rounded-lg ${isSent ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'} shadow-lg mb-2 overflow-x-clip`}>
                     <p className="text-sm">{content}</p>
-                    {/* <span className="text-xs text-gray-400 mt-1 block">
-                        {new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span> */}
                 </div>
             </div>
         );
     };
 
     return (
-        <div className='max-h-[85vh] max-w-[400px] overflow-y-scroll no-scrollbar'>
+        <div className='max-h-[85vh] w-full flex flex-col px-1'>
             <div className='top-0 sticky z-10 bg-[#0d1114]'>
                 {receiver && receiver[0] ? (
                     <UserCard {...receiver[0]} />
@@ -106,29 +104,26 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
                     <p>No receiver data available</p>
                 )}
             </div>
-            <div className='px-4 pb-20'>
+            <div className='flex-1 overflow-y-scroll no-scrollbar px-4'>
                 {messages.map((msg, index) => (
                     <div key={index} ref={index === messages.length - 1 ? lastMessageRef : null}>
                         <CustomMessage
                             content={msg.content}
-                            
                             isSent={msg.sender && msg.sender._id === userId}
                         />
                     </div>
                 ))}
             </div>
-            <div className='flex justify-center'>
-                <div className='fixed bottom-0 w-full max-w-[400px]  py-4  text-lg bg-slate-600 rounded-2xl flex justify-between '>
-                    <input
-                        type="text"
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder='Send Message'
-                        className='bg-transparent focus:outline-none'
-                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                    />
-                    <button onClick={sendMessage}>Send</button>
-                </div>
+            <div className='w-full py-4 text-md bg-slate-600 rounded-2xl flex justify-between px-2 mx-1 sticky bottom-0'>
+                <textarea
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder='Send Message'
+                    className='bg-transparent focus:outline-none flex-1   no-scrollbar resize-none'
+                    rows={1}
+                    onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), sendMessage())}
+                />
+                <button onClick={sendMessage} className='px-2'><FaRegPaperPlane /></button>
             </div>
         </div>
     );

@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { sendOtp } from "../../api/sendOtp";
-import logo from "../../assets/images/logo (3)-removebg-preview.jpg";
+import logo from "../../assets/images/logo.jpg";
 import { Link, useNavigate } from "react-router-dom";
 
 const ChangeCurrentEmail = () => {

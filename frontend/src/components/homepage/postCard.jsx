@@ -117,7 +117,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   }
 
   return (
-    <div className="post-card shadow-md rounded-lg py-1  w-full lg:max-w-[650px] min-w-[350px]" style={
+    <div className="post-card  rounded-lg py-1  w-full lg:max-w-[650px] min-w-[350px]" style={
       {backgroundColor: bgColor}
     }>
       <div

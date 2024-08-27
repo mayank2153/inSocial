@@ -14,7 +14,7 @@ const PostPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const bg_color = '#0d1114'
+  const bgColor = '#0d1114'
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -58,7 +58,7 @@ const PostPage = () => {
         </Link>
         
         
-        <PostCard {...data} bg_color={bg_color}  />
+        <PostCard {...data} bgColor={bgColor}  />
       </div>
         
         <CommentInput postId={postId} />
