@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { UserData } from '../../api/getUserbyId';
 import { useDispatch } from 'react-redux';
 import { loginSuccess, loginFailure } from "../../utils/authslice.jsx";
+import Shimmer from '../shimmer/shimmer.jsx';
 const GoogleRedirectHandler = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -40,7 +40,9 @@ const GoogleRedirectHandler = () => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
 
-    return <div>Welcome, {user?.name}!</div>; // Customize as needed
+    return <div>
+        <Shimmer />
+    </div>; 
 };
 
 export default GoogleRedirectHandler;
