@@ -3,11 +3,13 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { connectSocket, disconnectSocket } from '../../utils/socketslice.jsx';
 import { IoArrowBackOutline } from "react-icons/io5";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+// import { useNavigate } from "react-router-dom";
 
 const Notifications = () => {
     const dispatch = useDispatch();
     const socket = useSelector((state) => state.socket.socket);
+    const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
     const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
     const userData = useSelector((state) => state.auth.user);
@@ -24,7 +26,8 @@ const Notifications = () => {
         }
     };
     // console.log("Joining socket with ID - 2",socket);
-    
+
+
     useEffect(() => {
         // Connect socket if not already connected
         if (!socket) {
@@ -51,6 +54,13 @@ const Notifications = () => {
             }
         };
     }, [socket, dispatch, userId]);
+    const handleNotificationClick = (postId) => {
+        if (postId) {
+            navigate(`/post/${postId}`); // Navigate to the post page using postId
+        } else {
+            console.log("Notification does not have a valid post reference.");
+        }
+    };
 
 
     return (
@@ -66,7 +76,9 @@ const Notifications = () => {
             <div className="mt-10"> 
     <ul>
         {notifications.map((notification, index) => (
-            <div className="text-slate-300  mx-6 rounded-lg bg-[#13181d] shadow-xl h-[50px] cursor-pointer" key={index}>
+            <div className="text-slate-300  mx-6 rounded-lg bg-[#13181d] shadow-xl h-[50px] cursor-pointer" 
+            key={index}
+            onClick={() => handleNotificationClick(notification.postId)}>
                 <li className="my-2">
                     <div className="text-center font-sans pt-1 ">
                         <span>{notification.message}</span>
