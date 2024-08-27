@@ -62,7 +62,7 @@ const CommentInputReply = ({ postId , parentCommentId,userName}) => {
   }
 
   return (
-    <div className="items-center min-w-full max-w-lg border  border-slate-50 rounded-2xl m-2 px-2 py-1 ">
+    <div className="items-center max-w-[250px] lg:max-w-[500px] lg:min-w-[500px]  border  border-gray-600 rounded-2xl m-2 px-2 py-1 ">
       <textarea
         ref={textareaRef}
         placeholder="Add a comment"

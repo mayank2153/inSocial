@@ -14,7 +14,7 @@ const PostPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const bg_color = '#0d1114'
+  const bgColor = '#0d1114'
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -49,22 +49,19 @@ const PostPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center w-full bg-[#0d1114] h-screen  max-h-[100vh] overflow-y-scroll no-scrollbar py-10">
-
-      <div className="bg-[#0d1114] w-[800px] px-4 py-2 rounded-2xl">
-      <div className="flex bg-[#0d1114]">
-        <Link to='/'>
-        <TiArrowBack  className="ml-1 text-slate-300 mt-8 " size={30}/>
-        </Link>
-        
-        
-        <PostCard {...data} bg_color={bg_color}  />
-      </div>
-        
+    <div className="flex flex-col items-center bg-[#0d1114] h-screen max-h-[100vh] overflow-y-scroll no-scrollbar py-10  w-full   min-w-[200px] break-words max-w-[880px]">
+      <div className="bg-[#0d1114] lg:px-4 px-2 py-2 rounded-2xl w-full flex flex-col items-center">
+        <div className="flex bg-[#0d1114]">
+          <Link to='/'>
+            <TiArrowBack className="ml-1 text-slate-300 mt-8 " size={30} />
+          </Link>
+          <PostCard {...data} bgColor={bgColor} />
+        </div>
         <CommentInput postId={postId} />
         <ShowComments />
       </div>
     </div>
+
   );
 };
 

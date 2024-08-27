@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { FaRegPaperPlane } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const UserCard = ({ avatar, bio, userName, _id }) => {
+const UserCard = ({ avatar, bio, userName, _id,inChat=false }) => {
     const userData = useSelector((state) => state.auth.user);
     // console.log("user:",userData)
     const userId = userData?.data?.user?._id;
@@ -24,19 +24,20 @@ const UserCard = ({ avatar, bio, userName, _id }) => {
     return (
         <div className="min-h-6  py-2 px-4 hover:bg-gray-900 hover:cursor-pointer">
             <div className="owner-info flex items-center mb-4 gap-4">
-                <img
-                    src={avatar}
-                    alt={`Avatar of ${userName}`}
-                    className="w-10 h-10 rounded-full mr-2 border-2 border-black"
-                />
+                <Link to={`/UserProfile/${_id}`}>
+                    <img
+                        src={avatar}
+                        alt={`Avatar of ${userName}`}
+                        className="w-10 h-10 rounded-full mr-2 border-2 border-black"
+                    />
+                </Link>
                 <div>
-                    <Link to={`/UserProfile/${_id}`}>
+                    
                         <div className="text-[16px] font-mono text-slate-200">{userName}</div>
-                    </Link>
                     
                     <div className="text-sm text-gray-500 font-mono ">{bio}</div>
                 </div>
-                <button onClick={handleCreateConversation} className="ml-auto text-white px-2 py-1 rounded">
+                <button onClick={handleCreateConversation} className={`ml-auto text-white px-2 py-1 rounded ${inChat?'hidden':'block'}`}>
                     <FaRegPaperPlane />
                 </button>
             </div>
