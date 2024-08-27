@@ -99,12 +99,12 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
         <div className='max-h-[85vh] w-full flex flex-col px-1'>
             <div className='top-0 sticky z-10 bg-[#0d1114]'>
                 {receiver && receiver[0] ? (
-                    <UserCard {...receiver[0]} />
+                    <UserCard {...receiver[0]} inChat={true} />
                 ) : (
                     <p>No receiver data available</p>
                 )}
             </div>
-            <div className='flex-1 overflow-y-scroll no-scrollbar px-4'>
+            <div className='flex-1 overflow-y-scroll no-scrollbar px-4 mb-12 '>
                 {messages.map((msg, index) => (
                     <div key={index} ref={index === messages.length - 1 ? lastMessageRef : null}>
                         <CustomMessage
@@ -114,7 +114,7 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
                     </div>
                 ))}
             </div>
-            <div className='w-full py-4 text-md bg-slate-600 rounded-2xl flex justify-between px-2 mx-1 sticky bottom-0'>
+            <div className='w-full py-4 text-md bg-slate-600 rounded-2xl flex justify-between px-2 mx-1 fixed bottom-0'>
                 <textarea
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
