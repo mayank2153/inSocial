@@ -69,14 +69,14 @@ const CommentInput = ({ postId }) => {
 
   return (
     <div
-      className={`flex flex-col items-center w-[700px] mt-4 border border-gray-600 py-2 px-4 m-2 bg-[#0d1114] transition-all duration-200 ${
+      className={`flex flex-col items-center  mt-4 border border-gray-600 py-2 px-4 m-2 bg-[#0d1114] transition-all duration-200 ${
         isInputFocused ? "rounded-2xl" : "rounded-full"
-      }`}
+      } min-w-[300px] lg:min-w-[650px]`}
     >
       <textarea
         ref={textareaRef}
         placeholder="Add a comment"
-        className={`w-[600px] bg-[#0d1114] max-h-[40px] focus:outline-none text-white transition-all duration-200 resize-none`}
+        className={` bg-[#0d1114] w-full focus:outline-none text-white transition-all duration-200 resize-none overflow-y-scroll max-h-40 no-scrollbar`}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         onFocus={() => setIsInputFocused(true)}

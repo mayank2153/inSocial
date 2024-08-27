@@ -117,7 +117,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   }
 
   return (
-    <div className="post-card  rounded-lg py-1  w-full lg:max-w-[650px] min-w-[350px]" style={
+    <div className="post-card  rounded-lg py-1  w-full lg:max-w-[650px] min-w-[300px] lg:min-w-[650px]" style={
       {backgroundColor: bgColor}
     }>
       <div
@@ -160,7 +160,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
           {media && (
             <div className="media mt-4 rounded-2xl border border-slate-200 flex justify-center">
               <a href={media} target="_blank" rel="noopener noreferrer">
-                <img src={media} alt="Media content" className="max-w-full max-h-[300px] object-cover" />
+                <img src={media} alt="Media content" className="max-w-full max-h-[220px] object-cover" />
               </a>
             </div>
           )}
