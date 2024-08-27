@@ -10,7 +10,11 @@ import { GoReply } from "react-icons/go";
 const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
 
 const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedAt, owner, replies }) => {
+  
+
+  console.log("ye sab aaya hai:",_id, content, deleted, parentCommentId, post, updatedAt, owner, replies )
   const [isReplying, setIsReplying] = useState(false);
+
   const { postId } = useParams();
   const user = useSelector(state => state.auth.user?.data?.user?._id);
 

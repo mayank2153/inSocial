@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import CommentDisplay from "./commentDisplay";
-
+import { useDispatch} from "react-redux";
+import { useSelector } from "react-redux";
+import { setComments } from "../../../utils/commentsSlice";
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
 const ShowComments = () => {
   const { postId } = useParams();
-  const [comments, setComments] = useState([]);
+  const dispatch = useDispatch();
+  const comments = useSelector((state) => state.comments.comments);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -18,8 +21,8 @@ const ShowComments = () => {
           },
           withCredentials: true,
         });
-        
-        setComments(response.data.data);
+        console.log("comments:",response.data.data)
+        dispatch(setComments(response.data.data));
       } 
       catch (error) {
         console.error(error)

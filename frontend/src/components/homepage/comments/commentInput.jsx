@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { connectSocket } from "../../../utils/socketslice.jsx";
 import { useDispatch, useSelector } from "react-redux";
+import { addComment } from "../../../utils/commentsSlice.jsx";
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
@@ -45,6 +46,7 @@ const CommentInput = ({ postId }) => {
       setComment(""); // Clear the comment input after successful submission
       setIsInputFocused(false);
       console.log("Comment generated successfully:", response.data);
+      dispatch(addComment(response.data.data))
       console.log("socket:,",socket)
       if (socket) {
         const emitData = {
