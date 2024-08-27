@@ -6,7 +6,8 @@ import avatar1 from "./avatar/avatar-1.webp";
 import avatar2 from "./avatar/avatar-2.webp";
 import avatar3 from "./avatar/avatar-3.webp";
 import avatar4 from "./avatar/avatar-4.jpeg";
-import logo from "../../assets/images/logo (3)-removebg-preview.jpg";
+import logo from "../../assets/images/logo.jpg";
+import logo_img_black from "../../assets/images/logo_img_black.png"
 import { FaSyncAlt } from "react-icons/fa";
 import { setTempUserData, clearTempUserData } from "../../utils/authslice";
 import { useDispatch, useSelector } from "react-redux";
@@ -130,13 +131,16 @@ const TwoStepForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-evenly min-h-screen bg-black w-full">
-      <div className="mt-14">
-        <img src={logo} alt="logo.png" />
-      </div>
+    <div className="flex items-center  flex-col lg:flex-row lg:justify-evenly min-h-screen bg-black w-full max-w-screen-2xl px-10">
+      <div className="mt-14 hidden lg:block">
+                <img src={logo} alt="logo.png"/>
+            </div>
+            <div className="mt-10 block lg:hidden w-20 mb-20">
+                <img src={logo_img_black} alt="logo.png"/>
+            </div>
 
-      <div className="bg-black shadow-xl rounded-lg p-8 w-full max-w-md mr-40">
-        <h2 className="text-2xl text-white font-mono mt-10 ml-16">
+      <div className="bg-black shadow-xl rounded-lg w-full max-w-md flex flex-col items-center">
+        <h2 className="text-2xl text-white font-mono  lg:ml-16">
           Create Your Account
         </h2>
         {serverError && (

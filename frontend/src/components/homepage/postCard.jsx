@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-import { FaRegComment } from 'react-icons/fa';
+import { FaRegCommentAlt } from "react-icons/fa";
 import { AiOutlineLike, AiOutlineDislike } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { fetchOwnerDetails } from '../../api/fetchOwnerDetails.js';
@@ -41,7 +41,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
     }
   }, [currentUser, votes]);
   const handleVote = async (voteType) => {
-    if (userVote === voteType) {
+    if (userVote) {
       // If the user is clicking the same vote type again, remove the vote
       const voteId = votes.find(vote => vote.voteOwner === currentUser)?.voteId;
       console.log("vote is",voteId)
@@ -117,7 +117,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   }
 
   return (
-    <div className="post-card shadow-md rounded-lg py-1  w-full lg:max-w-[650px] min-w-[350px]" style={
+    <div className="post-card  rounded-lg py-1  w-full lg:max-w-[650px] min-w-[300px] lg:min-w-[650px]" style={
       {backgroundColor: bgColor}
     }>
       <div
@@ -160,12 +160,12 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
           {media && (
             <div className="media mt-4 rounded-2xl border border-slate-200 flex justify-center">
               <a href={media} target="_blank" rel="noopener noreferrer">
-                <img src={media} alt="Media content" className="max-w-full max-h-[300px] object-cover" />
+                <img src={media} alt="Media content" className="max-w-full max-h-[220px] object-cover" />
               </a>
             </div>
           )}
         </div>
-        <div className="text-sm text-gray-500 flex flex-col sm:flex-row gap-4 mt-2">
+        <div className="text-sm text-gray-500 flex items-center sm:flex-row gap-4 mt-2">
           <div className='flex items-center gap-2'>
             <div className={`flex rounded-full gap-1 cursor-pointer
               ${userVote === null ? 'bg-[#222020]' : ''}
@@ -198,9 +198,8 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
             </div>
           </div>
           <Link to={`/post/${_id}`}>
-            <div className='flex items-center bg-[#13181d] rounded-full gap-1 cursor-pointer pr-1'>
-              <FaRegComment size={24} className='hover:text-blue-500 p-1 hover:bg-[#1c1a1a] rounded-full' />
-              <p className='text-lg'>Comments</p>
+            <div className='flex items-center bg-[#13181d]  gap-1 cursor-pointer  rounded-full hover:text-blue-500 hover:bg-[#1c1a1a]'>
+              <FaRegCommentAlt size={25} className=' p-1  ' />
             </div>
           </Link>
         </div>

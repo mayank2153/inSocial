@@ -67,10 +67,12 @@ const Notifications = () => {
         <div className="w-full bg-[#0d1114] h-[100vh] overflow-y-scroll no-scrollbar ">
             <div className="mt-4 flex text-center">
                 <Link to="/">
-                    <h3 className="text-white pt-1 ml-10"><IoArrowBackOutline  size={25}/></h3>
+                    <h3 className="text-white pt-1 pl-6 lg:ml-10"><IoArrowBackOutline  size={25}/></h3>
                 </Link>
                 
-                <h3 className="text-2xl font-mono text-slate-200 ml-72">Notifications</h3>
+                <div className="flex justify-center w-full">
+                    <h3 className="text-2xl font-mono text-slate-200">Notifications</h3>
+                </div>
 
             </div>
             <div className="mt-10"> 
