@@ -14,7 +14,7 @@ const LikedCategories = () => {
     const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
     const userD = useSelector((state) => state.auth.user);
     // const userlikedCategories = userData?.data?.user?.likedCategories;
-    const ownerID = userD?.data?.user?._id;
+    const ownerID = userD.data.user?userD?.data?.user?._id:userD?.data?._id;
     // console.log(ownerID);
     const [categories, setCategories] = useState([]);
     const [hoveredCategory, setHoveredCategory] = useState(null);

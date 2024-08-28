@@ -9,7 +9,7 @@ export const UserData = async(userId) => {
             { withCredentials: true }
         );
         console.log('user-data', response?.data);
-        return response?.data.data;
+        return response?.data;
         
     } catch (error) {
         console.log('there seems to be an error while fetching data', error.message);
