@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { connectSocket, disconnectSocket } from '../../utils/socketslice.jsx';
 import UserCard from '../homepage/userCard/userCard.jsx';
-import { FaRegPaperPlane } from "react-icons/fa";
+import { IoSend } from "react-icons/io5";
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
@@ -114,7 +114,7 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
                     </div>
                 ))}
             </div>
-            <div className='w-full py-4 text-md bg-slate-600 rounded-2xl flex justify-between px-2 mx-1 fixed bottom-0'>
+            <div className='w-full py-4 text-md bg-slate-600 lg:max-w-[300px] rounded-2xl flex justify-between px-2 mx-1 fixed bottom-0'>
                 <textarea
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
@@ -123,7 +123,7 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
                     rows={1}
                     onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), sendMessage())}
                 />
-                <button onClick={sendMessage} className='px-2'><FaRegPaperPlane /></button>
+                <button onClick={sendMessage} className='px-2 text-blue-500'><IoSend size={25}/></button>
             </div>
         </div>
     );

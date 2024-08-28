@@ -34,7 +34,7 @@ function VerifyEmail() {
 
   const resendOtp = async () => {
     try {
-      await sendOtp(signUpData.email);
+      await sendOtp(signUpData.email,'registration');
       console.log('OTP resent successfully');
     } catch (error) {
       console.log('Error in sending OTP', error);
