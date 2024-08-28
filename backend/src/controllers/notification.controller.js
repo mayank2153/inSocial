@@ -36,9 +36,25 @@ const getUnreadNotificationCount = asyncHandler(async(req, res) => {
         console.error('Error fetching unread notifications count:', error);
         throw new ApiError(500, 'Server Error');
     }
+});
+
+const updateReadCount = asyncHandler(async(req, res) => {
+    const {userId} = req.params;
+
+    try {
+        const ChangereadCount = await Notification.updateMany({receiver: userId, isRead: false}, {$set: {isRead: true}});
+        // console.log('unreadCount:',unreadCount);
+        return res.status(200).json(
+            new ApiResponse(200,ChangereadCount,'unread notification count fetched successfully')
+        )
+    } catch (error) {
+        console.error('Error fetching unread notifications count:', error);
+        throw new ApiError(500, 'Server Error');
+    }
 })
 
 export {
     getNotifications,
     getUnreadNotificationCount,
+    updateReadCount
 }

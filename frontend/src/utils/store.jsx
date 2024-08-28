@@ -7,6 +7,7 @@ import likedCategoriesReducer from "./categoryslice.jsx"
 import themeReducer from "./darkmodeSlice";
 import socketReducer from "./socketslice"
 import commentReducer from "./commentsSlice.jsx"
+import notificationReducer from "./notificationSlice.jsx"
 
 const persistConfig = {
   key: 'root',
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
   likedCategories : likedCategoriesReducer,
   theme: themeReducer,
   socket: socketReducer,
-  comments: commentReducer
+  comments: commentReducer,
+  notification: notificationReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
