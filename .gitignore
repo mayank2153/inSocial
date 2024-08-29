@@ -42,3 +42,4 @@ jspm_packages
 
 #Excluding build directory
 public/
+.vercel
