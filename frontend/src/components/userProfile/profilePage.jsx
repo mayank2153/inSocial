@@ -23,6 +23,7 @@ const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   console.log('control reaching here');
   const userLogOut = async() => {
     await UserLogout(userData, dispatch);
+    toast.success('User successfully logged out')
   } 
 
   return  (
