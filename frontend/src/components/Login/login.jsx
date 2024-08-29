@@ -8,6 +8,8 @@ import { FaGoogle } from "react-icons/fa";
 import { notifyError } from "../../utils/notifications.jsx";
 import logo from "../../assets/images/logo.jpg"
 import logo_img_black from "../../assets/images/logo_img_black.png"
+import toast from "react-hot-toast";
+import { AiOutlineCloseCircle } from 'react-icons/ai'; 
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
@@ -34,11 +36,17 @@ const Login = () => {
             const response = await axios.post(`${url}users/login`, user, { withCredentials: true });
             console.log("response:",response)
             dispatch(loginSuccess(response.data));
-            navigate('/'); // Redirect to the homepage after successful login
+            navigate('/');
+            toast.success(response?.data?.message) // Redirect to the homepage after successful login
         } catch (error) {
             console.log(error?.response?.data);
             // Display notification with error message
-            notifyError(error?.response?.data?.message || "Login failed");
+            // notifyError(error?.response?.data?.message || "Login failed");
+            toast.error(error?.response?.data?.message || "Login failed", {
+                duration:4000,
+                
+                icon: <AiOutlineCloseCircle />,
+            })
 
             dispatch(loginFailure(error?.response?.data?.message));
             // alert(error.response.data.message || "Login failed");

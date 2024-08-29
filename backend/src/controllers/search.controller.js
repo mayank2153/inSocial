@@ -13,7 +13,7 @@ const searchUsersAndPosts=asyncHandler(async(req,res)=>{
             new ApiResponse(200,{posts,users},"Search Successfull")
         )
     } catch (error) {
-        throw new ApiError(500,error);
+        throw new ApiError(500,'Unexpected Error',error);
     }
 })
 export {

@@ -31,7 +31,6 @@ const generateAccessAndRefereshTokens = async(userId) => {
         const refreshToken = user.generateRefreshToken()
         user.refreshToken = refreshToken
         await user.save({ validateBeforeSave: false })
-        console.log("access token in func:",accessToken)
         return {accessToken , refreshToken}
 
     } catch (error) {
@@ -43,18 +42,16 @@ const generateAccessAndRefereshTokens = async(userId) => {
 const registerUser = asyncHandler(async (req, res, next) => {
     try {
       const { userName, email, password, bio ,otp} = req.body;
-      console.log("req body:",req.body)
-        console.log('otp',otp);
-        console.log("req files:",req.files)
+
       // Validate required fields
       if ([userName, email, password].some((field) => !field || field.trim() === "")) {
-        return res.status(400).json({ message: "All required fields must be filled." });
+        throw new ApiError(400, 'All fields are required')
       }
       
 
 
       if (!req.files || !req.files.avatar) {
-        return res.status(400).json({ message: "Avatar is required." });
+        throw new ApiError(400, 'Avatar is required')
       }
   
       const avatarLocalPath = req.files.avatar[0].path;
@@ -62,14 +59,15 @@ const registerUser = asyncHandler(async (req, res, next) => {
   
       const avatar = await uploadOnCloudinary(avatarLocalPath);
       if (!avatar) {
-        throw new Error("Failed to upload avatar.");
+        throw new ApiError(404,"Failed to upload avatar.");
       }
   
       let coverImage = null;
       if (coverImageLocalPath) {
         coverImage = await uploadOnCloudinary(coverImageLocalPath);
         if (!coverImage) {
-          throw new Error("Failed to upload cover image.");
+          throw new ApiError(404,
+            "Failed to upload cover image.");
         }
       }
   
@@ -82,15 +80,9 @@ const registerUser = asyncHandler(async (req, res, next) => {
       console.log('otp response', response);
 
       if(response.length === 0){
-        return res.status(400).json({
-            success: false,
-            message: "OTP not valid"
-        })
+        throw new ApiError(400, 'Invalid OTP ')
       }else if(otp !== response[0].otp){
-        return res.status(400).json({
-            success: false,
-            message: "OTP not valid"
-        })
+        throw new ApiError(400, 'Invalid OTP ')
       }
       
       const user = await User.create({
@@ -102,12 +94,9 @@ const registerUser = asyncHandler(async (req, res, next) => {
         coverImage: coverImage ? coverImage.secure_url : null,
       });
       
-      console.log('registered user',user);
-      
       res.status(201).json({ message: "User registered successfully.", user });
     } catch (error) {
-      console.error("Error during user registration:", error.message);
-      res.status(500).json({ message: error.message || "Internal Server Error." });
+      throw new ApiError(500, 'Server Error')
     }
   });
   
@@ -136,9 +125,7 @@ const loginUser = asyncHandler(async(req, res) => {
     }
 
     const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(existedUser._id)
-    console.log("access token")
     console.log(accessToken)
-    console.log("refresh token:")
     console.log(refreshToken)
     const loggedInUser = await User.findById(existedUser._id).select("-password -refreshToken")
 
@@ -154,7 +141,7 @@ const loginUser = asyncHandler(async(req, res) => {
         new ApiResponse(
             200,
             {
-                user: loggedInUser,accessToken,refreshToken
+                user: loggedInUser
             },
             "User loggedIn successfully"
         )
@@ -162,8 +149,8 @@ const loginUser = asyncHandler(async(req, res) => {
 })
 
 const logOutUser = asyncHandler(async(req, res) => {
-    console.log("req user:",req.user)
-    // const {user}=req.body
+    
+    
     await User.findByIdAndUpdate(
         req.user._id,
         {
@@ -285,8 +272,6 @@ const removeLikedCategory = asyncHandler(async (req, res) => {
 
 const getUserById = asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    console.log('userId in backend ', userId);
-    
     try {
         const user = await User.findById(userId);
         if (!user) {
@@ -295,7 +280,7 @@ const getUserById = asyncHandler(async (req, res) => {
         return res.status(200).json(new ApiResponse(200, user, "User found"));
     } catch (error) {
         console.error("Error fetching user by ID:", error);
-        throw new ApiError(500, "Something unexpected occurred while fetching user details");
+        throw new ApiError(500, "Server Error");
     }
 });
 
@@ -309,7 +294,7 @@ const editUser = asyncHandler(async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) {
-        throw new ApiError(404, "User not found or there was an error in finding the user");
+        throw new ApiError(404, "User not found");
     }
 
     if (userName) {
@@ -367,10 +352,6 @@ const editUser = asyncHandler(async (req, res) => {
 const updateCurrentPassword = asyncHandler(async(req , res) => {
     const {userId} = req.params;
     const { currentPassword, newPassword } = req.body;
-
-    console.log('password', currentPassword);
-    console.log('newPassword', newPassword);
-    
     
     const user = await User.findById(userId);
 
@@ -392,10 +373,7 @@ const updateCurrentPassword = asyncHandler(async(req , res) => {
         "Password Successfully Changed",
         PasswordSuccessfullyChanged()
     );
-
-    console.log('Password successfully Changed',mailResponsne);
-
-    return res.status(200).json(new ApiResponse(200, {}, "currentPassword updated successfully"))
+    return res.status(200).json(new ApiResponse(200, {}, "Password updated successfully"))
 })
 
 const ChangeCurrentEmail = asyncHandler(async (req, res) => {
@@ -413,23 +391,14 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Email does not match");
         }
 
-
-        const response = await OTP.find({ email: newEmail }).sort({ createdAt: -1 }).limit(1);
-      console.log('otp response', response);
-        console.log('otp saved in backend',response[0].otp)
-      if(response.length === 0){
-        return res.status(400).json({
-            success: false,
-            message: "OTP not valid"
-        })
+    const response = await OTP.find({ email: newEmail }).sort({ createdAt: -1 }).limit(1);
+    if(response.length === 0){
+        throw new ApiError(400, 'Invalid OTP')
       }else if(otp !== response[0].otp){
-        return res.status(400).json({
-            success: false,
-            message: "OTP not valid"
-        })
+        throw new ApiError(400, 'Invalid OTP')
       }
         user.email = newEmail;
-        await user.save(); // Save the updated email
+        await user.save(); 
 
         const currentUser = await User.findById(userId).select("-password -refreshToken");
 
@@ -455,17 +424,13 @@ const forgetPassword = asyncHandler(async (req, res) => {
 
     // Generate access token
     const { accessToken } = await generateAccessAndRefereshTokens(user._id);
-    console.log('accesstoken in forget password', accessToken);
-
-    // Check if access token was generated successfully
+     // Check if access token was generated successfully
     if (!accessToken) {
         throw new ApiError(500, "Failed to generate access token");
     }
 
     // Construct the reset link
     const resetlink = `${process.env.CLIENT_URL}reset-password/${accessToken}`;
-    console.log('Reset link:', resetlink);
-
     user.resetlink = accessToken;
     await user.save({validateBeforeSave: false});
     
@@ -475,35 +440,13 @@ const forgetPassword = asyncHandler(async (req, res) => {
             "Password Reset Link",
             PasswordResetTemplate(resetlink)
         );
-        console.log(`mail sent to ${email}`, mailContent);
-        
     } catch (error) {
-        console.log('seems to be an error sending mail', error);
+        throw new ApiError(404, 'Unexpected Error')
         
     }
-
-    // Email options
-    // const mailOptions = {
-    //     from: 'hubwhisper@gmail.com',
-    //     to: email,
-    //     subject: 'Here is your password Reset link for Banter.com',
-    //     text: `Please use this link to reset your password: ${resetlink}`
-    // };
-
-    // // Sending the email using async/await
-    // try {
-    //     const info = await transporter.sendMail(mailOptions);
-    //     console.log('Email sent: ' + info.response);
-    //     res.status(200).json({
-    //         message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
-    //     });
-    // } catch (error) {
-    //     console.error('Error sending email:', error);
-    //     throw new ApiError(500, 'Error in sending mail', error.message);
-    // }
 });
 
-import bcrypt from "bcrypt"; // Ensure bcrypt is imported
+import bcrypt from "bcrypt"; 
 
 const resetPassword = asyncHandler(async (req, res) => {
   try {
@@ -515,8 +458,6 @@ const resetPassword = asyncHandler(async (req, res) => {
     }
 
     console.log("Searching for user with reset link:", resetlink);
-
-    // Manually hash the new password before updating
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     const user = await User.findOneAndUpdate(
@@ -540,15 +481,12 @@ const resetPassword = asyncHandler(async (req, res) => {
         PasswordSuccessfullyChanged()
         
     )
-    console.log(`mail has been sent to ${user.email}`, mailContent);
     
-
     return res.status(200).json(
       new ApiResponse(200, user, "Password reset successful")
     );
   } catch (error) {
-    console.error("Error resetting password:", error);
-    return res.status(500).json(new ApiError(500, "Error resetting password", error.message));
+    throw new ApiError(500, 'Server Error')
   }
 });
 
@@ -573,8 +511,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 
         // Check if OTP already exists
         const existingOtp = await OTP.findOne({ otp });
-        console.log("Generated OTP:", otp);
-        console.log("Existing OTP:", existingOtp);
+
 
         while (existingOtp) {
             otp = otpGenerator.generate(6, {
@@ -586,9 +523,6 @@ const resetPassword = asyncHandler(async (req, res) => {
 
         const otpPayload = { email, otp, scenario };
         const otpBody = await OTP.create(otpPayload);
-
-        console.log("OTP created successfully:", otpBody);
-
         res.status(200).json(new ApiResponse(200, otpBody, "OTP sent successfully"));
     } catch (error) {
         console.error("Error sending OTP:", error);

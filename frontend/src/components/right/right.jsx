@@ -84,9 +84,6 @@ const Right = () => {
                                 <FaPlus className="mt-1" /> Add Categories
                             </Link>
                         </div>
-                        <div className="my-4 border-b-2 border-gray-600 pb-6">
-                            <SwitchButton />
-                        </div>
                         <div>
                             <SettingAccordian title="Settings" />
                         </div>

@@ -1,5 +1,6 @@
 import axios from "axios";
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
+import toast from "react-hot-toast";
 
 export const sendOtp = async(email,scenario) => {
     console.log('scenario', scenario);
@@ -9,11 +10,14 @@ export const sendOtp = async(email,scenario) => {
                 email,
                 scenario
             })
-            console.log('otp api response', response.data);
+            
+            toast.success(response?.data?.message)
             if(!response){
-                console.log('error seems to be generating otp');
+                toast.error('Facing issues generating OTP')
             }
         } catch (error) {
-        console.log('error in generating otp', error);
+            
+        toast.error(error?.response?.data?.message || 'Facing issues Sending OTP')
+
         }
 };

@@ -7,6 +7,7 @@ import { RxCountdownTimer } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import { UserRegister } from "../../api/userRegister";
 import { sendOtp } from "../../api/sendOtp";
+import toast from "react-hot-toast";
 
 function VerifyEmail() {
   const [otp, setOtp] = useState("");
@@ -25,8 +26,8 @@ function VerifyEmail() {
      
       console.log("data before sending:",signUpData)
       const response = await UserRegister({ ...signUpData, otp });
-      console.log(response)
       navigate("/login")
+      toast.success(response?.data?.message)
     } catch (error) {
       console.error("Error verifying OTP and signing up:", error);
     }
@@ -35,9 +36,9 @@ function VerifyEmail() {
   const resendOtp = async () => {
     try {
       await sendOtp(signUpData.email);
-      console.log('OTP resent successfully');
+      
     } catch (error) {
-      console.log('Error in sending OTP', error);
+      toast.error('Unexpected Error')
     }
   };
 
