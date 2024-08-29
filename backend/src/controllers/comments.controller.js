@@ -14,9 +14,6 @@ const createComment=asyncHandler(async(req,res)=>{
     if (!post) {
         throw new ApiError(404, "Post not found or there was an error in finding the post");
     }
-
-    // console.log('postdata', post);
-    
     let parentCommentPosted=null;
     if (parentCommentId){
         const parentComment=await Comment.findById(parentCommentId);
@@ -39,7 +36,6 @@ const createComment=asyncHandler(async(req,res)=>{
         throw new ApiError(500, "something went wrong while creating a Comment")
     }
 
-    // Push the comment ID to the post's comments array
     post.comments.push(comment._id);
     await post.save();
 
@@ -73,7 +69,6 @@ const deleteComment=asyncHandler(async(req,res)=>{
     }
 })
 const getCommentsByPost=asyncHandler(async(req,res)=>{
-    // const {postId}=req.params;
     try {
         const { postId } = req.params;
 
@@ -90,10 +85,7 @@ const getCommentsByPost=asyncHandler(async(req,res)=>{
             data: commentsWithReplies
         });
     } catch (error) {
-        res.status(500).json({
-            message: 'Error fetching comments with replies',
-            error
-        });
+        throw new ApiError(500, 'ServerError', error.message)
     }
 })
 const getCommentById=asyncHandler(async(req,res)=>{

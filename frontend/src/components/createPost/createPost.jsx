@@ -5,6 +5,7 @@ import axios from "axios";
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from "react-router-dom";
 import { MdDriveFolderUpload } from "react-icons/md";
+import toast from 'react-hot-toast';
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 function Previews({ setFormData, initialMedia }) {
@@ -170,6 +171,7 @@ const PostForm = ({ isEdit }) => {
                 ? await axios.put(`${url}posts/update-post/${postId}`, data, { withCredentials: true })
                 : await axios.post(`${url}posts/create-post`, data, { withCredentials: true });
             navigate("/");
+            toast.success("Post Created successfully");
         } catch (error) {
             console.error(error);
         }
