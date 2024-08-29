@@ -22,8 +22,12 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
 
   const dispatch = useDispatch();
   const socket = useSelector((state) => state.socket.socket);
-  const currentUser = useSelector((state) => state.auth.user?.data?.user?._id);
-  const userName = useSelector((state) => state.auth.user?.data?.user?.userName);
+  const userData = useSelector((state) => state.auth.user);
+  // console.log("check:",useSelector((state) => state.auth))
+  // console.log("user Data:",userData)
+  const currentUser = userData?.data?.user?userData?.data?.user?._id:userData?.data?._id;
+  // console.log("current user in post card:",currentUser)
+  const userName =userData?.data?.user?userData?.data?.user?.userName:userData?.data?.userName;
 
   useEffect(() => {
     if (!socket) {
@@ -37,7 +41,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
       if (userVote) {
         setUserVote(userVote.voteType);
       }
-      console.log("currentUser:", currentUser);
+      // console.log("currentUser:", currentUser);
     }
   }, [currentUser, votes]);
   const handleVote = async (voteType) => {
@@ -97,6 +101,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   useEffect(() => {
     const fetchDetails = async () => {
       try {
+        // console.log("owner,category",owner,"  ",category);
         const [ownerResponse, categoryResponse] = await Promise.all([
           fetchOwnerDetails(owner),
           fetchCategoryDetails(category)
@@ -111,7 +116,6 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
 
     fetchDetails();
   }, [owner, category]);
-
   if (error) {
     return <div className="error-message">{error}</div>;
   }

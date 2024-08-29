@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import PostByUser from "../homepage/postByUser/postByUser";
 import { useParams } from "react-router-dom";
 // import { UserData } from "../../api/getUserbyId";
-import { fetchOwnerDetails } from "../../api/fetchOwnerDetails";
+import { fetchOwnerDetails } from "../../api/fetchOwnerDetails";  
 
 const UserProfile = () => {
   const [userData, setUserData] = useState(null);

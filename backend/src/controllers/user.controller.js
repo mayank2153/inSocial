@@ -171,8 +171,7 @@ const handleGoogleLogin = async (user, res) => {
 };
 
 const logOutUser = asyncHandler(async(req, res) => {
-    
-    
+
     await User.findByIdAndUpdate(
         req.user._id,
         {
@@ -294,6 +293,7 @@ const removeLikedCategory = asyncHandler(async (req, res) => {
 
 const getUserById = asyncHandler(async (req, res) => {
     const { userId } = req.params;
+
     try {
         const user = await User.findById(userId);
         if (!user) {
