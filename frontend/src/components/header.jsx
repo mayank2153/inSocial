@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoIosNotificationsOutline, IoIosSearch } from "react-icons/io";
 import { FaBars } from "react-icons/fa";
 import logo from "../assets/images/logo.png";
@@ -8,20 +8,44 @@ import { useSelector } from 'react-redux';
 import ProfilePage from './userProfile/profilePage';
 import SearchBar from './searchBar/searchBar.jsx';
 import { IoNotifications } from "react-icons/io5";
+import { CountUnreadNotification } from '../api/unreadNotificationCount.js';
+import { useDispatch } from 'react-redux';
+import { UpdateCount } from '../api/updateReadNotificationCount.js';
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({ toggleCategories }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-
+  const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const userData = useSelector((state) => state.auth.user);
   const userId=userData?.data.user?userData?.data?.user?._id : userData?.data?._id;
   const userProfileImage = userData?.data.user?userData?.data?.user?.avatar : userData?.data?.avatar;
 
+  const navigate = useNavigate()
+  const unreadCount  = useSelector((state) => state.notification.unreadCount);
+  console.log('unread count', unreadCount);
+  
+  const unreadNotification = async() => {
+    const res = await CountUnreadNotification(userId, dispatch);
+    console.log('response in header', res)
+  }
+  // const response  = CountUnreadNotification(userId)
+  useEffect(() => {
+    unreadNotification();
+  }, [userId])
+  
+  // console.log('response in header', res
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
+  const handleReadCount  = async() =>{
+    navigate(`/notification/${userId}`)
+    setTimeout(async() => {
+      await UpdateCount(userId, dispatch);
+    }, 1000);
+  }
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
   };
@@ -55,9 +79,18 @@ const Header = ({ toggleCategories }) => {
             >
               <IoIosSearch size={25} />
             </button>
-            <Link to={`/notification/${userId}`} title="Notifications" className="text-slate-200">
-              <IoNotifications size={30} />
-            </Link>
+            <div className='relative cursor-pointer text-slate-200' 
+            onClick={handleReadCount}>
+              
+                <IoNotifications size={30}  className='mr-4'/>
+              
+              {unreadCount > 0 && (
+                <span className='absolute -top-2 -right-2 bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center mr-4'>
+                  {unreadCount}
+                </span>
+              )}
+            </div>
+            
 
             <div className="relative overflow-hidden">
             <img

@@ -7,7 +7,6 @@ export const createConversation = async (req, res) => {
     const { participants } = req.body;
 
     try {
-        console.log(participants)
         const existingConversation = await Conversation.findOne({
             participants: { $all: participants }
         });

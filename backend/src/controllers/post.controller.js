@@ -1,11 +1,3 @@
-/**
- * steps need in writing a post controller:
- * verify if the user is logged in or not?
- * if not throw error
- * if logged in :
- *  1. take title , description and body/image both
- * 
- */
 
 import { Post } from "../models/post.model.js"
 import { ApiError } from "../utils/ApiError.js"
@@ -67,7 +59,7 @@ const createNewPost = asyncHandler(async (req, res) => {
 const updatePost = asyncHandler(async (req, res) => {
     const { postId } = req.params;
     const { title, description, category } = req.body;
-    console.log('Request Body:', req.body);
+    
     // Check valid input
     if ([title, description, category].some(field => field && field.trim() === "")) {
         throw new ApiError(400, "Please provide necessary details");
@@ -89,8 +81,6 @@ const updatePost = asyncHandler(async (req, res) => {
         post.media = cloudinaryMedia.url;
     }
 
-    console.log("title provided:",title);
-    console.log("title old:",post.title);
     // Update fields
     if (title) {
         post.title = title;
@@ -133,9 +123,8 @@ const deletePost = asyncHandler(async (req, res) => {
 
 const getPostsByUser= asyncHandler(async(req,res)=>{
     const {userId}=req.params;
-    console.log("user:",userId);
     const posts=await Post.find({owner:userId});
-    console.log("posts:",posts);
+    
     if (posts.length === 0) {
         throw new ApiError(404, "No posts found for this user");
     }

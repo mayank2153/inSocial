@@ -23,7 +23,6 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
 
   const handleCommentDelete = async () => {
     try {
-      console.log("Entered handleCommentDelete");
       const response = await axios.post(
         `${url}comments/delete-comment/${_id}`, 
         {}, 
@@ -45,8 +44,8 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
   };
 
   return (
-    <div className="comment lg:ml-4 ml-2 text-white rounded-2xl bg-[#0d1114] w-full break-words">
-  <div className='py-2 px-4 rounded-2xl'>
+    <div className="comment lg:ml-4 ml-2 text-white rounded-2xl bg-[#0d1114] w-full break-words mt-1">
+  <div className='py-2 px-4 rounded-2xl -mt-3'>
     {owner && (
       <div className="owner-info flex items-center gap-2 text-white">
         <img

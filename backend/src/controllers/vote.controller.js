@@ -16,14 +16,12 @@ const createVote = asyncHandler(async (req, res) => {
 
     try {
         const post = await Post.findById(postId);
-        console.log('post data',post);
         
         if (!post) {
             throw new ApiError(404, "Post not found");
         }
 
         const user = await User.findById(userId);
-        console.log('user in vote', user);
         
         if (!user) {
             throw new ApiError(404, "User not found");
@@ -55,7 +53,6 @@ const createVote = asyncHandler(async (req, res) => {
             new ApiResponse(200, { vote, post }, "Vote has been successfully created")
         );
     } catch (error) {
-        console.error('Error in createVote controller:', error);
         return res.status(500).json(new ApiError(500, `Error creating vote: ${error.message}`));
     }
 });
