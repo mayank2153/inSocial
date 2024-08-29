@@ -3,6 +3,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 // import { connectSocket } from '../../utils/socketslice.jsx';
 import {connectSocket} from "../../../utils/socketslice.jsx"
+import {useSocket} from "../../context/SocketContext.jsx"
 
 const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
 
@@ -13,13 +14,15 @@ const CommentInputReply = ({ postId , parentCommentId,userName}) => {
   const [comment, setComment] = useState("@"+userName);
   const textareaRef = useRef(null);
   const dispatch = useDispatch();
-
-  const socket = useSelector((state) => state.socket.socket);
+  const isConnected = useSelector((state) => state.socket.isConnected);
+  const socket = useSocket();
   const userId = useSelector((state) => state.auth.user?.data?.user?._id);
 
   useEffect(() => {
-    if(!socket){
-      dispatch(connectSocket());
+    if(!isConnected){
+      if(socket){
+        socket.connect();
+      }
     }
   },[socket]);
 

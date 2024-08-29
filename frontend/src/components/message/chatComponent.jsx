@@ -1,22 +1,25 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { connectSocket, disconnectSocket } from '../../utils/socketslice.jsx';
+import { connectSocket} from '../../utils/socketslice.jsx';
 import UserCard from '../homepage/userCard/userCard.jsx';
 import { FaRegPaperPlane } from "react-icons/fa";
-
+import { useSocket } from '../context/SocketContext.jsx';
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
 const ChatComponent = ({ conversationId, userId, receiver }) => {
     const dispatch = useDispatch();
-    const socket = useSelector((state) => state.socket?.socket);
+    const socket = useSocket();
+    const isConnected = useSelector((state) => state.socket.isConnected);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const lastMessageRef = useRef(null);
 
     useEffect(() => {
-        if (!socket) {
-            dispatch(connectSocket());
+        if (!isConnected) {
+            if(socket){
+                socket.connect();
+            }
         }
     }, [socket]);
 
@@ -32,7 +35,7 @@ const ChatComponent = ({ conversationId, userId, receiver }) => {
 
             return () => {
                 socket.off('receiveMessage', handleReceiveMessage);
-                dispatch(disconnectSocket());
+                
             };
         }
     }, [socket, conversationId]);
