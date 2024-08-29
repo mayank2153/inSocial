@@ -3,9 +3,11 @@ import { useSelector } from "react-redux";
 import { ChangecurrentPassword } from "../../api/changeCurrentPassword";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import {Link} from "react-router-dom";
+import { UserLogout } from "../../api/userLogout";
+import { useDispatch } from "react-redux";
 
 const ChangeCurrentPassword = () => {
-
+    const dispatch = useDispatch();
     const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
     const userData = useSelector((state) => state.auth.user);
     const userId = userData?.data?.user?._id;
@@ -38,13 +40,19 @@ const ChangeCurrentPassword = () => {
         }
         // Submit the form if passwords match
         try {
+            // Submit the form if passwords match
             await ChangecurrentPassword(formData, userId);
-                
+    
+            // Logging out the user
+            await UserLogout(userData, dispatch);
+    
+            // Redirect or handle post-logout actions
+            // Example: navigate to the login page
+            // navigate('/login');
         } catch (error) {
-            console.log('There seems to be an error while changing password');
-            
+            console.error("Error during form submission:", error);
+            alert("An error occurred during submission. Please try again.");
         }
-        
     };
 
     return (

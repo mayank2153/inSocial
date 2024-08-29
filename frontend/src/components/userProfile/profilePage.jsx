@@ -7,32 +7,22 @@ import { MdExitToApp } from "react-icons/md";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { logout } from "../../utils/authslice";
+import { UserLogout } from "../../api/userLogout";
 
 const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   const dispatch=useDispatch();
   const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
   const isAuthenticated = useSelector((state) => state?.user?.isAuthenticated);
   const userData = useSelector((state) => state.auth.user);
+  console.log(userData);
+  
   console.log("user data in profile page",userData);
   const userId = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
   const userProfileImage = userData?.data.user?userData?.data?.user?.avatar:userData?.data?.avatar;
   const userName = userData?.data?.user?userData?.data?.user?.userName:userData?.data?.userName;
   console.log('control reaching here');
   const userLogOut = async() => {
-    try {
-      console.log("in logout")
-      await axios.post(`${url}users/logout`,userData,{
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        withCredentials: true});
-      console.log('user successfully loggedOut');
-      dispatch(logout())
-
-
-    } catch (error) {
-      console.log('error while logging out', error);
-    }
+    await UserLogout(userData, dispatch);
   } 
 
   return  (

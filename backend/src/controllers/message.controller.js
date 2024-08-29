@@ -24,7 +24,9 @@ export const sendMessage = async (req, res) => {
 };
 
 export const getMessages = async (req, res) => {
-    const  {conversationId}  =req.params;
+    console.log(req.params);
+    
+    const { conversationId } = req.params;
      
 
     try {
