@@ -68,7 +68,7 @@ const LikedCategories = () => {
     const handleRemoveCategory = async (categoryId) => {
         try {
             await axios.post(`${url}users/remove-liked-category`, {
-                userData,
+                ownerID,
                 categoryId
             }, {
                 headers: {
