@@ -147,6 +147,28 @@ const loginUser = asyncHandler(async(req, res) => {
         )
     )
 })
+const handleGoogleLogin = async (user, res) => {
+    try {
+        const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
+        console.log("access token:", accessToken);
+        console.log("refresh token:", refreshToken);
+
+        const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
+        const options = {
+            httpOnly: true
+        };
+        
+        res.cookie("accessToken", accessToken, options);
+        res.cookie("refreshToken", refreshToken, options);
+
+        // Redirect with a query parameter
+        res.redirect(`${process.env.CORS_ORIGIN}/redirect?userId=${user._id}`);
+    } catch (error) {
+        console.error("Error handling Google login:", error);
+        res.redirect('/login'); // Redirect to login on error
+    }
+};
 
 const logOutUser = asyncHandler(async(req, res) => {
     
@@ -545,5 +567,6 @@ export {
     ChangeCurrentEmail,
     forgetPassword,
     resetPassword,
-    sendOtp
+    sendOtp,
+    handleGoogleLogin
 }

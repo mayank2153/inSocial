@@ -30,7 +30,7 @@ const Right = () => {
     };
 
     return isAuthenticated ? (
-        <div className=" flex flex-col lg:block w-full">
+        <div className=" flex flex-col lg:block w-full max-h-screen overflow-y-scroll no-scrollbar">
             {/* Full content for large screens */}
             <div className={`hidden lg:block  bg-[#0d1114] min-h-[100vh] h-full border-l border-gray-600 overflow-y-scroll no-scrollbar ${showConversations || showSettings ? 'overflow-hidden' : ''}`}>
                 {showConversations ? (

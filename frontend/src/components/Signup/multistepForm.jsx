@@ -96,8 +96,7 @@ const TwoStepForm = () => {
         ...formData,
         avatar: selectedAvatar || formData.avatar,
       };
-
-      // Instead of dispatching to Redux, pass the data using navigate
+      await sendOtp(formData.email,'registration')
       navigate("/verifyEmail", { state: signUpData });
     } catch (error) {
       if (error.response) {

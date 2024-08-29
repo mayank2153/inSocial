@@ -27,7 +27,9 @@ passport.use(
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
+                console.log("enterd")
                 let existingUser = await User.findOne({ email: profile.emails[0]?.value });
+                console.log("existing?,",existingUser)
 
                 if (existingUser) {
                     

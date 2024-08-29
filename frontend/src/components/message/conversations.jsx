@@ -55,7 +55,7 @@ const Conversations = () => {
                                         .map(filteredParticipant => (
                                             <li key={filteredParticipant._id}>
                                                 <div onClick={() => handleUserCardClick(conversation)}>
-                                                    <UserCard key={filteredParticipant._id} {...filteredParticipant} bio="" />
+                                                    <UserCard key={filteredParticipant._id} {...filteredParticipant} bio="" inChat={true}/>
                                                 </div>
                                             </li>
                                         ))

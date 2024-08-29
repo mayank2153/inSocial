@@ -1,18 +1,19 @@
-// import axios from 'axios';
-// const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
+import axios from 'axios';
+const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
-// export const UserData = async(userId) => {
-//     // console.log(userId);
-//     const id = userId.userId;
-// // console.log('id',id);
-
-//     // const {id} = userId;
-//     try {
-//         const response  = await axios.post(`${url}users/get-user/${id}`, {id});
-//         console.log('user-data', response?.data);
+export const UserData = async(userId) => {
+    // console.log(userId);
+    const id = userId;
+// console.log('id',inst {id} = userId;
+    try {
+        const response  = await axios.post(`${url}users/get-user/${id}`,{},
+            { withCredentials: true }
+        );
+        console.log('user-data', response?.data);
+        return response?.data.data;
         
-//     } catch (error) {
-//         console.log('there seems to be an error while fetching data', error.message);
+    } catch (error) {
+        console.log('there seems to be an error while fetching data', error.message);
         
-//     }
-// };
+    }
+};

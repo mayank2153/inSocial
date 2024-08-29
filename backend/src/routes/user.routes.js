@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { registerUser , loginUser , logOutUser , refreshAccessToken, addLikedCategories, removeLikedCategory, getUserById, editUser, updateCurrentPassword, ChangeCurrentEmail, forgetPassword, resetPassword, sendOtp } from "../controllers/user.controller.js"
+import { registerUser , loginUser , logOutUser , refreshAccessToken, addLikedCategories, removeLikedCategory, getUserById, editUser, updateCurrentPassword, ChangeCurrentEmail, forgetPassword, resetPassword, sendOtp, handleGoogleLogin } from "../controllers/user.controller.js"
 import { upload } from "../middlewares/multer.middleware.js";
 import {verifyJWT} from "../middlewares/authjwt.middleware.js";
 import passport from "passport";
-
 const userRouter = Router();
 
 userRouter.route("/register").post(
@@ -52,8 +51,13 @@ userRouter.get('/auth/google',
 );
 
 userRouter.get('/auth/google/redirect',
-    passport.authenticate("google" , {failureRedirect: "/login"})
-)
+    passport.authenticate('google', { failureRedirect: `${process.env.CORS_ORIGIN}` }),
+    (req, res) => {
+        const user = req.user; // Get the authenticated user from Passport
+        handleGoogleLogin(user, res); // Use the new function
+    }
+);
+
 
 userRouter.get('/auth/discord',
     passport.authenticate('discord')
