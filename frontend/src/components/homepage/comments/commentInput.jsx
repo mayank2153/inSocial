@@ -13,7 +13,7 @@ const CommentInput = ({ postId }) => {
   
   const dispatch = useDispatch();
   const socket = useSocket();
-  isConnected = useSelector((state) => state.socket.isConnected);
+  const isConnected = useSelector((state) => state.socket.isConnected);
   const userName = useSelector((state) => state.auth.user?.data?.user?.userName);
   const userId = useSelector((state) => state.auth.user?.data?.user?._id);
 
