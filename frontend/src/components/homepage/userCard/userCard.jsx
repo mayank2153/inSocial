@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const UserCard = ({ avatar, bio, userName, _id,inChat=false }) => {
     const userData = useSelector((state) => state.auth.user);
     // console.log("user:",userData)
-    const userId = userData?.data?.user?._id;
+    const userId = userData.data.user?userData?.data?.user?._id:userData?.data?._id;
     // console.log(userId);
 
     // console.log(_id);

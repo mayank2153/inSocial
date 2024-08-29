@@ -27,7 +27,9 @@ passport.use(
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
+                console.log("enterd")
                 let existingUser = await User.findOne({ email: profile.emails[0]?.value });
+                console.log("existing?,",existingUser)
 
                 if (existingUser) {
                     
@@ -37,7 +39,8 @@ passport.use(
                     const newUser = new User({
                         profileId: profile.id,
                         userName: profile.displayName || profile.emails[0]?.value || "user",
-                        email: profile.emails ? profile.emails[0].value : null
+                        email: profile.emails ? profile.emails[0].value : null,
+                        avatar: "https://res.cloudinary.com/dhrbg2jbi/image/upload/v1724915616/pp_ie45f1.jpg"
                     });
 
                     const savedUser = await newUser.save();

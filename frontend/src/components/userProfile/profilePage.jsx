@@ -13,13 +13,14 @@ const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
   const isAuthenticated = useSelector((state) => state?.user?.isAuthenticated);
   const userData = useSelector((state) => state.auth.user);
-  console.log(userData);
-  const userId = userData?.data?.user?._id;
-  const userProfileImage = userData?.data?.user?.avatar;
-  const userName = userData?.data?.user?.userName;
+  console.log("user data in profile page",userData);
+  const userId = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
+  const userProfileImage = userData?.data.user?userData?.data?.user?.avatar:userData?.data?.avatar;
+  const userName = userData?.data?.user?userData?.data?.user?.userName:userData?.data?.userName;
   console.log('control reaching here');
   const userLogOut = async() => {
     try {
+      console.log("in logout")
       await axios.post(`${url}users/logout`,userData,{
         headers: {
           'Content-Type': 'application/json'

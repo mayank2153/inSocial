@@ -19,8 +19,9 @@ const Header = ({ toggleCategories }) => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const userData = useSelector((state) => state.auth.user);
-  const userId=userData?.data?.user?._id;
-  const userProfileImage = userData?.data?.user?.avatar;
+  const userId=userData?.data.user?userData?.data?.user?._id : userData?.data?._id;
+  const userProfileImage = userData?.data.user?userData?.data?.user?.avatar : userData?.data?.avatar;
+
   const navigate = useNavigate()
   const unreadCount  = useSelector((state) => state.notification.unreadCount);
   console.log('unread count', unreadCount);
@@ -34,7 +35,7 @@ const Header = ({ toggleCategories }) => {
     unreadNotification();
   }, [userId])
   
-  // console.log('response in header', res)
+  // console.log('response in header', res
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
   };
