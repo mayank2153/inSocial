@@ -15,8 +15,8 @@ const Header = ({ toggleCategories }) => {
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const userData = useSelector((state) => state.auth.user);
-  const userId=userData?.data?.user?._id;
-  const userProfileImage = userData?.data?.user?.avatar;
+  const userId=userData?.data.user?userData?.data?.user?._id : userData?.data?._id;
+  const userProfileImage = userData?.data.user?userData?.data?.user?.avatar : userData?.data?.avatar;
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);

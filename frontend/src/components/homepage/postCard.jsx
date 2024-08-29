@@ -116,7 +116,6 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
 
     fetchDetails();
   }, [owner, category]);
-
   if (error) {
     return <div className="error-message">{error}</div>;
   }

@@ -16,7 +16,10 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
   const [isReplying, setIsReplying] = useState(false);
 
   const { postId } = useParams();
-  const user = useSelector(state => state.auth.user?.data?.user?._id);
+  const userData = useSelector((state) => state.auth.user);
+  const user=userData?.data.user?userData?.data?.user?._id : userData?.data?._id;
+  console.log("owner",owner)
+  console.log("user",user)
 
   const handleCommentDelete = async () => {
     try {
