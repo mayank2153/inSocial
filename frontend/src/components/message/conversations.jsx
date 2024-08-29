@@ -9,7 +9,8 @@ const Conversations = () => {
     const [conversations, setConversations] = useState([]);
     const [selectedConversation, setSelectedConversation] = useState(null); // State to track selected conversation
     const userData = useSelector((state) => state.auth.user);
-    const ownerID = userData?.data?.user?._id;
+    const ownerID = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
+    console.log("owner in convo",ownerID)
 
     const fetchConversations = async () => {
         try {
@@ -17,7 +18,7 @@ const Conversations = () => {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             });
-            console.log("fetched conversations:",response.data)
+            console.log("fetched conversations:",response)
             setConversations(response.data);
         } catch (error) {
             console.error('Error fetching conversations:', error);

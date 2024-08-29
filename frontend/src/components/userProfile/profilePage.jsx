@@ -14,8 +14,8 @@ const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   const isAuthenticated = useSelector((state) => state?.user?.isAuthenticated);
   const userData = useSelector((state) => state.auth.user);
   console.log("user data in profile page",userData);
-  const userId = userData.data.user?userData?.data?.user?._id:userData?.data?._id;
-  const userProfileImage = userData.data.user?userData?.data?.user?.avatar:userData?.data?.avatar;
+  const userId = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
+  const userProfileImage = userData?.data.user?userData?.data?.user?.avatar:userData?.data?.avatar;
   const userName = userData?.data?.user?userData?.data?.user?.userName:userData?.data?.userName;
   console.log('control reaching here');
   const userLogOut = async() => {

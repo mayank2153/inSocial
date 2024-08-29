@@ -14,7 +14,7 @@ const LikedCategories = () => {
     const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
     const userD = useSelector((state) => state.auth.user);
     // const userlikedCategories = userData?.data?.user?.likedCategories;
-    const ownerID = userD.data.user?userD?.data?.user?._id:userD?.data?._id;
+    const ownerID = userD?.data?.user?userD?.data?.user?._id:userD?.data?._id;
     // console.log(ownerID);
     const [categories, setCategories] = useState([]);
     const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -26,7 +26,8 @@ const LikedCategories = () => {
             try {
                 console.log("in liked category,",ownerID)
                const ownerDetail =  await UserData(ownerID);
-               setUser(ownerDetail);
+               setUser(ownerDetail.data);
+               console.log("user:",user)
             //    console.log('owner details are : ',ownerDetail);
             } catch (error) {
                 console.log('There seems to be an error while fetching owner details', error);
@@ -38,7 +39,7 @@ const LikedCategories = () => {
     // console.log('owner ', user);
 
     const userlikedCategories = user?.likedCategories;
-    // console.log('user liked categories', userlikedCategories);
+    console.log('user liked categories', userlikedCategories);
 
     useEffect(() => {
         if (userlikedCategories) {
