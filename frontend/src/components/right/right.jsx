@@ -6,7 +6,7 @@ import { TiMessage } from "react-icons/ti";
 import { IoMdArrowBack, IoMdSettings, IoMdAddCircle } from "react-icons/io";
 import LikedCategories from "../category/likedCategories";
 import SettingAccordian from "../settings/setting.Accordian";
-import SwitchButton from "../modes/DarkAndLight";
+// import SwitchButton from "../modes/DarkAndLight";
 import Conversations from "../message/conversations.jsx";
 
 const Right = () => {

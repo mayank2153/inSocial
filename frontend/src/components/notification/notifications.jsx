@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { connectSocket, disconnectSocket } from '../../utils/socketslice.jsx';
+import { connectSocket } from '../../utils/socketslice.jsx';
 import { IoArrowBackOutline } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom"
 import { CountUnreadNotification } from "../../api/unreadNotificationCount.js";
 import { incrementUnreadCount } from "../../utils/notificationSlice.jsx";
+import { useSocket } from "../context/SocketContext.jsx";
 // import { useNavigate } from "react-router-dom";
 
 const Notifications = () => {
     const dispatch = useDispatch();
-    const socket = useSelector((state) => state.socket.socket);
+    const socket = useSocket();
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
     const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
     const userData = useSelector((state) => state.auth.user);
-    const userId = userData?.data.user?userData?.data?.user?._id : userData?.data?._id;
-
+    const userId = userData?.data?.user?._id;
+    const isConnected = useSelector((state) => state.socket.isConnected)
     // Function to fetch previous notifications from the backend
     const fetchNotifications = async () => {
         try {
@@ -31,13 +32,12 @@ const Notifications = () => {
 
 
     useEffect(() => {
-        // Connect socket if not already connected
-        if (!socket) {
-            dispatch(connectSocket());
-            console.log("Joining socket with ID");
+
+        if(!isConnected){
+            if(socket){
+                socket.connect();
+            }
         }
-
-
         // Fetch previous notifications on component mount
         fetchNotifications();
         // fetch count of unread notification

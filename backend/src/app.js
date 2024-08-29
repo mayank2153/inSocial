@@ -80,6 +80,8 @@ io.on('connection', (socket) => {
 
         try {
             // Fetch past messages for this conversation and emit them to the user
+            console.log('socket cid', conversationId);
+            
             const messages = await getMessages(conversationId);
             socket.emit('conversationMessages', messages);
         } catch (error) {
