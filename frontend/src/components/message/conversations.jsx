@@ -9,7 +9,8 @@ const Conversations = () => {
     const [conversations, setConversations] = useState([]);
     const [selectedConversation, setSelectedConversation] = useState(null); // State to track selected conversation
     const userData = useSelector((state) => state.auth.user);
-    const ownerID = userData?.data?.user?._id;
+    const ownerID = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
+    console.log("owner in convo",ownerID)
 
     const fetchConversations = async () => {
         try {
@@ -17,6 +18,7 @@ const Conversations = () => {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             });
+            console.log("fetched conversations:",response)
             setConversations(response.data);
         } catch (error) {
             console.error('Error fetching conversations:', error);
@@ -35,7 +37,7 @@ const Conversations = () => {
     };
 
     return (
-        <div className="text-white max-h-screen overflow-y-scroll no-scrollbar">
+        <div className="text-white w-full max-h-screen overflow-y-scroll no-scrollbar">
             {selectedConversation ? (
                 <ChatComponent
                     conversationId={selectedConversation._id}
@@ -54,7 +56,7 @@ const Conversations = () => {
                                         .map(filteredParticipant => (
                                             <li key={filteredParticipant._id}>
                                                 <div onClick={() => handleUserCardClick(conversation)}>
-                                                    <UserCard key={filteredParticipant._id} {...filteredParticipant} />
+                                                    <UserCard key={filteredParticipant._id} {...filteredParticipant} bio="" inChat={true}/>
                                                 </div>
                                             </li>
                                         ))

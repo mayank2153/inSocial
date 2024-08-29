@@ -7,6 +7,15 @@ export const createConversation = async (req, res) => {
     const { participants } = req.body;
 
     try {
+        const existingConversation = await Conversation.findOne({
+            participants: { $all: participants }
+        });
+
+        if (existingConversation) {
+            return res.status(200).json(
+                new ApiResponse(200, existingConversation, "Conversation already exists")
+            );
+        }
         const conversation = new Conversation({ participants });
         await conversation.save();
         await Promise.all(

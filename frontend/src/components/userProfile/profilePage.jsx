@@ -7,6 +7,7 @@ import { MdExitToApp } from "react-icons/md";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { logout } from "../../utils/authslice";
+import { UserLogout } from "../../api/userLogout";
 
 const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   const dispatch=useDispatch();
@@ -14,28 +15,18 @@ const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   const isAuthenticated = useSelector((state) => state?.user?.isAuthenticated);
   const userData = useSelector((state) => state.auth.user);
   console.log(userData);
-  const userId = userData?.data?.user?._id;
-  const userProfileImage = userData?.data?.user?.avatar;
-  const userName = userData?.data?.user?.userName;
+  
+  console.log("user data in profile page",userData);
+  const userId = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
+  const userProfileImage = userData?.data.user?userData?.data?.user?.avatar:userData?.data?.avatar;
+  const userName = userData?.data?.user?userData?.data?.user?.userName:userData?.data?.userName;
   console.log('control reaching here');
   const userLogOut = async() => {
-    try {
-      await axios.post(`${url}users/logout`,userData,{
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        withCredentials: true});
-      console.log('user successfully loggedOut');
-      dispatch(logout())
-
-
-    } catch (error) {
-      console.log('error while logging out', error);
-    }
+    await UserLogout(userData, dispatch);
   } 
 
   return  (
-    <div className="absolute -right-20 top-16  bg-[#0d1114]  rounded shadow-md w-[280px] mr-12 ">
+    <div className="fixed top-20 right-1  bg-[#0d1114]  rounded shadow-md w-[280px] ">
       <div className="flex items-center mb-2 mt-6 ml-6">
         <img src={userProfileImage} alt="User Profile" className="w-12 h-12 rounded-full mr-1"/>
         <div>

@@ -1,12 +1,30 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+// import { connectSocket } from '../../utils/socketslice.jsx';
+import {connectSocket} from "../../../utils/socketslice.jsx"
+import {useSocket} from "../../context/SocketContext.jsx"
 
 const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
 
 const CommentInputReply = ({ postId , parentCommentId,userName}) => {
+
+
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [comment, setComment] = useState("@"+userName);
   const textareaRef = useRef(null);
+  const dispatch = useDispatch();
+  const isConnected = useSelector((state) => state.socket.isConnected);
+  const socket = useSocket();
+  const userId = useSelector((state) => state.auth.user?.data?.user?._id);
+
+  useEffect(() => {
+    if(!isConnected){
+      if(socket){
+        socket.connect();
+      }
+    }
+  },[socket]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -23,7 +41,21 @@ const CommentInputReply = ({ postId , parentCommentId,userName}) => {
         { withCredentials: true });
       setComment(""); // Clear the comment input after successful submission
       setIsInputFocused(false)
-      console.log("comment generated", response);
+      console.log("comment generated", response.data);
+
+      if(socket){
+        const emitData = {
+          message: `User ${userName} replied to your comment`,
+          postId: postId,
+          actor: userId,
+          receiver: response?.data?.data?.postOwner,
+          type: 'Reply'
+        }
+        socket.emit('ReplyComment', emitData);
+        console.log(emitData);
+        
+      }
+
     } catch (error) {
       alert(error.response?.data?.message || "Unable to add comment");
     }
@@ -33,7 +65,7 @@ const CommentInputReply = ({ postId , parentCommentId,userName}) => {
   }
 
   return (
-    <div className="items-center min-w-full max-w-lg border  border-slate-50 rounded-2xl m-2 px-2 py-1 ">
+    <div className="items-center max-w-[250px] lg:max-w-[500px] lg:min-w-[500px]  border  border-gray-600 rounded-2xl m-2 px-2 py-1 ">
       <textarea
         ref={textareaRef}
         placeholder="Add a comment"

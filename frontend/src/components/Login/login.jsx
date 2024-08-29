@@ -6,6 +6,10 @@ import { loginSuccess, loginFailure } from "../../utils/authslice.jsx";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import { notifyError } from "../../utils/notifications.jsx";
+import logo from "../../assets/images/logo.jpg"
+import logo_img_black from "../../assets/images/logo_img_black.png"
+import toast from "react-hot-toast";
+import { AiOutlineCloseCircle } from 'react-icons/ai'; 
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
@@ -28,16 +32,24 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
+            console.log("1")
             const response = await axios.post(`${url}users/login`, user, { withCredentials: true });
+            console.log("response:",response.data)
             dispatch(loginSuccess(response.data));
-            console.log(response.data)
-            navigate('/'); // Redirect to the homepage after successful login
+
+            navigate('/');
+            toast.success(response?.data?.message) // Redirect to the homepage after successful login
         } catch (error) {
             console.log(error?.response?.data);
             // Display notification with error message
-            notifyError(error.response.data.message || "Login failed");
+            // notifyError(error?.response?.data?.message || "Login failed");
+            toast.error(error?.response?.data?.message || "Login failed", {
+                duration:4000,
+                
+                icon: <AiOutlineCloseCircle />,
+            })
 
-            dispatch(loginFailure(error.response.data.message));
+            dispatch(loginFailure(error?.response?.data?.message));
             // alert(error.response.data.message || "Login failed");
             setForgetPassword(true);
 
@@ -52,8 +64,14 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center justify-end min-h-screen bg-black w-full max-w-screen-2xl">
-            <div className="bg-black  mr-40 w-full max-w-md">
+        <div className="flex items-center  flex-col lg:flex-row lg:justify-evenly min-h-screen bg-black w-full max-w-screen-2xl px-10">
+            <div className="mt-14 hidden lg:block">
+                <img src={logo} alt="logo.png"/>
+            </div>
+            <div className="mt-10 block lg:hidden w-20 mb-20">
+                <img src={logo_img_black} alt="logo.png"/>
+            </div>
+            <div className="bg-black  mr-0 w-full max-w-md">
                 <h2 className="text-5xl text-center text-white mb-6">Login</h2>
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">

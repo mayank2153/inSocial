@@ -5,7 +5,11 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { Category } from "../models/category.model.js"
 import nodemailer from "nodemailer";
-
+import mailSender from "../utils/mailSender.js";
+import otpGenerator from "otp-generator";
+import { OTP } from "../models/otp.model.js";
+import PasswordSuccessfullyChanged from "../Template/changePassword.template.js";
+import PasswordResetTemplate from "../Template/PasswordReset.template.js";
 
 
 
@@ -13,8 +17,8 @@ const transporter = nodemailer.createTransport(
     {
         service: 'gmail',
         auth: {
-            user: 'hubwhisper@gmail.com',
-            pass: 'kdxhvzjikivwqhmp'
+            user: process.env.COMPANY_MAIL,
+            pass: process.env.COMPANY_PASSWORD
         }
     }
 );
@@ -27,25 +31,27 @@ const generateAccessAndRefereshTokens = async(userId) => {
         const refreshToken = user.generateRefreshToken()
         user.refreshToken = refreshToken
         await user.save({ validateBeforeSave: false })
-        console.log("access token in func:",accessToken)
         return {accessToken , refreshToken}
 
     } catch (error) {
         throw new ApiError(500, "something went wrong while generating refresh and access tokens")
+        
     }
 }
 
 const registerUser = asyncHandler(async (req, res, next) => {
     try {
-      const { username, email, password, bio } = req.body;
-  
+      const { userName, email, password, bio ,otp} = req.body;
+
       // Validate required fields
-      if ([username, email, password].some((field) => !field || field.trim() === "")) {
-        return res.status(400).json({ message: "All required fields must be filled." });
+      if ([userName, email, password].some((field) => !field || field.trim() === "")) {
+        throw new ApiError(400, 'All fields are required')
       }
-  
+      
+
+
       if (!req.files || !req.files.avatar) {
-        return res.status(400).json({ message: "Avatar is required." });
+        throw new ApiError(400, 'Avatar is required')
       }
   
       const avatarLocalPath = req.files.avatar[0].path;
@@ -53,14 +59,15 @@ const registerUser = asyncHandler(async (req, res, next) => {
   
       const avatar = await uploadOnCloudinary(avatarLocalPath);
       if (!avatar) {
-        throw new Error("Failed to upload avatar.");
+        throw new ApiError(404,"Failed to upload avatar.");
       }
   
       let coverImage = null;
       if (coverImageLocalPath) {
         coverImage = await uploadOnCloudinary(coverImageLocalPath);
         if (!coverImage) {
-          throw new Error("Failed to upload cover image.");
+          throw new ApiError(404,
+            "Failed to upload cover image.");
         }
       }
   
@@ -68,20 +75,28 @@ const registerUser = asyncHandler(async (req, res, next) => {
       if (userExists) {
         return res.status(400).json({ message: "Email already exists." });
       }
-  
+      
+      const response = await OTP.find({email, scenario: "registration"}).sort({createdAt: -1}).limit(1);
+      console.log('otp response', response);
+
+      if(response.length === 0){
+        throw new ApiError(400, 'Invalid OTP ')
+      }else if(otp !== response[0].otp){
+        throw new ApiError(400, 'Invalid OTP ')
+      }
+      
       const user = await User.create({
-        username,
+        userName,
         email,
         password,
         bio,
         avatar: avatar.secure_url,
         coverImage: coverImage ? coverImage.secure_url : null,
       });
-  
+      
       res.status(201).json({ message: "User registered successfully.", user });
     } catch (error) {
-      console.error("Error during user registration:", error.message);
-      res.status(500).json({ message: error.message || "Internal Server Error." });
+      throw new ApiError(500, 'Server Error')
     }
   });
   
@@ -110,9 +125,7 @@ const loginUser = asyncHandler(async(req, res) => {
     }
 
     const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(existedUser._id)
-    console.log("access token")
     console.log(accessToken)
-    console.log("refresh token:")
     console.log(refreshToken)
     const loggedInUser = await User.findById(existedUser._id).select("-password -refreshToken")
 
@@ -136,10 +149,31 @@ const loginUser = asyncHandler(async(req, res) => {
         )
     )
 })
+const handleGoogleLogin = async (user, res) => {
+    try {
+        const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
+        console.log("access token:", accessToken);
+        console.log("refresh token:", refreshToken);
+
+        const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+
+        const options = {
+            httpOnly: true
+        };
+        
+        res.cookie("accessToken", accessToken, options);
+        res.cookie("refreshToken", refreshToken, options);
+
+        // Redirect with a query parameter
+        res.redirect(`${process.env.CORS_ORIGIN}/redirect?userId=${user._id}`);
+    } catch (error) {
+        console.error("Error handling Google login:", error);
+        res.redirect('/login'); // Redirect to login on error
+    }
+};
 
 const logOutUser = asyncHandler(async(req, res) => {
-    console.log("req user:",req.user)
-    // const {user}=req.body
+
     await User.findByIdAndUpdate(
         req.user._id,
         {
@@ -261,6 +295,7 @@ const removeLikedCategory = asyncHandler(async (req, res) => {
 
 const getUserById = asyncHandler(async (req, res) => {
     const { userId } = req.params;
+
     try {
         const user = await User.findById(userId);
         if (!user) {
@@ -269,7 +304,7 @@ const getUserById = asyncHandler(async (req, res) => {
         return res.status(200).json(new ApiResponse(200, user, "User found"));
     } catch (error) {
         console.error("Error fetching user by ID:", error);
-        throw new ApiError(500, "Something unexpected occurred while fetching user details");
+        throw new ApiError(500, "Server Error");
     }
 });
 
@@ -283,7 +318,7 @@ const editUser = asyncHandler(async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) {
-        throw new ApiError(404, "User not found or there was an error in finding the user");
+        throw new ApiError(404, "User not found");
     }
 
     if (userName) {
@@ -340,28 +375,34 @@ const editUser = asyncHandler(async (req, res) => {
 
 const updateCurrentPassword = asyncHandler(async(req , res) => {
     const {userId} = req.params;
-    const { Password, newPassword } = req.body;
+    const { currentPassword, newPassword } = req.body;
+    
     const user = await User.findById(userId);
 
     if(!user){
         throw new ApiError(404, "User not found");
     }
 
-    const isPasswordCorrect = await user.isPasswordCorrect(Password);
+    const isPasswordCorrect = await user.isPasswordCorrect(currentPassword);
 
     if(!isPasswordCorrect){
-        throw new ApiError(400, "Incorrect old Password")
+        throw new ApiError(400, "Incorrect old currentPassword")
     }
     user.password = newPassword
 
     await user.save({validateBeforeSave: false});
 
+    const mailResponsne = await mailSender(
+        user.email,
+        "Password Successfully Changed",
+        PasswordSuccessfullyChanged()
+    );
     return res.status(200).json(new ApiResponse(200, {}, "Password updated successfully"))
 })
 
 const ChangeCurrentEmail = asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    const { email, newEmail } = req.body;
+    const { email, newEmail ,otp} = req.body;
 
     try {
         const user = await User.findById(userId);
@@ -374,8 +415,14 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Email does not match");
         }
 
+    const response = await OTP.find({ email: newEmail }).sort({ createdAt: -1 }).limit(1);
+    if(response.length === 0){
+        throw new ApiError(400, 'Invalid OTP')
+      }else if(otp !== response[0].otp){
+        throw new ApiError(400, 'Invalid OTP')
+      }
         user.email = newEmail;
-        await user.save(); // Save the updated email
+        await user.save(); 
 
         const currentUser = await User.findById(userId).select("-password -refreshToken");
 
@@ -401,70 +448,111 @@ const forgetPassword = asyncHandler(async (req, res) => {
 
     // Generate access token
     const { accessToken } = await generateAccessAndRefereshTokens(user._id);
-    console.log('accesstoken in forget password', accessToken);
-
-    // Check if access token was generated successfully
+     // Check if access token was generated successfully
     if (!accessToken) {
         throw new ApiError(500, "Failed to generate access token");
     }
 
     // Construct the reset link
     const resetlink = `${process.env.CLIENT_URL}reset-password/${accessToken}`;
-    console.log('Reset link:', resetlink);
-
-    // Email options
-    const mailOptions = {
-        from: 'hubwhisper@gmail.com',
-        to: email,
-        subject: 'Here is your password Reset link for Banter.com',
-        text: `Please use this link to reset your password: ${resetlink}`
-    };
-
-    // Sending the email using async/await
+    user.resetlink = accessToken;
+    await user.save({validateBeforeSave: false});
+    
     try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent: ' + info.response);
-        res.status(200).json({
-            message: `Email has been sent to ${email}. Follow the instructions to reset your password.`,
-        });
+        const mailContent = await mailSender(
+            email,
+            "Password Reset Link",
+            PasswordResetTemplate(resetlink)
+        );
     } catch (error) {
-        console.error('Error sending email:', error);
-        throw new ApiError(500, 'Error in sending mail', error.message);
+        throw new ApiError(404, 'Unexpected Error')
+        
     }
 });
+
+import bcrypt from "bcrypt"; 
+
 const resetPassword = asyncHandler(async (req, res) => {
-    try {
-      const { resetlink, newPassword } = req.body;
-  
-      if (!resetlink) {
-        throw new ApiError(401, "Authentication error: reset link is missing.");
-      }
-  
-      console.log("Searching for user with reset link:", resetlink);
-  
-      const user = await User.findOneAndUpdate(
-        { resetlink:resetlink },
-        {
-          password: newPassword,
-          resetlink: ""
-        },
-        { new: true } // returns the updated document
-      );
-  
-      if (!user) {
-        throw new ApiError(404, "User not found or reset link invalid.");
-      }
-  
-      console.log("User found and password updated:", user);
-  
-      return res.status(200).json(
-        new ApiResponse(200, user, "Password reset successful")
-      );
-    } catch (error) {
-      console.error("Error resetting password:", error);
-      return res.status(500).json(new ApiError(500, "Error resetting password", error.message));
+  try {
+    const { resetlink, newPassword } = req.body;
+    console.log('pass', newPassword);
+
+    if (!resetlink) {
+      throw new ApiError(401, "Authentication error: reset link is missing.");
     }
- });
+
+    console.log("Searching for user with reset link:", resetlink);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const user = await User.findOneAndUpdate(
+      { resetlink: resetlink },
+      {
+        password: hashedPassword,  // Update with hashed password
+        resetlink: ""
+      },
+      { new: true } // returns the updated document
+    );
+
+    if (!user) {
+      throw new ApiError(404, "User not found or reset link invalid.");
+    }
+
+    console.log("User found and password updated:", user);
+
+    const mailContent  = await mailSender(
+        user.email,
+        "Password Reset Successful",
+        PasswordSuccessfullyChanged()
+        
+    )
+    
+    return res.status(200).json(
+      new ApiResponse(200, user, "Password reset successful")
+    );
+  } catch (error) {
+    throw new ApiError(500, 'Server Error')
+  }
+});
+
+  
+
+ const sendOtp = asyncHandler(async (req, res) => {
+    try {
+        const { email, scenario } = req.body;
+        console.log('Request email:', email);
+        console.log('Scenario:', scenario);
+
+        const user = await User.findOne({ email });
+        if (user) {
+            throw new ApiError(404, "User is already registered");
+        }
+
+        let otp = otpGenerator.generate(6, {
+            upperCaseAlphabets: false,
+            lowerCaseAlphabets: false,
+            specialChars: false,
+        });
+
+        // Check if OTP already exists
+        const existingOtp = await OTP.findOne({ otp });
+
+
+        while (existingOtp) {
+            otp = otpGenerator.generate(6, {
+                upperCaseAlphabets: false,
+                lowerCaseAlphabets: false,
+                specialChars: false,
+            });
+        }
+
+        const otpPayload = { email, otp, scenario };
+        const otpBody = await OTP.create(otpPayload);
+        res.status(200).json(new ApiResponse(200, otpBody, "OTP sent successfully"));
+    } catch (error) {
+        console.error("Error sending OTP:", error);
+        throw new ApiError(500, "Error sending OTP", error.message);
+    }
+});
 
 
 export {
@@ -480,5 +568,7 @@ export {
     updateCurrentPassword,
     ChangeCurrentEmail,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    sendOtp,
+    handleGoogleLogin
 }

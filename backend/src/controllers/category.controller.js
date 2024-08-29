@@ -11,8 +11,7 @@ const getCategoryById=asyncHandler(async(req,res)=>{
         }
         return res.status(200).json(new ApiResponse(200, category, "Category found"));
     } catch (error) {
-        console.error("Error fetching category by ID:", error);
-        throw new ApiError(500, "Something unexpected occurred while fetching category details");
+        throw new ApiError(500, "Unexpected Error", error);
     }
 });
 

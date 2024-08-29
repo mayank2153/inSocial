@@ -28,7 +28,9 @@ const PostByUser = () => {
     }, [userId]);
 
     return(
-        <div className="flex flex-col   bg-[#0d1114] items-center w-full justify-center max-h-[100vh] overflow-y-scroll no-scrollbar overflow-x-hidden mt-[50px] mb-[50px] pt-[3600px]">
+      <div className="flex flex-col bg-[#0d1114] w-full max-h-screen overflow-y-auto items-center no-scrollbar py-8  lg:px-8 px-2 ">
+      <div className="w-full max-w-screen-sm ">
+        <div className="rounded-2xl  p-1 py-2 space-y-4">
         {
           posts ? (
             posts.map((item) => (
@@ -38,7 +40,10 @@ const PostByUser = () => {
             <div>No posts available</div>
           )
         }
+        </div>
       </div>
+    </div>
+        
     )
 
 }

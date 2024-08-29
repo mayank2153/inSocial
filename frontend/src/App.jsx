@@ -21,19 +21,50 @@ import ChangeCurrentPassword from './components/settings/ChangeCurrentPassword.j
 import ForgetPassword from './components/ForgetPassword/ForgetPassword.jsx';
 import ResetPassword from './components/ForgetPassword/resetPassword.jsx';
 import ChangeCurrentEmail from './components/settings/ChangeCurrentEmail.jsx';
+import { useState } from 'react';
+import Notifications from './components/notification/notifications.jsx';
+import VerifyEmail from './components/Signup/verifyEmail.jsx';
+import VerifyNewEmail from './components/settings/verifyChangeEmail.jsx';
+import GoogleRedirectHandler from './components/redirect/redirectHandler.jsx';
+
 
 function Layout() {
+  const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
+
+  const toggleCategories = () => {
+    setIsCategoriesVisible(!isCategoriesVisible);
+  };
+
   return (
-    <div className="montserrat-medium">
-      <Header />
-      <div className='flex'>
-        <ShowCategories />
-        <Outlet />
+    <div className="montserrat-medium ">
+      <Header toggleCategories={toggleCategories} /> 
+
+      <div className="flex flex-col lg:flex-row  ">
+        {/* Categories section, visible by default on large screens */}
+        <div className={`lg:block ${isCategoriesVisible ? 'block' : 'hidden'} lg:w-1/4 lg:max-w-xs`}>
+          <ShowCategories />
+        </div>
+
+        <div className="flex-grow">
+          <Outlet />
+        </div>
+
+        {/* Right section, moved to footer on small screens */}
+        <div className="hidden lg:block lg:w-1/4 lg:max-w-xs overflow-x-hidden">
+          <Right />
+        </div>
+      </div>
+
+      {/* Right section as footer on small screens */}
+      <div className="lg:hidden fixed bottom-0 w-full">
         <Right />
       </div>
     </div>
   );
 }
+
+
+
 
 const appRouting = createBrowserRouter([
   {
@@ -42,6 +73,16 @@ const appRouting = createBrowserRouter([
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <Login />
+        </PersistGate>
+      </Provider>
+    ),
+  },
+  {
+    path: "/redirect",
+    element: (
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <GoogleRedirectHandler />
         </PersistGate>
       </Provider>
     ),
@@ -57,10 +98,38 @@ const appRouting = createBrowserRouter([
     ),
   },
   {
+    path: "/verifyEmail",
+    element:(
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <VerifyEmail />
+        </PersistGate>
+      </Provider>
+    )
+  },
+  {
     path: "/Forget-Password",
     element: (
       <ForgetPassword />
     ),
+  },
+  {
+    path: "/change-current-email",
+    element: (
+      <ProtectedRoute>
+        <ChangeCurrentEmail/>
+      </ProtectedRoute>
+    )
+
+  },
+  {
+    path: "/change-current-email/verify-otp",
+    element: (
+      <ProtectedRoute>
+        <VerifyNewEmail />
+      </ProtectedRoute>
+    )
+
   },
   {
     path: "/reset-password/:accessToken",
@@ -148,11 +217,12 @@ const appRouting = createBrowserRouter([
           </ProtectedRoute>
         )
       },
+      
       {
-        path: "/change-current-email",
+        path: "/notification/:userId",
         element: (
           <ProtectedRoute>
-            <ChangeCurrentEmail/>
+            <Notifications />
           </ProtectedRoute>
         )
       }
