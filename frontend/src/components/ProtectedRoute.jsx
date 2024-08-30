@@ -10,7 +10,6 @@ const ProtectedRoute = ({ children }) => {
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   useEffect(() => {
-    console.log('hiii am i here in protected route');
     
     const validateToken = async () => {
       const isValid = await checkTokenValidity();
