@@ -131,8 +131,9 @@ const loginUser = asyncHandler(async(req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Match the same setting as in your session cookie
-        sameSite: 'lax' // Must be 'None' if cookies are to be sent cross-origin
+        maxAge: 15 * 60 * 1000,
+        sameSite:process.env.NODE_ENV==="Development"?"lax":"none",
+        secure:process.env.NODE_ENV==="Development"?false:true,
     }
 
     return res
