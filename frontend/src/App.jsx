@@ -69,58 +69,31 @@ function Layout() {
 const appRouting = createBrowserRouter([
   {
     path: "/login",
-    element: (
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <Login />
-        </PersistGate>
-      </Provider>
-    ),
+    element: <Login />,
   },
   {
     path: "/redirect",
-    element: (
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <GoogleRedirectHandler />
-        </PersistGate>
-      </Provider>
-    ),
+    element: <GoogleRedirectHandler />,
   },
   {
     path: "/register",
-    element: (
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <MultiStepForm />
-        </PersistGate>
-      </Provider>
-    ),
+    element: <MultiStepForm />,
   },
   {
     path: "/verifyEmail",
-    element:(
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <VerifyEmail />
-        </PersistGate>
-      </Provider>
-    )
+    element: <VerifyEmail />,
   },
   {
     path: "/Forget-Password",
-    element: (
-      <ForgetPassword />
-    ),
+    element: <ForgetPassword />,
   },
   {
     path: "/change-current-email",
     element: (
       <ProtectedRoute>
-        <ChangeCurrentEmail/>
+        <ChangeCurrentEmail />
       </ProtectedRoute>
-    )
-
+    ),
   },
   {
     path: "/change-current-email/verify-otp",
@@ -128,74 +101,43 @@ const appRouting = createBrowserRouter([
       <ProtectedRoute>
         <VerifyNewEmail />
       </ProtectedRoute>
-    )
-
+    ),
   },
   {
     path: "/reset-password/:accessToken",
-    element:(
-      < ResetPassword />
-    )
-  }
-  ,
+    element: <ResetPassword />,
+  },
   {
     path: "/",
     element: (
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <Layout />
-        </PersistGate>
-      </Provider>
+      <ProtectedRoute>
+        <Layout />
+      </ProtectedRoute>
     ),
     children: [
       {
         path: "/",
-        element: (
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        ),
+        element: <HomePage />,
       },
       {
         path: "/registerCategory",
-        element: (
-          <ProtectedRoute>
-            <CategoryPage />
-          </ProtectedRoute>
-        ),
+        element: <CategoryPage />,
       },
-      
       {
         path: "/post/:postId",
-        element: (
-          <ProtectedRoute>
-            <PostPage />
-          </ProtectedRoute>
-        ),
+        element: <PostPage />,
       },
       {
         path: "/createPost",
-        element: (
-          <ProtectedRoute>
-            <CreatePost />
-          </ProtectedRoute>
-        ),
+        element: <CreatePost />,
       },
       {
         path: "posts/category/:categoryId",
-        element: (
-          <ProtectedRoute>
-            <PostByCategory />
-          </ProtectedRoute>
-        ),
+        element: <PostByCategory />,
       },
       {
         path: "/UserProfile/:userId",
-        element: (
-          <ProtectedRoute>
-            <UserProfile />
-          </ProtectedRoute>
-        ),
+        element: <UserProfile />,
       },
       {
         path: "/searchresults",
@@ -203,35 +145,28 @@ const appRouting = createBrowserRouter([
       },
       {
         path: "/post/edit-post/:postId",
-        element: (
-          <ProtectedRoute>
-            <EditPost />
-          </ProtectedRoute>
-        ),
+        element: <EditPost />,
       },
       {
         path: "/Update-current-password",
-        element: (
-          <ProtectedRoute>
-            <ChangeCurrentPassword />
-          </ProtectedRoute>
-        )
+        element: <ChangeCurrentPassword />,
       },
-      
       {
         path: "/notification/:userId",
-        element: (
-          <ProtectedRoute>
-            <Notifications />
-          </ProtectedRoute>
-        )
-      }
+        element: <Notifications />,
+      },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={appRouting} />;
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={appRouting} />
+      </PersistGate>
+    </Provider>
+  );
 }
 
 export default App;

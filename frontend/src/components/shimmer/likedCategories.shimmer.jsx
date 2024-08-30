@@ -1,5 +1,5 @@
 const LikedCategoriesShimmer = () => {
-    console.log("shimmer");
+    
     return (
         <div className="w-[280px] h-[160px] bg-[#13181d] rounded-xl ml-8 my-2 shadow-2xl overflow-hidden">
             <div className="mt-4 mx-2">
