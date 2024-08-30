@@ -5,7 +5,7 @@ import { checkTokenValidity } from "../utils/userAuth.jsx"; // Import the checkT
 import { logout } from "../utils/authslice.jsx"; // Import your actions
 
 const ProtectedRoute = ({ children }) => {
-  // const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const isAuthenticated_redux = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -17,11 +17,15 @@ const ProtectedRoute = ({ children }) => {
         dispatch(logout()); 
         setIsAuthenticated(false);// Dispatch logout if the token is not valid
       }
-      setIsChecking(false); // Finish checking the token
+      setIsChecking(false);
+      if(!isAuthenticated_redux){
+        setIsAuthenticated(false);
+      }
+       // Finish checking the token
     };
 
     validateToken();
-  }, [dispatch]);
+  }, [dispatch,isAuthenticated_redux]);
 
   
   // Render loading state while checking the token
