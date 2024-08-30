@@ -1,10 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 import { resetPassword } from "../../api/resetPassword";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
   const url = import.meta.env.VITE_BASE_URL || "http://localhost:8000/";
-
+  const navigate = useNavigate();
   // Extract the reset token from the URL
   const resetToken = window.location.href.split("/")[4];
 
@@ -35,8 +37,10 @@ const ResetPassword = () => {
 
       await resetPassword(reset); // Call the resetPassword function with the reset object
 
-      alert("Password reset successfully!"); // Notify user of success
+      
       setReset({ password: "", newPassword: "", resetlink: resetToken }); // Reset state
+      toast.success("Password reset successfully");
+      navigate('/login')
     } catch (error) {
       console.log("There seems to be an error in resetting the password", error);
       setReset({ password: "", newPassword: "", resetlink: resetToken }); // Reset state on error

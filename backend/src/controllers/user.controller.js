@@ -468,6 +468,10 @@ const forgetPassword = asyncHandler(async (req, res) => {
         throw new ApiError(404, 'Unexpected Error')
         
     }
+
+    return res.status(200).json(
+        new ApiResponse(200,'Email sent successfully')
+    )
 });
 
 import bcrypt from "bcrypt"; 

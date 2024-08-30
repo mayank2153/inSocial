@@ -71,6 +71,9 @@ const TwoStepForm = () => {
       formErrors.password = "Password is required";
     }
 
+    if(!formData.avatar){
+      formData.avatar = "Please Upload avatar"
+    }
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
@@ -139,7 +142,7 @@ const TwoStepForm = () => {
             </div>
 
       <div className="bg-black shadow-xl rounded-lg w-full max-w-md flex flex-col items-center">
-        <h2 className="text-2xl text-white font-mono  lg:ml-16">
+        <h2 className="text-2xl text-white font-mono  lg:ml-2">
           Create Your Account
         </h2>
         {serverError && (
@@ -233,9 +236,14 @@ const TwoStepForm = () => {
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-
+              <p className="text-slate-200 my-1 font-mono">Already have an Account?
+                  <Link to="/login">
+                  <span className="cursor-pointer text-blue-600 font-mono">Login</span>
+                  </Link>
+                   </p>
               {/* Next Step Button */}
               <div className="flex justify-end">
+                
                 <button
                   type="button"
                   onClick={nextStep}
@@ -300,6 +308,13 @@ const TwoStepForm = () => {
                     />
                   </label>
                 </div>
+                {
+                  errors.avatar && (
+                    <p className="text-red-500 text-sm mt-1">
+                    {errors.avatar}
+                    </p>
+                  )
+                }
               </div>
 
               {/* Previous and Submit Buttons */}
@@ -307,7 +322,7 @@ const TwoStepForm = () => {
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="bg-gray-500 w-[100px] h-[40px] text-white rounded-full text-lg font-mono hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="bg-gray-500 w-[100px] h-[40px] text-white rounded-full mt-6 text-lg font-mono hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   Previous
                 </button>

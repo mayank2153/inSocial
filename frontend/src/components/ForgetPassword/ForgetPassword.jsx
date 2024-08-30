@@ -2,18 +2,20 @@ import { useState } from "react"
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { forgetPassword } from "../../api/forgetPassword";
+import toast from "react-hot-toast";
 
 const ForgetPassword = () => {
     const [ email , setEmail ] = useState("");
     const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
     const handleForgetPassword = async() =>{
+        console.log('hi');
+        
         try {
             await forgetPassword(email);
-                
+            
         } catch (error) {
             console.log('there seems to be a problem in fetching email', error);
-            
         }
         
     }
