@@ -25,17 +25,16 @@ const ChangeCurrentEmail = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(formData);
-    console.log(userId);
+
 
     try {
       const response = await sendOtp(formData.newEmail, 'emailChange');
-      console.log('otp api response', response);
+      
 
       // Navigate to verify-otp after successful OTP sending
       navigate("/change-current-email/verify-otp", {state : formData});
     } catch (error) {
-      console.log('seems to be a problem while sending otp', error);
+      console.error('seems to be a problem while sending otp', error);
     }
   };
 

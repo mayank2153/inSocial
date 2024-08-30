@@ -5,7 +5,7 @@ export const fetchCategories = async () => {
     try {
         const response = await axios.get(`${url}category/category`);
         if (response.data.success) {
-            console.log(response.data)
+            
             return response.data.categories;
         }
     } catch (error) {

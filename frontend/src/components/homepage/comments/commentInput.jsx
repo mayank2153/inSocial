@@ -25,9 +25,7 @@ const CommentInput = ({ postId }) => {
         if(socket){
           socket.connect();
         }
-    } else {
-      console.log("Socket already connected");
-    }
+    } 
   }, [socket]);
 
   useEffect(() => {
@@ -47,9 +45,9 @@ const CommentInput = ({ postId }) => {
 
       setComment(""); // Clear the comment input after successful submission
       setIsInputFocused(false);
-      console.log("Comment generated successfully:", response.data);
+      
       dispatch(addComment(response.data.data))
-      console.log("socket:,",socket)
+      
       if (socket) {
         const emitData = {
           message: `User ${userName} commented on your post`,
@@ -59,11 +57,11 @@ const CommentInput = ({ postId }) => {
           type: 'comment',
         };
 
-        console.log("Emitting socket event with data:", emitData);
+        
         socket.emit('commentPost', emitData);
-        console.log("Comment emitted successfully", emitData);
+        
       } else {
-        console.warn("Socket is not connected, cannot emit event.");
+        console.error("Socket is not connected, cannot emit event.");
       }
     } catch (error) {
       console.error("Error submitting comment:", error); // Log the entire error object for debugging

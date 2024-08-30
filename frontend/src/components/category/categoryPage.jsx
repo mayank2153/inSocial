@@ -3,16 +3,21 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addCategory } from "../../utils/categoryslice";
+import ClipLoader from "react-spinners/ClipLoader";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const CategoryPage = () => {
   const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [Loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const likedCategories_redux = useSelector((state) => state.likedCategories?.likesCategory);
   const userData = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  console.log("into registered")
+  
   const fetchCategories = async () => {
     try {
       const response = await axios.get(`${url}category/category`);
@@ -20,15 +25,15 @@ const CategoryPage = () => {
         const fetchedCategories = response.data.categories;
         setCategories(fetchedCategories);
       }
-      console.log(response)
+      // console.log(response)
     } catch (error) {
-      console.log('There seems to be an error in fetching Categories:', error);
+      console.error('There seems to be an error in fetching Categories:', error);
     }
   };
 
   useEffect(() => {
     fetchCategories();
-    console.log("category",categories)
+    // console.log("category",categories)
   }, []);
 
   const handleCategorySelect = (categoryId) => {
@@ -40,6 +45,7 @@ const CategoryPage = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${url}users/add-liked-categories`,
@@ -54,17 +60,22 @@ const CategoryPage = () => {
           withCredentials: true
         }
       );
-      console.log(response);
+      // console.log(response);
 
       // Dispatch the addCategories action to update the Redux store
       dispatch(addCategory(selectedCategories));
+      setLoading(false);
+      toast.success('Category Added Successfully')
+      navigate('/');
+
     } catch (error) {
-      console.log('error:', error);
+      console.error('error:', error);
+      toast.error('Error Adding Category')
     }
   };
 
   return (
-    <div className="w-full h-[100vh] bg-[#0d1114] flex items-center justify-center">
+    <div className="w-full h-[100vh] bg-[#0d1114] flex items-center justify-center pt-10">
       <div className="bg-slate-100 w-fit mt-10 mb-10 h-screen rounded overflow-y-scroll no-scrollbar">
         {categories.length > 0 && (
           <>
@@ -93,7 +104,7 @@ const CategoryPage = () => {
             </div>
             <div className="pt-4 pb-7 flex justify-center">
               <Link to="/">
-                <button onClick={handleSubmit} className="bg-[#0d1114] text-white my-2 px-8 py-2 rounded hover:bg-[#13181d] focus:outline-none focus:ring-2 focus:ring-blue-500">Submit</button>
+                <button onClick={handleSubmit} className="bg-blue-500 text-white my-2 px-8 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Submit</button>
               </Link>
             </div>
           </>

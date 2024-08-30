@@ -10,6 +10,5 @@ const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
         return response.data
     } catch (error) {
         console.error('Error fetching post details:', error);
-    throw new Error('Error fetching post details');
     }
  }

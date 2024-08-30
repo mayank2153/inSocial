@@ -6,8 +6,10 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from "react-router-dom";
 import { MdDriveFolderUpload } from "react-icons/md";
 import toast from 'react-hot-toast';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
+
 function Previews({ setFormData, initialMedia }) {
     const [files, setFiles] = useState([]);
 
@@ -84,7 +86,8 @@ const PostForm = ({ isEdit }) => {
     const [categories, setCategories] = useState([]);
     const currentUser = useSelector((state) => state.auth.user?.data?.user?._id);
     const [selectedColor, setSelectedColor] = useState('#13181d'); 
-    const [selectSize,setSelectSize]=useState(10)
+    const [selectSize, setSelectSize] = useState(10);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { postId } = useParams();
 
@@ -121,10 +124,10 @@ const PostForm = ({ isEdit }) => {
         if (isEdit && postId) {
             const fetchPost = async () => {
                 try {
-                    const { data } = await axios.get(`${url}posts/getPost/${postId}`,{
+                    const { data } = await axios.get(`${url}posts/getPost/${postId}`, {
                         headers: { 'Content-Type': 'application/json' },
-                        withCredentials:true
-                    })
+                        withCredentials: true
+                    });
                     setFormData({
                         category: data.data.category,
                         title: data.data.title,
@@ -157,10 +160,11 @@ const PostForm = ({ isEdit }) => {
                 setSelectedColor('#13181d'); // Reset to default if no category is selected
             }
         }
-        setSelectSize(1)
+        setSelectSize(1);
     };
 
     const handleSubmit = async e => {
+        setLoading(true);
         e.preventDefault();
         try {
             const data = new FormData();
@@ -171,43 +175,42 @@ const PostForm = ({ isEdit }) => {
                 ? await axios.put(`${url}posts/update-post/${postId}`, data, { withCredentials: true })
                 : await axios.post(`${url}posts/create-post`, data, { withCredentials: true });
             navigate("/");
+            setLoading(false);
             toast.success("Post Created successfully");
         } catch (error) {
+            setLoading(false);
+            toast.error("Error creating post");
             console.error(error);
         }
     };
 
     return (
-        <div className="w-full flex justify-center lg:py-8 bg-[#13181d] min-h-[100vh] overflow-y-scroll no-scrollbar " >
+        <div className="w-full flex justify-center lg:py-8 bg-[#13181d] min-h-[100vh] overflow-y-scroll no-scrollbar">
             <div className="flex flex-col items-center bg-[#0d1114] rounded-2xl max-h-[100vh] text-white px-6 py-5 md:px-10 md:py-8 gap-4 w-full max-w-[600px]">
                 <h1 className="text-2xl md:text-3xl">{isEdit ? "Edit Post" : "Create Post"}</h1>
                 <div>
                     <form onSubmit={handleSubmit} className="flex flex-col text-lg md:text-2xl gap-6 md:gap-8 w-full">
-                       <div className='lg:max-h-20 overflow-auto no-scrollbar max-h-20'>
-                        <select 
-                            name="category" 
-                            id="category" 
-                            onChange={handleChange} 
-                            value={formData.category}
-                            className=" w-min md:w-min text-sm md:text-xl py-2 px-2 md:py-1 focus:outline-none "
-                            style={{ 
-                                backgroundColor: selectedColor,
-                            }}
-                        >
-                            <option value="" disabled className='bg-[#13181d]'>Select Category</option>
-                            {categories.map(category => (
-                                <option 
-                                    key={category._id} 
-                                    value={category.name} 
-                                    style={{ 
-                                         backgroundColor:"#13181d"
-                                        }}
-                                >
-                                    {category.name}
-                                </option>
-                            ))}
-                        </select>
-                       </div>
+                        <div className='lg:max-h-20 overflow-auto no-scrollbar max-h-20'>
+                            <select 
+                                name="category" 
+                                id="category" 
+                                onChange={handleChange} 
+                                value={formData.category}
+                                className="w-min md:w-min text-sm md:text-xl py-2 px-2 md:py-1 focus:outline-none"
+                                style={{ backgroundColor: selectedColor }}
+                            >
+                                <option value="" disabled className='bg-[#13181d]'>Select Category</option>
+                                {categories.map(category => (
+                                    <option 
+                                        key={category._id} 
+                                        value={category.name} 
+                                        style={{ backgroundColor: "#13181d" }}
+                                    >
+                                        {category.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
                         <input
                             type="text"
@@ -225,16 +228,18 @@ const PostForm = ({ isEdit }) => {
                             value={formData.description}
                             onChange={handleChange}
                             placeholder="Description"
-                            className="min-h-20 px-2 py-4 text-white bg-transparent border-t-2 border-slate-300 focus:outline-none"
-                            required
+                            className="min-h-16 px-2 py-4 text-white bg-transparent border-t-2 border-t-slate-300 focus:outline-none"
                         />
-                        <div className='rounded border-dashed border-2 h-40 px-5 py-3 border-slate-300'>
-                            <Previews setFormData={setFormData} initialMedia={formData.media} />
-                        </div>
 
-                        <div className='flex justify-end'>
-                            <input type="submit" value="Submit" className="rounded-full text-lg bg-blue-600 text-white cursor-pointer w-full md:w-20 hover:bg-blue-700"/>
-                        </div>
+                        <Previews setFormData={setFormData} initialMedia={formData.media} />
+
+                        <button
+                            type="submit"
+                            className="w-full p-2 flex items-center justify-center min-h-[50px] md:min-h-[70px] bg-white text-black hover:bg-slate-400"
+                            disabled={loading}
+                        >
+                            {loading ? <ClipLoader size={20} color="black" /> : "Submit"}
+                        </button>
                     </form>
                 </div>
             </div>

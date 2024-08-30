@@ -10,6 +10,6 @@ export const CountUnreadNotification = async(userId, dispatch) => {
         const response = await axios.get(`${url}notification/unread-count/${userId}`);
         dispatch(setUnreadCount(response?.data?.data));    
     } catch (error) {
-        console.log('seems to be an error while getting user notification count',error);
+        console.error('seems to be an error while getting user notification count',error);
     }
 };

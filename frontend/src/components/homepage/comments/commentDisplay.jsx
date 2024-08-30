@@ -12,15 +12,13 @@ const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
 const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedAt, owner, replies }) => {
   
 
-  console.log("ye sab aaya hai:",_id, content, deleted, parentCommentId, post, updatedAt, owner, replies )
+  
   const [isReplying, setIsReplying] = useState(false);
 
   const { postId } = useParams();
   const userData = useSelector((state) => state.auth.user);
   const user=userData?.data.user?userData?.data?.user?._id : userData?.data?._id;
-  console.log("owner",owner)
-  console.log("user",user)
-
+  
   const handleCommentDelete = async () => {
     try {
       const response = await axios.post(
@@ -31,11 +29,11 @@ const CommentDisplay = ({ _id, content, deleted, parentCommentId, post, updatedA
           withCredentials: true
         }
       );
-      console.log(response.data);
+      
       // Optionally refresh the comments or update the UI
     } catch (error) {
       alert("Error deleting comment: " + (error.response?.data?.message || error.message));
-      console.log(error);
+      console.error(error);
     }
   };
 

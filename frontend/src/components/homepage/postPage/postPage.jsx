@@ -7,6 +7,7 @@ import { TiArrowBack } from "react-icons/ti";
 import CommentInput from "../comments/commentInput.jsx";
 import ShowComments from "../comments/showComments.jsx";
 import { Link } from "react-router-dom"
+import ShimmerPost from "../../shimmer/shimmerPose.jsx";
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
 const PostPage = () => {
@@ -18,13 +19,11 @@ const PostPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(postId);
+        
         const response = await axios.get(`${url}posts/getPost/${postId}`, {
           
           withCredentials: true,
         });
-        console.log("check")
-        console.log(response);
         setData(response.data.data);
       } catch (error) {
         setError(error.message);
@@ -37,15 +36,17 @@ const PostPage = () => {
   }, [postId]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="bg-[#0d1114] flex items-center justify-center h-[100vh]">
+      <ShimmerPost />
+    </div>;
   }
 
   if (error) {
-    return <div>Error fetching post: {error}</div>;
+    return <div className="bg-black text-white font-mono text-center text-2xl h-[100vh]">Error fetching post: {error}</div>;
   }
 
   if (!data) {
-    return <div>No post data</div>;
+    return <div className="bg-black text-white font-mono text-center text-2xl h-[100vh]">No post data</div>;
   }
 
   return (

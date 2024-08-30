@@ -22,7 +22,7 @@ const Notifications = () => {
     const fetchNotifications = async () => {
         try {
             const response = await axios.get(`${url}notification/notifications/${userId}`);
-            console.log("Notification response", response.data);
+            
             setNotifications(response?.data?.data || []); // Handle empty response
         } catch (error) {
             console.error('Error fetching notifications:', error);
@@ -45,12 +45,12 @@ const Notifications = () => {
         // Listen for new notifications
         if (socket) {
             socket.on('notification', (notificationData) => {
-                console.log('Notification received:', notificationData);
+                
                 setNotifications((prevNotifications) => [notificationData, ...prevNotifications]);
                 if(notificationData.userId === userId){
                     dispatch(incrementUnreadCount())
                 }
-                console.log(notifications)
+                
             });
         }
 
@@ -64,8 +64,6 @@ const Notifications = () => {
     const handleNotificationClick = (postId) => {
         if (postId) {
             navigate(`/post/${postId}`); // Navigate to the post page using postId
-        } else {
-            console.log("Notification does not have a valid post reference.");
         }
     };
 
