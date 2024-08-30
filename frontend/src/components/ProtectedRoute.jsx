@@ -5,10 +5,11 @@ import { checkTokenValidity } from "../utils/userAuth.jsx"; // Import the checkT
 import { logout } from "../utils/authslice.jsx"; // Import your actions
 
 const ProtectedRoute = ({ children }) => {
-  // const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const isAuthenticated_redux = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  setIsAuthenticated(isAuthenticated_redux)
   useEffect(() => {
     
     const validateToken = async () => {
