@@ -55,6 +55,7 @@ import errorHandler from "./middlewares/errorHandler.middleware.js";
 import conversationRouter from "./routes/conversation.routes.js";
 import messageRouter from "./routes/message.routes.js";
 import notificationRouter from './routes/notification.route.js';
+import authRouter from './routes/auth.route.js';
 
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
@@ -64,7 +65,8 @@ app.use("/category", categoryRouter);
 app.use("/search", searchRouter);
 app.use("/conversations", conversationRouter);
 app.use("/messages", messageRouter);
-app.use("/notification", notificationRouter)
+app.use("/notification", notificationRouter);
+app.use("/api/auth", authRouter);
 
 app.use(errorHandler)
 app.get("/", (req, res) => {
