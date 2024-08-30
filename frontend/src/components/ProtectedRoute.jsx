@@ -9,7 +9,6 @@ const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch();
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
-  setIsAuthenticated(isAuthenticated_redux)
   useEffect(() => {
     
     const validateToken = async () => {
