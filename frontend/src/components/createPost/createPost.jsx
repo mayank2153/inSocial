@@ -172,7 +172,7 @@ const PostForm = ({ isEdit }) => {
                 data.append(key, formData[key]);
             });
             const response = isEdit
-                ? await axios.put(`${url}posts/update-post/${postId}`, data, { withCredentials: true })
+                ? await axios.post(`${url}posts/update-post/${postId}`, data, { withCredentials: true })
                 : await axios.post(`${url}posts/create-post`, data, { withCredentials: true });
             navigate("/");
             setLoading(false);
