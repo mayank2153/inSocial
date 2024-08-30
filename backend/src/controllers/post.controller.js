@@ -59,7 +59,7 @@ const createNewPost = asyncHandler(async (req, res) => {
 const updatePost = asyncHandler(async (req, res) => {
     const { postId } = req.params;
     const { title, description, category } = req.body;
-    
+    console.log("body:",req.body)
     // Check valid input
     if ([title, description, category].some(field => field && field.trim() === "")) {
         throw new ApiError(400, "Please provide necessary details");
