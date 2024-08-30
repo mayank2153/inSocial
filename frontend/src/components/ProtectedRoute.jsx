@@ -18,11 +18,15 @@ const ProtectedRoute = ({ children }) => {
         dispatch(logout()); 
         setIsAuthenticated(false);// Dispatch logout if the token is not valid
       }
-      setIsChecking(false); // Finish checking the token
+      setIsChecking(false);
+      if(!isAuthenticated_redux){
+        setIsAuthenticated(false);
+      }
+       // Finish checking the token
     };
 
     validateToken();
-  }, [dispatch]);
+  }, [dispatch,isAuthenticated_redux]);
 
   
   // Render loading state while checking the token
