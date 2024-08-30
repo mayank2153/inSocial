@@ -18,10 +18,10 @@ const GoogleRedirectHandler = () => {
             const userId = query.get('userId');
             
             try {
-                console.log("Redirecting and fetching user data...");
+                
                 if (userId) {
                     const userInfo = await UserData(userId);
-                    console.log("Fetched user info:", userInfo);
+                    
                     dispatch(loginSuccess(userInfo)); // Store user data in Redux
                 } else {
                     throw new Error("User ID not found in URL");

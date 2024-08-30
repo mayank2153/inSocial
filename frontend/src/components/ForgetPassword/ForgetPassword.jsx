@@ -3,19 +3,23 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { forgetPassword } from "../../api/forgetPassword";
 import toast from "react-hot-toast";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const ForgetPassword = () => {
     const [ email , setEmail ] = useState("");
     const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
+    const [Loading, setLoading ] = useState(false);
 
     const handleForgetPassword = async() =>{
-        console.log('hi');
+        
+        setLoading(true);
         
         try {
             await forgetPassword(email);
-            
+            setLoading(false);
         } catch (error) {
-            console.log('there seems to be a problem in fetching email', error);
+            console.error('there seems to be a problem in fetching email', error);
+            setLoading(false);
         }
         
     }
@@ -49,7 +53,8 @@ const ForgetPassword = () => {
                         onClick={handleForgetPassword}
                         className="w-[125px] ml-[150px] mt-6 py-2 text-xl font-mono bg-blue-500 rounded-full
                         text-white hover:bg-blue-700 transition-all duration-400">
-                        Submit
+                         {Loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Submit'}
+                        
                     </button>
                 </form>
             </div>

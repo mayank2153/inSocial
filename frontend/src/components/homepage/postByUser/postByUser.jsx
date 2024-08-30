@@ -7,7 +7,7 @@ const PostByUser = () => {
     const url = import.meta.env.VITE_BASE_URL ;
     const [posts, setPosts] = useState(null);
     const {userId} = useParams();
-    console.log("user in front:",userId)
+    
     const fetchUserPosts = async() => {
         try {
             const fetchedPosts = await axios.get(`${url}posts/user/${userId}`,{
@@ -15,10 +15,9 @@ const PostByUser = () => {
                 withCredentials: true
               });
             setPosts(fetchedPosts.data.data);
-            console.log(fetchedPosts)
-            console.log(fetchedPosts);            
+            
         } catch (error) {
-            console.log('there seems to be an error during fetching user posts' , error);
+            console.error('there seems to be an error during fetching user posts' , error);
         }
 
     }

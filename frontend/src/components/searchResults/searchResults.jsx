@@ -14,7 +14,7 @@ const SearchResults = () => {
     const [openUser,setOpenUser]=useState(true)
     const location = useLocation();
     const query = new URLSearchParams(location.search).get('query');
-    console.log("query:",query)
+    
     useEffect(() => {
       const fetchResults = async () => {
         try {
@@ -25,9 +25,7 @@ const SearchResults = () => {
             });
             setPosts(response.data.data.posts);
             setUsers(response.data.data.users);
-            console.log("user",users)
-            console.log(posts)
-            console.log("users")
+
         } catch (error) {
           console.error('Error fetching search results:', error);
         }
@@ -83,7 +81,7 @@ const SearchResults = () => {
                     !openUser && posts.map((post)=>(
                         <div>
 
-                            {console.log("hey")}
+                            
                             <PostCard key={post._id} {...post} ></PostCard>
                         </div>
                     ))

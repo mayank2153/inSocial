@@ -8,11 +8,10 @@ export const UserData = async(userId) => {
         const response  = await axios.get(`${url}users/get-user/${id}`,{},
             { withCredentials: true }
         );
-        console.log('user-data', response?.data);
         return response?.data;
         
     } catch (error) {
-        console.log('there seems to be an error while fetching data', error.message);
+        console.error('there seems to be an error while fetching data', error.message);
         
     }
 };

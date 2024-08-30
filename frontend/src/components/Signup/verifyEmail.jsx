@@ -14,7 +14,7 @@ function VerifyEmail() {
   const navigate = useNavigate();
   const location = useLocation();
   const signUpData = location.state;
-  console.log("signudtaa:",signUpData)
+  
   useEffect(() => {
     if (!signUpData) {
       navigate('/register');
@@ -24,7 +24,7 @@ function VerifyEmail() {
 
     try {
      
-      console.log("data before sending:",signUpData)
+      
       const response = await UserRegister({ ...signUpData, otp });
       navigate("/login")
       toast.success(response?.data?.message)
@@ -36,7 +36,7 @@ function VerifyEmail() {
   const resendOtp = async () => {
     try {
       await sendOtp(signUpData.email,'registration');
-      console.log('OTP resent successfully');
+      
     } catch (error) {
       toast.error('Unexpected Error')
     }

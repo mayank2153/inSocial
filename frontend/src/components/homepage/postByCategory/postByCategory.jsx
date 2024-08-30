@@ -11,7 +11,7 @@ const PostByCategory=()=>{
             try {
                 const fetchedPosts=await fetchPostsByCategory({categoryId});
                 setPosts(fetchedPosts);
-                console.log(fetchedPosts)
+                
             } catch (error) {
                 setError('Error fetching details');
             console.error('Error fetching details:', error);

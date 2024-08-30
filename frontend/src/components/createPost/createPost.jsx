@@ -6,10 +6,13 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from "react-router-dom";
 import { MdDriveFolderUpload } from "react-icons/md";
 import toast from 'react-hot-toast';
+import ClipLoader from 'react-spinners/ClipLoader';
+import { setLoading } from '../../utils/postsSlice';
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 function Previews({ setFormData, initialMedia }) {
     const [files, setFiles] = useState([]);
+    const [Loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (initialMedia) {
@@ -161,6 +164,7 @@ const PostForm = ({ isEdit }) => {
     };
 
     const handleSubmit = async e => {
+        setLoading(true);
         e.preventDefault();
         try {
             const data = new FormData();
@@ -171,8 +175,10 @@ const PostForm = ({ isEdit }) => {
                 ? await axios.put(`${url}posts/update-post/${postId}`, data, { withCredentials: true })
                 : await axios.post(`${url}posts/create-post`, data, { withCredentials: true });
             navigate("/");
+            setLoading(false);
             toast.success("Post Created successfully");
         } catch (error) {
+            setLoading(false);
             console.error(error);
         }
     };
@@ -233,7 +239,18 @@ const PostForm = ({ isEdit }) => {
                         </div>
 
                         <div className='flex justify-end'>
-                            <input type="submit" value="Submit" className="rounded-full text-lg bg-blue-600 text-white cursor-pointer w-full md:w-20 hover:bg-blue-700"/>
+                        <button 
+                            type="submit" 
+                            className="rounded-full text-lg bg-blue-600 text-white cursor-pointer w-full md:w-20 hover:bg-blue-700 flex items-center justify-center"
+                            disabled={Loading} // Disable the button when loading
+                            >
+                            {Loading ? (
+                            <ClipLoader color="#ffffff" loading={Loading} size={20} /> // Loader displayed when Loading is true
+                                ) : (
+                                    "Submit" // Button text displayed when not loading
+                                )}
+                            </button>
+
                         </div>
                     </form>
                 </div>

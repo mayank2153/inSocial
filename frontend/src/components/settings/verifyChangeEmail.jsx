@@ -18,7 +18,7 @@ function VerifyNewEmail() {
   const navigate = useNavigate();
   const location = useLocation();
   const formData = location.state;
-  console.log("signudtaa:",formData)
+  
   useEffect(() => {
     if (!formData) {
       navigate('/change-current-email');
@@ -29,16 +29,16 @@ function VerifyNewEmail() {
     try {
         await ChangeCurrentEmail(formData, otp, userId);
     } catch (error) {
-        console.log('problem while changing email', error);
+        console.error('problem while changing email', error);
     }
   };
 
   const resendOtp = async () => {
     try {
       await sendOtp(formData.newEmail, 'emailChange');
-      console.log('OTP resent successfully');
+      
     } catch (error) {
-      console.log('Error in sending OTP', error);
+      console.error('Error in sending OTP', error);
     }
   };
 

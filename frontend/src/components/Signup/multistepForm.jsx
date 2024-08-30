@@ -9,7 +9,7 @@ import avatar4 from "./avatar/avatar-4.jpeg";
 import logo from "../../assets/images/logo.jpg";
 import logo_img_black from "../../assets/images/logo_img_black.png"
 import { FaSyncAlt } from "react-icons/fa";
-import { setTempUserData, clearTempUserData } from "../../utils/authslice";
+
 import { useDispatch, useSelector } from "react-redux";
 import { sendOtp } from "../../api/sendOtp";
 import usernameGenerator from "../../api/usernameGenerator.js";
@@ -119,9 +119,9 @@ const TwoStepForm = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleAvatarSelect = async (avatarUrl) => {
-    console.log("avatar url:",avatarUrl)
+    
     const avatarFile = await convertUrlToFile(avatarUrl, "avatar.png");
-    console.log("avatar file:",avatarFile)
+    
     setSelectedAvatar(avatarFile);
     setPreview(avatarUrl);
   };

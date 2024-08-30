@@ -48,7 +48,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
     if (userVote) {
       // If the user is clicking the same vote type again, remove the vote
       const voteId = votes.find(vote => vote.voteOwner === currentUser)?.voteId;
-      console.log("vote is",voteId)
+      
       await removeVote(voteId);
       setUserVote(null);
       setVoteNumber(voteNumber - 1);
@@ -58,7 +58,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
         const response = await axios.post(`${url}vote/create-vote/${_id}`, { voteType }, {
           withCredentials: true
         });
-        console.log('Vote response:', response.data);
+        // console.log('Vote response:', response.data);
         setUserVote(voteType);
 
         if (socket) {
@@ -71,7 +71,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
           };
 
           socket.emit('likePost', emitData);
-          console.log('vote emitted', emitData);
+          
         }
 
         if (voteNumber <= voteCount) {
@@ -91,7 +91,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
        { withCredentials: true} 
       
       );
-      console.log("deleteVote", deleteVote);
+      
     } catch (error) {
       console.error('Error deleting vote:', error);
       alert(error.response?.data?.message || "Error deleting vote");
