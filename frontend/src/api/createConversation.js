@@ -13,9 +13,9 @@ export const createConversation = async ({ participants }) => {
                 withCredentials: true 
             }
         );
-        console.log(conversation.data);
+        
         return conversation.data;
     } catch (error) {
-        throw new Error('There seems to be an error in creating conversation: ' + error.message);
+        console.error('There seems to be an error in creating conversation: ' + error.message);
     }
 }

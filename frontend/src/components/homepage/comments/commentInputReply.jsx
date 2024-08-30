@@ -41,7 +41,7 @@ const CommentInputReply = ({ postId , parentCommentId,userName}) => {
         { withCredentials: true });
       setComment(""); // Clear the comment input after successful submission
       setIsInputFocused(false)
-      console.log("comment generated", response.data);
+      
 
       if(socket){
         const emitData = {
@@ -52,7 +52,7 @@ const CommentInputReply = ({ postId , parentCommentId,userName}) => {
           type: 'Reply'
         }
         socket.emit('ReplyComment', emitData);
-        console.log(emitData);
+        
         
       }
 

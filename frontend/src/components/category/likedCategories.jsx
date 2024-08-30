@@ -4,42 +4,39 @@ import { useSelector, useDispatch } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import LikedCategoriesShimmer from "../shimmer/likedCategories.shimmer";
 import { deleteCategory, setCategories as setCategoriesRedux } from "../../utils/categoryslice";
-import { fetchCategoryDetails } from "../../api/fetchCategoryDetails";
-import { fetchOwnerDetails } from "../../api/fetchOwnerDetails";
 import { UserData } from "../../api/getUserbyId";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const LikedCategories = () => {
     const [change, setChange] = useState(true);
     const [user, setUser] = useState(null);
     const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
     const userD = useSelector((state) => state.auth.user);
-    // const userlikedCategories = userData?.data?.user?.likedCategories;
-    const ownerID = userD?.data?.user?userD?.data?.user?._id:userD?.data?._id;
-    // console.log(ownerID);
+    const ownerID = userD?.data?.user? userD?.data?.user?._id : userD?.data?._id;
     const [categories, setCategories] = useState([]);
     const [hoveredCategory, setHoveredCategory] = useState(null);
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
 
-    
-        const fetchOwner = async() => {
-            try {
-                console.log("in liked category,",ownerID)
-               const ownerDetail =  await UserData(ownerID);
-               setUser(ownerDetail.data);
-               console.log("user:",user)
-            //    console.log('owner details are : ',ownerDetail);
-            } catch (error) {
-                console.log('There seems to be an error while fetching owner details', error);
-            }
+    const fetchOwner = async() => {
+        try {
+            
+            const ownerDetail =  await UserData(ownerID);
+            setUser(ownerDetail.data);
+            
+        } catch (error) {
+            console.error('There seems to be an error while fetching owner details', error);
         }
+    }
+
     useEffect(() => {
         fetchOwner();
     }, [ownerID])
-    // console.log('owner ', user);
 
     const userlikedCategories = user?.likedCategories;
-    console.log('user liked categories', userlikedCategories);
+    
 
     useEffect(() => {
         if (userlikedCategories) {
@@ -48,7 +45,6 @@ const LikedCategories = () => {
     }, [dispatch, userlikedCategories]);
 
     const likedCategories_redux = useSelector((state) => state.likedCategories.likesCategory);
-    // console.log('from redux:', likedCategories_redux);
 
     const fetchingCategoriesByid = async () => {
         try {
@@ -64,24 +60,32 @@ const LikedCategories = () => {
             console.error('Error fetching categories:', error);
         }
     };
-    // console.log('data in category',categories);
+
     const handleRemoveCategory = async (categoryId) => {
-        try {
-            await axios.post(`${url}users/remove-liked-category`, {
-                userData,
-                categoryId
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            });
-            dispatch(deleteCategory(categoryId));
-            // console.log(likedCategories_redux);
-            setCategories((prevCategories) => prevCategories.filter((category) => category.data._id !== categoryId));
-            setChange(!change);
-        } catch (error) {
-            console.error('Error removing liked category:', error);
+        // Show a confirmation dialog
+        const confirmRemove = window.confirm("Are you sure you want to remove this category?");
+        
+        if (confirmRemove) {
+            try {
+                await axios.post(`${url}users/remove-liked-category`, {
+                    userD,
+                    categoryId
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true
+                });
+                dispatch(deleteCategory(categoryId));
+                setCategories((prevCategories) => prevCategories.filter((category) => category.data._id !== categoryId));
+                toast.success('Category Removed Successfully');
+                setChange(!change);
+            } catch (error) {
+                console.error('Error removing liked category:', error);
+                toast.error('Error Removing Categories')
+            }
+        }else{
+            navigate('/')   
         }
     };
 
@@ -130,7 +134,7 @@ const LikedCategories = () => {
                     ))}
                 </ul>
             ) : (
-                <p>No categories found.</p>
+                null
             )}
         </div>
     );

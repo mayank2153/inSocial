@@ -15,7 +15,7 @@ const UserCard = ({ avatar, bio, userName, _id,inChat=false }) => {
     const handleCreateConversation = async () => {
         try {
             const conversation = await createConversation({ participants: [_id, userId] });
-            console.log('Conversation created:', conversation);
+            
         } catch (error) {
             console.error(error.message);
         }

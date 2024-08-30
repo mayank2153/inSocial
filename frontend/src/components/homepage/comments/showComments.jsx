@@ -21,7 +21,7 @@ const ShowComments = () => {
           },
           withCredentials: true,
         });
-        console.log("comments:",response.data.data)
+        
         dispatch(setComments(response.data.data));
       } 
       catch (error) {

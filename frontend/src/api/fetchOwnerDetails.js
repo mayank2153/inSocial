@@ -11,6 +11,5 @@ export const fetchOwnerDetails = async (ownerId) => {
     return response.data.data;
   } catch (error) {
     console.error('Error fetching owner details:', error);
-    throw new Error('Error fetching owner details');
   }
 };

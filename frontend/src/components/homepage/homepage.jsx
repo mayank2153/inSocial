@@ -21,7 +21,7 @@ const HomePage = () => {
   if (status === 'failed') {
     return <div>Error: {error}</div>;
   }
-  console.log(items);
+  
   return (
     <div className="flex flex-col bg-[#0d1114] w-full max-h-screen overflow-y-auto items-center no-scrollbar py-8  lg:px-8 px-2 ">
       <div className="w-full max-w-screen-sm ">

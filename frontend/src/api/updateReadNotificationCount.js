@@ -10,6 +10,6 @@ export const UpdateCount = async(userId, dispatch) => {
         const response = await axios.post(`${url}notification/update-notification-count/${userId}`);
         dispatch(resetUnreadCount());
     } catch (error) {
-        console.log('error', error);
+        console.error('error', error);
     }
 };

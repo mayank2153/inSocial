@@ -4,6 +4,7 @@ import PostByUser from "../homepage/postByUser/postByUser";
 import { useParams } from "react-router-dom";
 // import { UserData } from "../../api/getUserbyId";
 import { fetchOwnerDetails } from "../../api/fetchOwnerDetails";  
+import UserProfileShimmer from "../shimmer/userShimmer";
 
 const UserProfile = () => {
   const [userData, setUserData] = useState(null);
@@ -11,16 +12,16 @@ const UserProfile = () => {
 
   // const id = userId.userId;
 
-  console.log('id', userId);
+  
   
   const fetchUserData = async() => {
     try {
       const response = await fetchOwnerDetails(userId); 
-      console.log(response);
+      
       setUserData(response);
        
     } catch (error) {
-      console.log('seems to be an error while fetching user data', error);
+      console.error('seems to be an error while fetching user data', error);
       
     }
     // const response = await UserData(userId);
@@ -32,18 +33,13 @@ useEffect(() => {
   fetchUserData();
 },[userId]);
   
-  console.log('user-data', userData);
-  // const user = useSelector((state) => state.auth.user);
-  // const username = user?.data?.user?.userName;
-  // console.log(user);
-  // useEffect(() => {
-  //   console.log('UserProfile component mounted');
-  //   console.log('User Data:', user);
-  //   setUserData(user);
-  // }, [user]);
+
+
 
   if (!userData) {
-    return <p>Loading...</p>;
+    return <div className="bg-black items-center flex justify-center h-[100vh]">
+        <UserProfileShimmer />
+    </div>;
   }
 
   return (

@@ -24,11 +24,11 @@ const Header = ({ toggleCategories }) => {
 
   const navigate = useNavigate()
   const unreadCount  = useSelector((state) => state.notification.unreadCount);
-  console.log('unread count', unreadCount);
+  
   
   const unreadNotification = async() => {
     const res = await CountUnreadNotification(userId, dispatch);
-    console.log('response in header', res)
+   
   }
   // const response  = CountUnreadNotification(userId)
   useEffect(() => {

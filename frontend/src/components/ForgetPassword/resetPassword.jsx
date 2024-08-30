@@ -3,13 +3,14 @@ import axios from "axios";
 import { resetPassword } from "../../api/resetPassword";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const ResetPassword = () => {
   const url = import.meta.env.VITE_BASE_URL || "http://localhost:8000/";
   const navigate = useNavigate();
   // Extract the reset token from the URL
   const resetToken = window.location.href.split("/")[4];
-
+  const [Loading, setLoading] = useState(false);
   const [reset, setReset] = useState({
     password: "",
     newPassword: "",
@@ -25,7 +26,7 @@ const ResetPassword = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
-
+    setLoading(true);
     // Check if passwords match
     if (reset.password !== reset.newPassword) {
       alert("New password and confirm password must be the same");
@@ -33,16 +34,18 @@ const ResetPassword = () => {
     }
 
     try {
-      console.log(reset); // Log the reset object for debugging
+      
 
       await resetPassword(reset); // Call the resetPassword function with the reset object
 
       
       setReset({ password: "", newPassword: "", resetlink: resetToken }); // Reset state
+      setLoading(false);
       toast.success("Password reset successfully");
       navigate('/login')
     } catch (error) {
-      console.log("There seems to be an error in resetting the password", error);
+      console.error("There seems to be an error in resetting the password", error);
+      setLoading(false);
       setReset({ password: "", newPassword: "", resetlink: resetToken }); // Reset state on error
     }
   };
@@ -74,7 +77,7 @@ const ResetPassword = () => {
             type="submit" // Changed to submit to handle the form in the onSubmit handler
             className="w-36 bg-blue-500 text-slate-300 py-2 rounded-full mt-4 hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-700 font-semibold duration-100 transition-all duration-300"
           >
-            Reset Password
+            {Loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Reset Password'}
           </button>
         </form>
       </div>
