@@ -29,24 +29,38 @@ import GoogleRedirectHandler from './components/redirect/redirectHandler.jsx';
 import ContactUs from './components/contactUs/contactUs.jsx';
 
 
+
 function Layout() {
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
 
   const toggleCategories = () => {
     setIsCategoriesVisible(!isCategoriesVisible);
   };
+  const hideCategories = () => {
+    setIsCategoriesVisible(false);
+  };
 
   return (
-    <div className="montserrat-medium ">
-      <Header toggleCategories={toggleCategories} /> 
+    <div className="montserrat-medium">
+      <Header toggleCategories={toggleCategories} />
 
-      <div className="flex flex-col lg:flex-row  ">
+      <div className="flex flex-col lg:flex-row h-screen">
         {/* Categories section, visible by default on large screens */}
-        <div className={`lg:block ${isCategoriesVisible ? 'block' : 'hidden'} lg:w-1/4 lg:max-w-xs`}>
-          <ShowCategories />
+        <div
+          className={`lg:block ${
+            isCategoriesVisible ? "block" : "hidden"
+          } lg:w-1/4 lg:max-w-xs h-full lg:h-auto overflow-y-auto lg:overflow-y-visible bg-[#0d1114]`}
+        >
+          <ShowCategories hideCategories={hideCategories} />
         </div>
 
-        <div className="flex-grow">
+
+        {/* Main content section, hide when categories are visible on mobile */}
+        <div
+          className={`flex-grow ${
+            isCategoriesVisible ? "hidden" : "block"
+          } lg:block overflow-y-auto h-full`}
+        >
           <Outlet />
         </div>
 
@@ -63,6 +77,8 @@ function Layout() {
     </div>
   );
 }
+
+
 
 
 
