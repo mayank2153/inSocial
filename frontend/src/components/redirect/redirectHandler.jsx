@@ -23,6 +23,7 @@ const GoogleRedirectHandler = () => {
                     const userInfo = await UserData(userId);
                     
                     dispatch(loginSuccess(userInfo)); // Store user data in Redux
+                    console.log("dispatched login for google auth")
                 } else {
                     throw new Error("User ID not found in URL");
                 }
