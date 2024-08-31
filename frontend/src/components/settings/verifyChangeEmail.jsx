@@ -12,8 +12,8 @@ import { ChangeCurrentEmail } from "../../api/changeEmail";
 
 function VerifyNewEmail() {
 
-    const UserData = useSelector((state) => state.auth.user);
-    const userId = UserData?.data?.user?._id;
+  const UserData = useSelector((state) => state.auth.user);
+  const userId = UserData?.data?.user?._id;
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,6 +28,8 @@ function VerifyNewEmail() {
 
     try {
         await ChangeCurrentEmail(formData, otp, userId);
+        navigate("/")
+        
     } catch (error) {
         console.error('problem while changing email', error);
     }

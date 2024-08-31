@@ -8,6 +8,7 @@ import LikedCategories from "../category/likedCategories";
 import SettingAccordian from "../settings/setting.Accordian";
 // import SwitchButton from "../modes/DarkAndLight";
 import Conversations from "../message/conversations.jsx";
+import { IoIosMail } from "react-icons/io";
 
 const Right = () => {
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -86,6 +87,15 @@ const Right = () => {
                         </div>
                         <div>
                             <SettingAccordian title="Settings" />
+                        </div>
+                        <div className=" py-3   border-b-2 border-gray-600 flex gap-2">
+
+                            <span className="text-slate-200 mt-[3px] pl-6"><IoIosMail size={25}/></span>
+                            <Link to="/contact-us">
+                            <span className=" text-slate-200 font-mono text-lg cursor-pointer">
+                                Contact Us?
+                            </span>
+                            </Link>
                         </div>
                     </>
                 )}

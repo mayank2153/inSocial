@@ -1,5 +1,7 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
+
 
 export const ChangeCurrentEmail = async(formData, otp ,userId) => {
     
@@ -9,6 +11,8 @@ try {
             otp
         })
         // console.log('response after changing email', response.data);
+
+        
 
 } catch (error) {
  console.error('there seems to be an error while changing email', error);

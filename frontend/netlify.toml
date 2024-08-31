@@ -1,0 +1,9 @@
+[build]
+  base    = "frontend"                    # This is the directory where your frontend code is
+  command = "npm install --legacy-peer-deps && npm run build"
+  publish = "dist"                        # Adjusted path for your build output
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

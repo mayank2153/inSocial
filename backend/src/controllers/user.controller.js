@@ -130,7 +130,10 @@ const loginUser = asyncHandler(async(req, res) => {
     const loggedInUser = await User.findById(existedUser._id).select("-password -refreshToken")
 
     const options = {
-        httpOnly: true
+        httpOnly: true,
+        maxAge: 15 * 60 * 1000,
+        sameSite:process.env.NODE_ENV==="Development"?"lax":"none",
+        secure:process.env.NODE_ENV==="Development"?false:true,
     }
 
     return res

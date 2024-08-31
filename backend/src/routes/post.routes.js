@@ -15,7 +15,7 @@ postRouter.route("/create-post").post(verifyJWT,
 );
 
 postRouter.route("/delete-post/:postId").post(verifyJWT,deletePost);
-postRouter.route("/update-post/:postId").put(verifyJWT,updatePost);
+postRouter.route("/update-post/:postId").post(updatePost);
 postRouter.route("/user/:userId").get(verifyJWT,getPostsByUser);
 postRouter.route("/AllPosts").get(verifyJWT,fetchPosts);
 postRouter.route("/getPost/:postId").get(verifyJWT,getPostById);

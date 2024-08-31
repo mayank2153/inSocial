@@ -8,6 +8,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { logout } from "../../utils/authslice";
 import { UserLogout } from "../../api/userLogout";
+import toast from "react-hot-toast";
 
 const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   const dispatch=useDispatch();

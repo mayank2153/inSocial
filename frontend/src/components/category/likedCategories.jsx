@@ -68,7 +68,7 @@ const LikedCategories = () => {
         if (confirmRemove) {
             try {
                 await axios.post(`${url}users/remove-liked-category`, {
-                    userD,
+                    ownerID,
                     categoryId
                 }, {
                     headers: {

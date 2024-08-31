@@ -23,7 +23,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "http://localhost:8000/users/auth/google/redirect"
+            callbackURL: "https://whisperhub.onrender.com/users/auth/google/redirect"
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
