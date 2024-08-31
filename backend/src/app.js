@@ -69,6 +69,7 @@ import conversationRouter from "./routes/conversation.routes.js";
 import messageRouter from "./routes/message.routes.js";
 import notificationRouter from './routes/notification.route.js';
 import authRouter from './routes/auth.route.js';
+import mailRouter from './routes/mail.route.js';
 
 // Routes
 app.use("/users", userRouter);
@@ -81,6 +82,7 @@ app.use("/conversations", conversationRouter);
 app.use("/messages", messageRouter);
 app.use("/notification", notificationRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/contact", mailRouter);
 
 app.use(errorHandler);
 

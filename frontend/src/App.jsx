@@ -26,6 +26,7 @@ import Notifications from './components/notification/notifications.jsx';
 import VerifyEmail from './components/Signup/verifyEmail.jsx';
 import VerifyNewEmail from './components/settings/verifyChangeEmail.jsx';
 import GoogleRedirectHandler from './components/redirect/redirectHandler.jsx';
+import ContactUs from './components/contactUs/contactUs.jsx';
 
 
 function Layout() {
@@ -86,6 +87,10 @@ const appRouting = createBrowserRouter([
   {
     path: "/Forget-Password",
     element: <ForgetPassword />,
+  },
+  {
+    path: "/contact-us",
+    element: <ContactUs />
   },
   {
     path: "/change-current-email",
