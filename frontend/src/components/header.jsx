@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import { UpdateCount } from '../api/updateReadNotificationCount.js';
 import { useNavigate } from 'react-router-dom';
 
+
 const Header = ({ toggleCategories }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -59,7 +60,7 @@ const Header = ({ toggleCategories }) => {
               className="lg:hidden p-2 text-white"
               onClick={toggleCategories}
             >
-              <FaBars size={25} />
+              <FaBars size={25} className='mt-2' />
             </button>
             <Link to="/" title="Home" className="flex items-center ml-4">
               <img className=" h-12 lg:h-14 lg:w-28 hidden lg:block" src={logo} alt="Logo" />

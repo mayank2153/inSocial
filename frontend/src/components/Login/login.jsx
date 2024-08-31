@@ -125,7 +125,7 @@ const Login = () => {
                     <div className="mb-4">
                         <button
                             type="submit"
-                            className="w-full bg-white text-[#0f031c] py-2 rounded-full hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100"
+                            className="w-full bg-blue-500 text-slate-200 py-2 rounded-full hover:bg-blue-700  focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100"
                         >
                             {Loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Login'}
                         </button>

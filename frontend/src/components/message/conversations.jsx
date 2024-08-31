@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import UserCard from "../homepage/userCard/userCard";
 import ChatComponent from "./chatComponent"; 
+import ConversationShimmer from "../shimmer/ConversationListShimmer";
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
 const Conversations = () => {
@@ -66,7 +67,7 @@ const Conversations = () => {
                         ))}
                     </ul>
                 ) : (
-                    <p>No conversations found.</p>
+                    <ConversationShimmer />
                 )
             )}
         </div>
