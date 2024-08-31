@@ -10,7 +10,7 @@ export const checkTokenValidity = async () => {
         const response = await axios.get(`${url}api/auth/verify-token`, {
             withCredentials: true,  
         });
-        console.log(response);
+        console.log("response of token validity:",response);
         
         if (response.status === 200) {
             return true;

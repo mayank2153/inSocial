@@ -5,8 +5,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
     try {
+        console.log("in verify jwt")
         const token = req.cookies?.accessToken || (req.header("Authorization")?.replace("Bearer ", "") ?? '');
-        
+        console.log("token:",token)
+        console.log("this is req:",req)
         if (!token) {
             throw new ApiError(401, "Unauthorized Access: No token provided");
         }
