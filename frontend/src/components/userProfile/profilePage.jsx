@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { FaUser, FaEdit } from "react-icons/fa";
 // import { IoOpenOutline } from "react-icons/io5";
@@ -9,22 +9,37 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../utils/authslice";
 import { UserLogout } from "../../api/userLogout";
 import toast from "react-hot-toast";
+import logOut_gif from "../../assets/gifs/loggingout.gif"
 
 const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   const dispatch=useDispatch();
   const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
   const isAuthenticated = useSelector((state) => state?.user?.isAuthenticated);
   const userData = useSelector((state) => state.auth.user);
+  const [isChecked, setIsChecked]= useState(false);
   
   
   
   const userId = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
   const userProfileImage = userData?.data.user?userData?.data?.user?.avatar:userData?.data?.avatar;
   const userName = userData?.data?.user?userData?.data?.user?.userName:userData?.data?.userName;
-    const userLogOut = async() => {
+    
+  const userLogOut = async() => {
+    console.log('hi');
+    
+    setIsChecked(true);
     await UserLogout(userData, dispatch);
+    setIsChecked(false)
     toast.success('User successfully logged out')
   } 
+
+  if(isChecked){
+    return (
+      <div className="bg-black h-[100vh] flex items-center justify-center">
+        <img src={logOut_gif} alt="loggingout"/>
+      </div>
+    )
+  }
 
   return  (
     <div className="fixed top-20 right-1  bg-[#0d1114]  rounded shadow-md w-[280px] ">

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { checkTokenValidity } from "../utils/userAuth.jsx"; // Import the checkTokenValidity function
 import { logout } from "../utils/authslice.jsx"; // Import your actions
+import loading_gif from "../assets/gifs/loading.gif"
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated_redux = useSelector((state) => state.auth.isAuthenticated);
@@ -30,7 +31,9 @@ const ProtectedRoute = ({ children }) => {
   
   // Render loading state while checking the token
   if (isChecking) {
-    return <div>Loading...</div>;
+    return <div className="bg-black flex items-center justify-center h-[100vh]">
+      <img src={loading_gif} alt="loading..." />
+    </div>;
   }
   
   // Redirect to login if not authenticated

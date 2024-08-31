@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import { IoMdSettings } from "react-icons/io";
 import { Link } from "react-router-dom"
+import { IoIosMail } from "react-icons/io";
+import { MdOutlineMailLock } from "react-icons/md";
+import { TbPasswordUser } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
-const SettingAccordian = ({ title }) => {
+
+const SettingAccordian = ({ title, children }) => {
     const [isOpen, setIsOpen] = useState(false);
-    
+    const navigate = useNavigate();
     const toggleAccordian = () => {
         setIsOpen(!isOpen);
     };
@@ -15,6 +20,11 @@ const SettingAccordian = ({ title }) => {
     };
 
 
+    const handleChangePassword = () => {
+        
+        navigate('/Update-current-password')
+        
+    }
     return (
         <div className="accordian border-b-2 border-gray-600">
             <div 
@@ -39,12 +49,21 @@ const SettingAccordian = ({ title }) => {
             )}
             <div className="accordian-content pb-4 lg:hidden">
                     <Link to="/change-current-email" onClick={handleLinkClick}>
-                        <div className="text-slate-200 pl-12 -mt-3 mb-1 cursor-pointer hover:underline transition-all duration-500">Change Email</div>
+                        <div className="text-slate-200 mb-4 pl-6 -mt-3 text-lg mb-1 cursor-pointer flex gap-2 transition-all duration-500">
+                            <MdOutlineMailLock size={25} className="mt-[2px]"/>Change Email</div>
                     </Link>
-                    <Link to="/Update-current-password" onClick={handleLinkClick}>
-                        <div className="text-slate-200 pl-12  font-mono cursor-pointer hover:underline transition-all duration-500">Change Password</div>    
+                    <div onClick={handleChangePassword}>
+                         <div className="text-slate-200 pl-6 mb-4 text-lg font-mono cursor-pointer flex gap-2 transition-all duration-500">
+                            <TbPasswordUser size={25} className="mt-[2px]" />
+                            Change Password
+                        </div>
+                    </div>
+                    <Link to="/contact-us" onClick={handleLinkClick}>
+                        <span className=" text-slate-200  pl-6 font-mono text-lg cursor-pointer flex gap-2">
+                            <IoIosMail size={25} className="mt-[2px]"/>Contact Us?
+                        </span>
                     </Link>
-                    
+                        
                     
                 </div>
         </div>
