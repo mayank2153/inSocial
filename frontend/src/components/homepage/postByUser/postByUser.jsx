@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import PostCard from "../postCard"
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const PostByUser = () => {
     const url = import.meta.env.VITE_BASE_URL ;
     const [posts, setPosts] = useState(null);
     const {userId} = useParams();
-    
+    const navigate = useNavigate();
+
     const fetchUserPosts = async() => {
         try {
             const fetchedPosts = await axios.get(`${url}posts/user/${userId}`,{
@@ -18,6 +20,7 @@ const PostByUser = () => {
             
         } catch (error) {
             console.error('there seems to be an error during fetching user posts' , error);
+            navigate('/login')
         }
 
     }

@@ -401,6 +401,46 @@ const updateCurrentPassword = asyncHandler(async(req , res) => {
     return res.status(200).json(new ApiResponse(200, {}, "Password updated successfully"))
 })
 
+const UploadCoverImage = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    console.log(req.files);
+    
+    // Check if cover image exists in the request
+    const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+    
+    if (!coverImageLocalPath) {
+        throw new ApiError(404, 'Cover Image not found');
+    }
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, 'User Not Found');
+    }
+
+    // Upload image to Cloudinary
+    let coverImage;
+    if (coverImageLocalPath) {
+        console.log('Local Path of Cover Image:', coverImageLocalPath);
+        coverImage = await uploadOnCloudinary(coverImageLocalPath);
+        if (!coverImage) {
+            throw new ApiError(500, "Failed to upload cover image."); // Changed status code to 500 for server error
+        }
+    }
+
+    console.log('Uploaded Image URL:', coverImage.secure_url);
+    
+    // Update user document with the new cover image URL
+    user.coverImage = coverImage.secure_url;
+    await user.save();
+
+    // Return success response
+    return res.status(200).json(
+        new ApiResponse(200, user, "Cover Image uploaded successfully")
+    );
+});
+
+
 const ChangeCurrentEmail = asyncHandler(async (req, res) => {
     const { userId } = req.params;
     const { email, newEmail ,otp} = req.body;
@@ -575,5 +615,6 @@ export {
     forgetPassword,
     resetPassword,
     sendOtp,
-    handleGoogleLogin
+    handleGoogleLogin,
+    UploadCoverImage
 }
