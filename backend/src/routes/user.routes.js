@@ -46,7 +46,14 @@ userRouter.route("/forgetPassword").post(forgetPassword);
 
 userRouter.route("/reset-password").post(resetPassword);
 userRouter.route("/otp-request").post(sendOtp);
-userRouter.route("/upload-cover-image/:userId").post(UploadCoverImage);
+userRouter.route("/upload-cover-image/:userId").post(
+    upload.fields([
+        {
+            name: "coverImage",
+            maxCount: 1
+        }
+    ]),
+    UploadCoverImage);
 
 
 userRouter.get('/auth/google',
