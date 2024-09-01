@@ -47,7 +47,7 @@ const Right = () => {
                     </>
                 ) : showSettings ? (
                     <>
-                        <div className="py-3 my-6 border-b-2 border-gray-600 flex items-center">
+                        <div className="py-3 my-6 border-b-2 border-gray-600  flex items-center">
                             <IoMdArrowBack 
                                 className="text-slate-200 cursor-pointer ml-4 text-2xl hover:text-white transition-all duration-300"
                                 onClick={handleBackClick}
