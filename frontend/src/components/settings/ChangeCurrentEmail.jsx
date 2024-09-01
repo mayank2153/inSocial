@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { sendOtp } from "../../api/sendOtp";
 import logo from "../../assets/images/logo.jpg";
 import { Link, useNavigate } from "react-router-dom";
+import logo_mini from "../../assets/images/logo_img_black.png"
 
 const ChangeCurrentEmail = () => {
   const UserData = useSelector((state) => state.auth.user);
@@ -39,10 +40,14 @@ const ChangeCurrentEmail = () => {
   };
 
   return (
-    <div className="flex items-center justify-evenly min-h-screen bg-black w-full">
-      <div className="mt-14">
+    <div className=" flex lg:flex-row flex-col items-center justify-evenly min-h-screen bg-black w-full">
+      <div className="lg:block hidden mt-14">
         <img src={logo} alt="logo.png" />
       </div>
+      <div className="lg:hidden block h-40 w-40 -ml-36">
+        <img src={logo_mini} alt="logo.png" />
+      </div>
+      
       <div className="bg-black shadow-xl -mt-20 rounded-lg p-8 w-full max-w-md mr-40">
         <div className="text-slate-200 text-center pt-20">
           <h2 className="text-2xl font-mono">Change Email</h2>
