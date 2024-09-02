@@ -9,12 +9,14 @@ import ShowComments from "../comments/showComments.jsx";
 import { Link } from "react-router-dom"
 import ShimmerPost from "../../shimmer/shimmerPose.jsx";
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
+import { useNavigate } from "react-router-dom";
 
 const PostPage = () => {
   const { postId } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const bgColor = '#0d1114'
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +28,9 @@ const PostPage = () => {
         });
         setData(response.data.data);
       } catch (error) {
+        
         setError(error.message);
+        navigate('/login')
       } finally {
         setLoading(false);
       }

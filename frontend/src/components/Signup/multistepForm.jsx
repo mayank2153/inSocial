@@ -13,10 +13,12 @@ import { FaSyncAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { sendOtp } from "../../api/sendOtp";
 import usernameGenerator from "../../api/usernameGenerator.js";
+import ClipLoader from "react-spinners/ClipLoader.js";
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
 const predefinedAvatars = [avatar1, avatar2, avatar3, avatar4];
+
 
 const TwoStepForm = () => {
   const dispatch = useDispatch();
@@ -25,6 +27,7 @@ const TwoStepForm = () => {
 
 
   const [step, setStep] = useState(1);
+  const[Loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(tempUserData || {
     email: "",
     userName: "",
@@ -91,6 +94,7 @@ const TwoStepForm = () => {
   
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     if (!validateForm()) return;
 
@@ -100,8 +104,10 @@ const TwoStepForm = () => {
         avatar: selectedAvatar || formData.avatar,
       };
       await sendOtp(formData.email,'registration')
+      setLoading(false);
       navigate("/verifyEmail", { state: signUpData });
     } catch (error) {
+      setLoading(false);
       if (error.response) {
         setServerError(error.response.data.message || "An error occurred. Please try again.");
       } else {
@@ -330,7 +336,7 @@ const TwoStepForm = () => {
                   type="submit"
                   className="bg-blue-500 w-[100px] h-[40px] text-white pt-[2px] mt-6 rounded-full text-lg font-mono hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  Submit
+                  {Loading ? <ClipLoader color="#ffffff" size={20} className="mt-1"/> :'Submit'}
                 </button>
               </div>
 

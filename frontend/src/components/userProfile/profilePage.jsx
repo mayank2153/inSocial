@@ -25,8 +25,6 @@ const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   const userName = userData?.data?.user?userData?.data?.user?.userName:userData?.data?.userName;
     
   const userLogOut = async() => {
-    console.log('hi');
-    
     setIsChecked(true);
     await UserLogout(userData, dispatch);
     setIsChecked(false)
@@ -42,7 +40,7 @@ const ProfilePage = ({ isProfileOpen, setIsProfileOpen }) => {
   }
 
   return  (
-    <div className="fixed top-20 right-1  bg-[#0d1114]  rounded shadow-md w-[280px] ">
+    <div className="fixed top-20 right-1  bg-[#0d1114] lg:z-60 rounded shadow-md w-[280px] ">
       <div className="flex items-center mb-2 mt-6 ml-6">
         <img src={userProfileImage} alt="User Profile" className="w-12 h-12 rounded-full mr-1"/>
         <div>

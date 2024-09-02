@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import { TiMessage } from "react-icons/ti";
@@ -8,11 +8,19 @@ import LikedCategories from "../category/likedCategories";
 import SettingAccordian from "../settings/setting.Accordian";
 import Conversations from "../message/conversations.jsx";
 import { IoIosMail } from "react-icons/io";
+import { FaUser } from "react-icons/fa";
+import { UserLogout } from "../../api/userLogout.js";
+import toast from "react-hot-toast";
+import ClipLoader from "react-spinners/ClipLoader.js";
 
 const Right = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const [showConversations, setShowConversations] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const[loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const userData = useSelector((state) => state.auth.user);
+  const userId = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
 
   const handleMessagesClick = () => {
     setShowConversations(true);
@@ -29,8 +37,18 @@ const Right = () => {
     setShowSettings(false);
   };
 
+  const handleuserLogOut = async() => {
+    setLoading(true);
+    
+    const res =  await UserLogout(userData, dispatch);
+    
+    
+    
+  } 
+
+
   return isAuthenticated ? (
-    <div className="flex flex-col lg:block w-full max-h-screen overflow-y-scroll no-scrollbar relative">
+    <div className="flex flex-col justify-between lg:block w-full max-h-screen overflow-y-scroll no-scrollbar relative">
       {/* Full content for large screens */}
       <div
         className={`hidden lg:block bg-[#0d1114] min-h-[100vh] h-full border-l border-gray-600 overflow-y-scroll no-scrollbar ${
@@ -95,9 +113,20 @@ const Right = () => {
                 <FaPlus className="mt-1" /> Add Categories
               </Link>
             </div>
-            <div>
+            <div className="  py-3   border-b-2 border-gray-600 flex gap-2">
+                <span className="text-slate-200  pl-6">
+                    <FaUser size={20} />
+                </span>
+                <Link to={`/UserProfile/${userId}`}>
+                <span className=" text-slate-200  mb-3  -pb-2 font-mono text-lg cursor-pointer">
+                    User Profile
+                </span>
+                </Link>
+            </div>
+            <div className="mt-2">
               <SettingAccordian title="Settings" />
             </div>
+            
             <div className=" py-3   border-b-2 border-gray-600 flex gap-2">
               <span className="text-slate-200 mt-[3px] pl-6">
                 <IoIosMail size={25} />
@@ -107,6 +136,11 @@ const Right = () => {
                   Contact Us?
                 </span>
               </Link>
+            </div>
+            <div className="pt-3 flex   justify-center">
+                <button className="w-[150px] h-[40px] bg-blue-500 hover:bg-blue-700 rounded-xl -ml-4" onClick={handleuserLogOut}>
+                    {loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Logout' } 
+                </button>
             </div>
           </>
         )}

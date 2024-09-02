@@ -1,5 +1,6 @@
 import axios from "axios";
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
+import toast from "react-hot-toast";
 
 export const UserRegister = async(formData) => {
     
@@ -15,6 +16,6 @@ export const UserRegister = async(formData) => {
 
     } catch (error) {
         console.error('error in user register', error);
-        
+        toast.error('Please Register Again')
     }
 };

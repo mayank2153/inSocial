@@ -26,7 +26,11 @@ function VerifyEmail() {
      
       
       const response = await UserRegister({ ...signUpData, otp });
-      navigate("/login")
+
+      setTimeout(() => {
+        navigate("/login")  
+      }, 3000);
+      
       toast.success(response?.data?.message)
     } catch (error) {
       console.error("Error verifying OTP and signing up:", error);
@@ -80,7 +84,7 @@ function VerifyEmail() {
           </button>
         </form>
         <div className="mt-6 flex items-center justify-between">
-          <Link to="/signup">
+          <Link to="/register">
             <p className="text-slate-200 font-mono flex items-center gap-x-2">
               <BiArrowBack /> Back To Signup
             </p>
