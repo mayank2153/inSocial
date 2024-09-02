@@ -310,63 +310,63 @@ const getUserById = asyncHandler(async (req, res) => {
     }
 });
 
-const editUser = asyncHandler(async (req, res) => {
-    const { userId } = req.params;
-    const { userName, email, password, bio } = req.body;
+// const editUser = asyncHandler(async (req, res) => {
+//     const { userId } = req.params;
+//     const { userName, email, password, bio } = req.body;
 
-    if ([userName, email, password, bio].some(field => field && field.trim() === "")) {
-        throw new ApiError(400, "Please provide necessary details");
-    }
+//     if ([userName, email, password, bio].some(field => field && field.trim() === "")) {
+//         throw new ApiError(400, "Please provide necessary details");
+//     }
 
-    const user = await User.findById(userId);
-    if (!user) {
-        throw new ApiError(404, "User not found");
-    }
+//     const user = await User.findById(userId);
+//     if (!user) {
+//         throw new ApiError(404, "User not found");
+//     }
 
-    if (userName) {
-        user.userName = userName;
-    }
-    if (email) {
-        user.email = email;
-    }
-    if (bio) {
-        user.bio = bio;
-    }
-    if (password) {
-        user.password = password;
-    }
+//     if (userName) {
+//         user.userName = userName;
+//     }
+//     if (email) {
+//         user.email = email;
+//     }
+//     if (bio) {
+//         user.bio = bio;
+//     }
+//     if (password) {
+//         user.password = password;
+//     }
 
-    let avatarLocalPath;
-    if (req.files && Array.isArray(req.files.avatar) && req.files.avatar.length > 0) {
-        avatarLocalPath = req.files.avatar[0].path;
-    }
+//     let avatarLocalPath;
+//     if (req.files && Array.isArray(req.files.avatar) && req.files.avatar.length > 0) {
+//         avatarLocalPath = req.files.avatar[0].path;
+//     }
 
-    let coverImageLocalPath;
-    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
-        coverImageLocalPath = req.files.coverImage[0].path;
-    }
+//     let coverImageLocalPath;
+//     if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+//         coverImageLocalPath = req.files.coverImage[0].path;
+//     }
 
-    if (avatarLocalPath) {
-        const avatar = await uploadOnCloudinary(avatarLocalPath);
-        if (!avatar) {
-            throw new ApiError(500, "Failed to upload avatar");
-        }
-        user.avatar = avatar.url;
-    }
+//     if (avatarLocalPath) {
+//         const avatar = await uploadOnCloudinary(avatarLocalPath);
+//         if (!avatar) {
+//             throw new ApiError(500, "Failed to upload avatar");
+//         }
+//         user.avatar = avatar.url;
+//     }
 
-    if (coverImageLocalPath) {
-        const coverImage = await uploadOnCloudinary(coverImageLocalPath);
-        if (!coverImage) {
-            throw new ApiError(500, "Failed to upload cover image");
-        }
-        user.coverImage = coverImage.url;
-    }
+//     if (coverImageLocalPath) {
+//         const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+//         if (!coverImage) {
+//             throw new ApiError(500, "Failed to upload cover image");
+//         }
+//         user.coverImage = coverImage.url;
+//     }
 
-    await user.save();
+//     await user.save();
 
-    const updatedUser = await User.findById(user._id).select("-password -refreshToken");
-    return res.status(200).json(new ApiResponse(200, updatedUser, "User updated successfully"));
-});
+//     const updatedUser = await User.findById(user._id).select("-password -refreshToken");
+//     return res.status(200).json(new ApiResponse(200, updatedUser, "User updated successfully"));
+// });
 
 // const updateUserName = () => {
 //     const userId = req.params;
@@ -441,6 +441,46 @@ const UploadCoverImage = asyncHandler(async (req, res) => {
     );
 });
 
+const EditAvatar = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    console.log(req.files);
+    console.log('hi');
+    
+    
+    // Check if cover image exists in the request
+    const avatarLocalPath = req.files?.avatar?.[0]?.path;
+    
+    if (!avatarLocalPath) {
+        throw new ApiError(404, 'Avatar not found');
+    }
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, 'User Not Found');
+    }
+
+    // Upload image to Cloudinary
+    let avatar;
+    if (avatarLocalPath) {
+        console.log('Local Path of Cover Image:', avatarLocalPath);
+        avatar = await uploadOnCloudinary(avatarLocalPath);
+        if (!avatar) {
+            throw new ApiError(500, "Failed to upload Avatar."); // Changed status code to 500 for server error
+        }
+    }
+
+    console.log('Uploaded Image URL:', avatar.secure_url);
+    
+    // Update user document with the new cover image URL
+    user.avatar = avatar.secure_url;
+    await user.save();
+
+    // Return success response
+    return res.status(200).json(
+        new ApiResponse(200, user, "Avatar uploaded successfully")
+    );
+});
 
 const ChangeCurrentEmail = asyncHandler(async (req, res) => {
     const { userId } = req.params;
@@ -610,12 +650,13 @@ export {
     addLikedCategories,
     removeLikedCategory,
     getUserById,
-    editUser,
+    
     updateCurrentPassword,
     ChangeCurrentEmail,
     forgetPassword,
     resetPassword,
     sendOtp,
     handleGoogleLogin,
-    UploadCoverImage
+    UploadCoverImage,
+    EditAvatar
 }
