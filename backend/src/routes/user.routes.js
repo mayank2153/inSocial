@@ -56,18 +56,6 @@ userRouter.route("/upload-cover-image/:userId").post(
     UploadCoverImage);
 
 
-userRouter.get('/auth/google',
-    passport.authenticate('google', {scope: ["profile","email"]})
-);
-
-userRouter.get('/auth/google/redirect',
-    passport.authenticate('google', { failureRedirect: `${process.env.CORS_ORIGIN}` }),
-    (req, res) => {
-        const user = req.user; // Get the authenticated user from Passport
-        handleGoogleLogin(user, res); // Use the new function
-    }
-);
-
 
 userRouter.get('/auth/discord',
     passport.authenticate('discord')
