@@ -6,7 +6,6 @@ import passport from 'passport';
 import session from 'express-session';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
-import "./middlewares/googleauth.middleware.js";
 import "./middlewares/discordauth.middleware.js";
 import { sendMessage, getMessages } from './controllers/message.controller.js'; // Assuming you have these controllers
 import { Notification } from './models/notification.model.js';
