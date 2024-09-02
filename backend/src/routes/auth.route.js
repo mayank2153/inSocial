@@ -6,6 +6,7 @@ const authRouter = Router();
 // Apply verifyJWT middleware to the /verify-token route
 authRouter.get('/verify-token', verifyJWT, (req, res) => {
     // If the middleware passes, the user is attached to req.user
+    console.log("token verified")
     return res.status(200).json({ message: 'Token is valid', user: req.user });
 });
 
