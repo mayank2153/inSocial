@@ -93,6 +93,7 @@ const Header = ({ toggleCategories }) => {
             </div>
             
 
+            <Link to={`/UserProfile/${userId}`}>
             <div className="relative overflow-hidden">
             <img
                   src={userProfileImage}
@@ -100,9 +101,9 @@ const Header = ({ toggleCategories }) => {
                   className="w-12 h-12 rounded-full object-cover cursor-pointer"
                   onClick={toggleProfile}
                 />
-                {isProfileOpen && <ProfilePage isProfileOpen={isProfileOpen} setIsProfileOpen={setIsProfileOpen} />}
             </div>
 
+            </Link>
           </div>
         </nav>
       </div>

@@ -5,15 +5,27 @@ import { IoIosMail } from "react-icons/io";
 import { MdOutlineMailLock } from "react-icons/md";
 import { TbPasswordUser } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
-
+import { UserLogout } from "../../api/userLogout.js";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import ClipLoader from "react-spinners/ClipLoader.js";
 
 const SettingAccordian = ({ title, children }) => {
+    const dispatch = useDispatch();
+  const userData = useSelector((state) => state.auth.user);
+  const userId = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
+
     const [isOpen, setIsOpen] = useState(false);
+    
+  const[loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const toggleAccordian = () => {
         setIsOpen(!isOpen);
     };
-
+    const handleuserLogOut = async() => {
+        setLoading(true);
+        const res =  await UserLogout(userData, dispatch);
+      } 
     const handleLinkClick = () => {
         // Close the accordion when the link is clicked
         setIsOpen(false);
@@ -63,6 +75,11 @@ const SettingAccordian = ({ title, children }) => {
                             <IoIosMail size={25} className="mt-[2px]"/>Contact Us?
                         </span>
                     </Link>
+                    <div className="pt-3 flex   justify-center">
+                    <button className="w-[150px] h-[40px] bg-blue-500 hover:bg-blue-700 rounded-xl -ml-4" onClick={handleuserLogOut}>
+                        {loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Logout' } 
+                    </button>
+            </div>
                         
                     
                 </div>

@@ -6,7 +6,6 @@ import passport from 'passport';
 import session from 'express-session';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
-import "./middlewares/googleauth.middleware.js";
 import "./middlewares/discordauth.middleware.js";
 import { sendMessage, getMessages } from './controllers/message.controller.js'; // Assuming you have these controllers
 import { Notification } from './models/notification.model.js';
@@ -44,7 +43,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        maxAge: 15 * 60 * 1000,
+        maxAge: 60 * 60 * 1000,
         sameSite:process.env.NODE_ENV==="Development"?"lax":"none",
         secure:process.env.NODE_ENV==="Development"?false:true,
     },

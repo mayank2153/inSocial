@@ -130,7 +130,7 @@ const Login = () => {
                             {Loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Login'}
                         </button>
                     </div>
-                    <div className="mb-4">
+                    {/* <div className="mb-4">
                         <button
                             type="button"
                             onClick={handleGoogleLogin}
@@ -140,7 +140,7 @@ const Login = () => {
                             Sign In With 
                             <span className="text-blue-600"> Google</span>
                         </button>
-                    </div>
+                    </div> */}
                 </form>
                 <div className="text-center flex gap-2 justify-center">
                     <p className="text-slate-300">Don't have an account?</p>
