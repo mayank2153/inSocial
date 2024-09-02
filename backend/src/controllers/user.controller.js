@@ -159,19 +159,20 @@ const handleGoogleLogin = async (user, res) => {
         const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
         const options = {
-            httpOnly: true
+            httpOnly: true,
         };
         
         res.cookie("accessToken", accessToken, options);
         res.cookie("refreshToken", refreshToken, options);
 
-        // Redirect with a query parameter
-        res.redirect(`${process.env.CORS_ORIGIN}/redirect?userId=${user._id}`);
+        // Include the isGoogleAuth flag in the redirect URL
+        res.redirect(`${process.env.CORS_ORIGIN}/redirect?userId=${user._id}&isGoogleAuth=true`);
     } catch (error) {
         console.error("Error handling Google login:", error);
         res.redirect('/login'); // Redirect to login on error
     }
 };
+
 
 const logOutUser = asyncHandler(async(req, res) => {
 

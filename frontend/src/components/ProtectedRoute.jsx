@@ -6,20 +6,30 @@ import { logout } from "../utils/authslice.jsx";
 import loading_gif from "../assets/gifs/loading.gif";
 
 const ProtectedRoute = ({ children }) => {
+  console.log("in protected route")
   const isAuthenticated_redux = useSelector((state) => state.auth.isAuthenticated);
-  console.log("isAuthenticated_redux:",isAuthenticated_redux)
   const dispatch = useDispatch();
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(isAuthenticated_redux); // Use Redux state initially
 
   useEffect(() => {
     const validateToken = async () => {
-      const isValid = await checkTokenValidity();
-      console.log("is valid:",isValid)
-      if (!isValid) {
-        dispatch(logout());
-        setIsAuthenticated(false);
-      } else {
+      const authMethod = localStorage.getItem('authMethod') || 'jwt'; // Default to 'jwt' if not set
+
+      if (authMethod === 'jwt') {
+        console.log("now validating token")
+        const isValid = await checkTokenValidity(); // Validate the JWT token
+        console.log("is valid:", isValid);
+        if (!isValid) {
+          dispatch(logout());
+          setIsAuthenticated(false);
+        } else {
+          setIsAuthenticated(true);
+        }
+      } 
+      else if (authMethod === 'google') {
+        // If the user is authenticated via Google, bypass JWT validation
+        console.log("byoassing validate token")
         setIsAuthenticated(true);
       }
       

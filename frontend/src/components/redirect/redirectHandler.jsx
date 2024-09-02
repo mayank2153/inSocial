@@ -16,14 +16,22 @@ const GoogleRedirectHandler = () => {
         const fetchUserData = async () => {
             const query = new URLSearchParams(location.search);
             const userId = query.get('userId');
+            const isGoogleAuth = query.get('isGoogleAuth'); // Check if the user is authenticated via Google
             
             try {
-                
                 if (userId) {
                     const userInfo = await UserData(userId);
-                    
-                    dispatch(loginSuccess(userInfo)); // Store user data in Redux
-                    console.log("dispatched login for google auth")
+
+                    // Dispatch success and store user data in Redux
+                    dispatch(loginSuccess(userInfo));
+                    console.log("dispatched login for google auth");
+
+                    // If user is authenticated via Google, set the auth method in localStorage
+                    if (isGoogleAuth === 'true') {
+                        localStorage.setItem('authMethod', 'google');
+                    } else {
+                        localStorage.setItem('authMethod', 'jwt');
+                    }
                 } else {
                     throw new Error("User ID not found in URL");
                 }
