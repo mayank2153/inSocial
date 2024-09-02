@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import { TiMessage } from "react-icons/ti";
 import { IoMdArrowBack, IoMdSettings, IoMdAddCircle } from "react-icons/io";
-import LikedCategories from "../category/likedCategories";
+import LikedCategories from "../category/likedCategories.jsx";
 import SettingAccordian from "../settings/setting.Accordian";
 import Conversations from "../message/conversations.jsx";
 import { IoIosMail } from "react-icons/io";
@@ -47,8 +47,8 @@ const Right = () => {
     <div className="flex flex-col justify-between lg:block w-full max-h-screen overflow-y-scroll no-scrollbar relative">
       {/* Full content for large screens */}
       <div
-        className={`hidden lg:block bg-[#0d1114] min-h-[100vh] h-full border-l border-gray-600 overflow-y-scroll no-scrollbar ${
-          showConversations || showSettings ? "overflow-hidden" : ""
+        className={`hidden lg:block bg-[#0d1114] min-h-[100vh] h-full border-l border-gray-600 overflow-y-scroll no-scrollbar pb-4 ${
+          showConversations || showSettings ? "overflow-hidden " : ""
         }`}
       >
         {showConversations ? (

@@ -5,9 +5,16 @@ import { IoIosMail } from "react-icons/io";
 import { MdOutlineMailLock } from "react-icons/md";
 import { TbPasswordUser } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
-
+import { UserLogout } from "../../api/userLogout.js";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import ClipLoader from "react-spinners/ClipLoader.js";
 
 const SettingAccordian = ({ title, children }) => {
+    const dispatch = useDispatch();
+  const userData = useSelector((state) => state.auth.user);
+  const userId = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
+
     const [isOpen, setIsOpen] = useState(false);
     
   const[loading, setLoading] = useState(false);
