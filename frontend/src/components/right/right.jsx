@@ -39,11 +39,7 @@ const Right = () => {
 
   const handleuserLogOut = async() => {
     setLoading(true);
-    
     const res =  await UserLogout(userData, dispatch);
-    
-    
-    
   } 
 
 
@@ -113,16 +109,7 @@ const Right = () => {
                 <FaPlus className="mt-1" /> Add Categories
               </Link>
             </div>
-            <div className="  py-3   border-b-2 border-gray-600 flex gap-2">
-                <span className="text-slate-200  pl-6">
-                    <FaUser size={20} />
-                </span>
-                <Link to={`/UserProfile/${userId}`}>
-                <span className=" text-slate-200  mb-3  -pb-2 font-mono text-lg cursor-pointer">
-                    User Profile
-                </span>
-                </Link>
-            </div>
+            
             <div className="mt-2">
               <SettingAccordian title="Settings" />
             </div>
