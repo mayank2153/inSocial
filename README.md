@@ -187,5 +187,5 @@ User can add his liked categories
 # Contact
 
 contact us at email:
-1. rbh97995@gmail.com
-2 mscahdeva9april@gmail.com
+! rbh97995@gmail.com
+! msachdeva9april@gmail.com
