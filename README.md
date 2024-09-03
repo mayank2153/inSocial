@@ -10,6 +10,7 @@
 - [Usage](#usage)
 - [Dependencies](#dependencies-tech-stacks)
 - [Contributing](#contributing)
+- [Overwiew](#overview)
 - [License](#license)
 - [Contact](#contact)
 
@@ -37,7 +38,7 @@ To get a local copy of **inSocial.tech** up and running, follow these simple ste
 
 ## clone or download
 ```terminal
-$ git clone https://github.com/amazingandyyy/mern.git
+$ git clone https://github.com/your-username/WhisperHub.git
 $ npm i
 ```
 ## project structure
@@ -132,7 +133,7 @@ We welcome contributions to **inSocial.tech**! Whether you're fixing bugs, impro
 2. **Clone Your Fork**: Clone your forked repository to your local machine using the following command:
 
     ```terminal
-    $ git clone https://github.com/your-username/insocial.tech.git
+    $ git clone https://github.com/your-username/WhisperHub.git
     ```
 
 3. **Create a New Branch**: Create a new branch for your feature, bug fix, or other work.
@@ -168,3 +169,23 @@ We welcome contributions to **inSocial.tech**! Whether you're fixing bugs, impro
 - **Commit Messages**: Use clear and descriptive commit messages for better understanding and tracking of changes.
 
 Thank you for contributing to **inSocial.tech** and helping to make it better for everyone!
+
+# Overview
+
+User visit public and Home page
+![User visit public and Home page](./frontend/src/assets/websiteOverview/homepage.jpg)
+
+User can sign in or sign up
+![User can sign in or sign up](./frontend/src/assets/websiteOverview/loginpage.jpg)
+
+After signing in user can use messaging functionality
+![After signing in user can message people](./frontend/src/assets/websiteOverview/messaging.jpg)
+
+User can add his liked categories
+![User can ass his like categories](./frontend/src/assets/websiteOverview/addingCategories.jpg)
+
+# Contact
+
+contact us at email:
+1. rbh97995@gmail.com
+2 mscahdeva9april@gmail.com
