@@ -27,12 +27,51 @@ Join **inSocial.tech** today to start sharing, connecting, and exploring content
 - **Notifications**: Stay updated with notifications when someone likes or comments on your posts.
 - **Explore by Categories**: Discover content tailored to your interests by liking specific categories or genres.
 - **Profile Customization**: Update your profile with a custom avatar, cover image, and personal information to reflect your unique identity.
-- **Real-Time Updates**: Receive real-time updates for messages, notifications, and new content.
+- **Real-Time Updates**: Receive real-time updates for messages and new content.
 
 ## Installation
 
-<!-- To get a local copy of **inSocial.tech** up and running, follow these simple steps:
+To get a local copy of **inSocial.tech** up and running, follow these simple steps:
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/yourusername/inSocial.tech.git -->
+## clone or download
+```terminal
+$ git clone https://github.com/amazingandyyy/mern.git
+$ npm i
+```
+## project structure
+```terminal
+LICENSE
+package.json
+server/
+   package.json
+   .env (to create .env, check [prepare your secret session])
+client/
+   package.json
+...
+```
+# Usage (run fullstack app on your machine)
+
+## Prerequisites
+- [MongoDB](https://gist.github.com/nrollr/9f523ae17ecdbb50311980503409aeb3)
+- [Node](https://nodejs.org/en/download/) ^10.0.0
+- [npm](https://nodejs.org/en/download/package-manager/)
+
+notice, you need client and server runs concurrently in different terminal session, in order to make them talk to each other
+
+## Client-side usage(PORT: 5173)
+```terminal
+$ cd frontend   // go to frontend folder
+$ npm i       // npm install packages
+$ npm run dev // run it locally
+
+```
+
+## Server-side usage(PORT: 8000)
+
+### Start
+
+```terminal
+$ cd backend   // go to backend folder
+$ npm i       // npm install packages
+$ npm run start // run it locally
+```
