@@ -1,5 +1,5 @@
 # ![inSocial.tech Logo](./frontend/src/assets/images/logo.png) 
-# ![inSocial.tech](https://www.insocial.tech)
+# [inSocial.tech](https://www.insocial.tech)
 
 **inSocial.tech** is a dynamic social networking platform designed to foster connections and interactions among users in an engaging online environment. The website offers a variety of features that allow users to create and share posts, engage with content from others, and explore new interests.
 
