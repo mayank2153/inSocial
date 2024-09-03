@@ -142,28 +142,30 @@ const ContactUs = () => {
           {error && (
             <p className="text-center text-red-500 font-semibold">{error}</p>
           )}
-          <div className='flex  '>
-            <Link to="/">
-            <span className='font-mono  text-slate-200 cursor-pointer hover:underline mt-2'>
-                Back to HomePage  
-            </span>
-            </Link>
+          
+            <div className="flex flex-col items-center lg:flex-row lg:justify-between mt-4">
+                <Link to="/" className="mb-4 lg:mb-0 lg:mr-auto">
+                    <span className="font-mono text-slate-200 cursor-pointer hover:underline">
+                        Back to HomePage
+                    </span>
+                </Link>
 
             <button
-              type="submit"
-              className="w-[200px] bg-blue-500 text-[#0f031c] py-2 rounded-full ml-24 hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100 flex items-center justify-center"
-              disabled={loading}
+                type="submit"
+                className="w-full lg:w-[200px] bg-blue-500 text-[#0f031c] py-2 rounded-full hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100 flex items-center justify-center"
+                disabled={loading}
             >
-              {loading ? (
+            {loading ? (
                 <ClipLoader color="#0f031c" size={20} />
-              ) : (
-                <>
-                  Send Message
-                  <FaPaperPlane className="ml-2" />
-                </>
-              )}
+                )    : (
+            <>
+                Send Message
+            <FaPaperPlane className="ml-2" />
+            </>
+            )}
             </button>
-          </div>
+            </div>
+
         </form>
       </div>
     </div>

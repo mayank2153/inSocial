@@ -17,10 +17,12 @@ const Right = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const [showConversations, setShowConversations] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const[loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.user);
-  const userId = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
+  const userId = userData?.data.user
+    ? userData?.data?.user?._id
+    : userData?.data?._id;
 
   const handleMessagesClick = () => {
     setShowConversations(true);
@@ -37,11 +39,10 @@ const Right = () => {
     setShowSettings(false);
   };
 
-  const handleuserLogOut = async() => {
+  const handleuserLogOut = async () => {
     setLoading(true);
-    const res =  await UserLogout(userData, dispatch);
-  } 
-
+    const res = await UserLogout(userData, dispatch);
+  };
 
   return isAuthenticated ? (
     <div className="flex flex-col justify-between lg:block w-full max-h-screen overflow-y-scroll no-scrollbar relative">
@@ -109,11 +110,11 @@ const Right = () => {
                 <FaPlus className="mt-1" /> Add Categories
               </Link>
             </div>
-            
+
             <div className="mt-2">
               <SettingAccordian title="Settings" />
             </div>
-            
+
             <div className=" py-3   border-b-2 border-gray-600 flex gap-2">
               <span className="text-slate-200 mt-[3px] pl-6">
                 <IoIosMail size={25} />
@@ -125,18 +126,25 @@ const Right = () => {
               </Link>
             </div>
             <div className="pt-3 flex   justify-center">
-                <button className="w-[150px] h-[40px] bg-blue-500 hover:bg-blue-700 rounded-xl -ml-4" onClick={handleuserLogOut}>
-                    {loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Logout' } 
-                </button>
+              <button
+                className="w-[150px] h-[40px] bg-blue-500 hover:bg-blue-700 rounded-xl -ml-4"
+                onClick={handleuserLogOut}
+              >
+                {loading ? (
+                  <ClipLoader color="#ffffff" size={20} className="mt-1" />
+                ) : (
+                  "Logout"
+                )}
+              </button>
             </div>
           </>
         )}
       </div>
 
-      {/* Footer with icons only for small screens */}
+      {/* Mobile version with fullscreen overlays */}
       <div className="lg:hidden flex justify-around bg-[#0d1114] text-white py-2 fixed bottom-0 w-full">
         {showConversations ? (
-          <div className="w-full bg-[#0d1114] min-h-[calc(100vh-3.5rem)] pt-4">
+          <div className="fixed top-0 left-0 w-full h-full bg-[#0d1114] z-50 flex flex-col">
             <div className="py-3 my-6 border-b-2 border-gray-600 flex items-center">
               <IoMdArrowBack
                 className="text-slate-200 cursor-pointer ml-4 text-2xl hover:text-white transition-all duration-300"
@@ -166,13 +174,19 @@ const Right = () => {
           </div>
         ) : (
           <>
-            <button onClick={handleMessagesClick} className="focus:outline-none">
+            <button
+              onClick={handleMessagesClick}
+              className="focus:outline-none"
+            >
               <TiMessage size={25} />
             </button>
             <Link to="/createPost" className="focus:outline-none">
               <IoMdAddCircle size={25} />
             </Link>
-            <button onClick={handleSettingsClick} className="focus:outline-none">
+            <button
+              onClick={handleSettingsClick}
+              className="focus:outline-none"
+            >
               <IoMdSettings size={25} />
             </button>
           </>

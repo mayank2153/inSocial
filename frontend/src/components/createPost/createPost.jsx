@@ -197,7 +197,7 @@ const PostForm = ({ isEdit }) => {
                                 id="category" 
                                 onChange={handleChange} 
                                 value={formData.category}
-                                className="w-min md:w-min text-sm md:text-xl py-2 px-2 md:py-1 focus:outline-none"
+                                className="w-min md:w-min rounded-xl text-sm md:text-xl py-2 px-2 md:py-1 focus:outline-none"
                                 style={{ backgroundColor: selectedColor }}
                             >
                                 <option value="" disabled className='bg-[#13181d]'>Select Category</option>
@@ -220,7 +220,7 @@ const PostForm = ({ isEdit }) => {
                             onChange={handleChange}
                             required
                             placeholder="Title"
-                            className="min-h-16 px-2 py-4 text-white bg-transparent border-t-2 border-t-slate-300 focus:outline-none"
+                            className="min-h-16 px-2 py-2 text-slate-300 bg-transparent border-t-2 border-t-gray-600 focus:outline-none"
                         />
 
                         <input
@@ -229,14 +229,14 @@ const PostForm = ({ isEdit }) => {
                             value={formData.description}
                             onChange={handleChange}
                             placeholder="Description"
-                            className="min-h-16 px-2 py-4 text-white bg-transparent border-t-2 border-t-slate-300 focus:outline-none"
+                            className="min-h-16 px-2 py-4 text-slate-300 bg-transparent border-t-2 border-t-gray-600 focus:outline-none"
                         />
 
                         <Previews setFormData={setFormData} initialMedia={formData.media} />
 
                         <button
                             type="submit"
-                            className="w-full p-2 flex items-center justify-center min-h-[50px] md:min-h-[70px] bg-white text-black hover:bg-slate-400"
+                            className="w-[175px] p-2 flex items-center justify-center font-mono h-[45px] md:min-h-[45px] bg-blue-500 rounded-2xl text-slate-200 hover:bg-blue-700"
                             disabled={loading}
                         >
                             {loading ? <ClipLoader size={20} color="black" /> : "Submit"}
