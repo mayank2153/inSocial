@@ -77,7 +77,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
       }
       
       const response = await OTP.find({email, scenario: "registration"}).sort({createdAt: -1}).limit(1);
-      console.log('otp response', response);
+      
 
       if(response.length === 0){
         throw new ApiError(400, 'Invalid OTP ')
@@ -99,6 +99,8 @@ const registerUser = asyncHandler(async (req, res, next) => {
       throw new ApiError(500, 'Server Error')
     }
   });
+
+
   
 const loginUser = asyncHandler(async(req, res) => {
     const {email, password} = req.body
@@ -125,8 +127,7 @@ const loginUser = asyncHandler(async(req, res) => {
     }
 
     const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(existedUser._id)
-    console.log(accessToken)
-    console.log(refreshToken)
+
     const loggedInUser = await User.findById(existedUser._id).select("-password -refreshToken")
 
     const options = {
@@ -153,8 +154,6 @@ const loginUser = asyncHandler(async(req, res) => {
 const handleGoogleLogin = async (user, res) => {
     try {
         const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
-        console.log("access token:", accessToken);
-        console.log("refresh token:", refreshToken);
 
         const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
@@ -250,10 +249,9 @@ const addLikedCategories = asyncHandler(async (req, res) => {
     const userId = req.body.userId;
     let categoryIds = req.body.categoryIds;
 
-    console.log(categoryIds);
 
     categoryIds = Array.isArray(categoryIds) ? categoryIds : [categoryIds];
-    console.log(categoryIds);
+    
 
     if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
         throw new ApiError(400, "Please provide an array of category IDs");
@@ -404,7 +402,7 @@ const updateCurrentPassword = asyncHandler(async(req , res) => {
 
 const UploadCoverImage = asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    console.log(req.files);
+    
     
     // Check if cover image exists in the request
     const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
@@ -422,14 +420,14 @@ const UploadCoverImage = asyncHandler(async (req, res) => {
     // Upload image to Cloudinary
     let coverImage;
     if (coverImageLocalPath) {
-        console.log('Local Path of Cover Image:', coverImageLocalPath);
+        
         coverImage = await uploadOnCloudinary(coverImageLocalPath);
         if (!coverImage) {
             throw new ApiError(500, "Failed to upload cover image."); // Changed status code to 500 for server error
         }
     }
 
-    console.log('Uploaded Image URL:', coverImage.secure_url);
+    
     
     // Update user document with the new cover image URL
     user.coverImage = coverImage.secure_url;
@@ -443,8 +441,6 @@ const UploadCoverImage = asyncHandler(async (req, res) => {
 
 const EditAvatar = asyncHandler(async (req, res) => {
     const { userId } = req.params;
-    console.log(req.files);
-    console.log('hi');
     
     
     // Check if cover image exists in the request
@@ -463,14 +459,14 @@ const EditAvatar = asyncHandler(async (req, res) => {
     // Upload image to Cloudinary
     let avatar;
     if (avatarLocalPath) {
-        console.log('Local Path of Cover Image:', avatarLocalPath);
+        
         avatar = await uploadOnCloudinary(avatarLocalPath);
         if (!avatar) {
             throw new ApiError(500, "Failed to upload Avatar."); // Changed status code to 500 for server error
         }
     }
 
-    console.log('Uploaded Image URL:', avatar.secure_url);
+    
     
     // Update user document with the new cover image URL
     user.avatar = avatar.secure_url;
@@ -488,7 +484,7 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
 
     try {
         const user = await User.findById(userId);
-        console.log(user)
+        
         if (!user) {
             throw new ApiError(404, "User not found");
         }
@@ -516,7 +512,7 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
 });
 
 const forgetPassword = asyncHandler(async (req, res) => {
-    console.log('hii');
+    
 
     const { email } = req.body;
 
@@ -561,13 +557,13 @@ import bcrypt from "bcrypt";
 const resetPassword = asyncHandler(async (req, res) => {
   try {
     const { resetlink, newPassword } = req.body;
-    console.log('pass', newPassword);
+    
 
     if (!resetlink) {
       throw new ApiError(401, "Authentication error: reset link is missing.");
     }
 
-    console.log("Searching for user with reset link:", resetlink);
+    
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     const user = await User.findOneAndUpdate(
@@ -583,7 +579,6 @@ const resetPassword = asyncHandler(async (req, res) => {
       throw new ApiError(404, "User not found or reset link invalid.");
     }
 
-    console.log("User found and password updated:", user);
 
     const mailContent  = await mailSender(
         user.email,
@@ -605,8 +600,6 @@ const resetPassword = asyncHandler(async (req, res) => {
  const sendOtp = asyncHandler(async (req, res) => {
     try {
         const { email, scenario } = req.body;
-        console.log('Request email:', email);
-        console.log('Scenario:', scenario);
 
         const user = await User.findOne({ email });
         if (user) {

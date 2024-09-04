@@ -10,9 +10,7 @@ try {
             ...formData,
             otp
         })
-        // console.log('response after changing email', response.data);
-
-        
+                
 
 } catch (error) {
  console.error('there seems to be an error while changing email', error);

@@ -11,6 +11,7 @@ const socketSlice = createSlice({
     reducers: {
         connectSocket: (state, action) => {
             state.isConnected = action.payload;
+
         },
     },
 });

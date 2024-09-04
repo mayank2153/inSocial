@@ -10,9 +10,6 @@ const UserCard = ({ avatar, bio, userName, _id,inChat=false }) => {
     console.log("user:",userData)
     const userId = userData.data.user?userData?.data?.user?._id:userData?.data?._id;
     const isOpenChat = useSelector((state) => state.chat.isOpen);
-    console.log(isOpenChat);
-    
-
     const handleCreateConversation = async () => {
         try {
             const conversation = await createConversation({ participants: [_id, userId] });

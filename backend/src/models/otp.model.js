@@ -52,16 +52,14 @@ async function sendVerificationEmail(email, otp, scenario){
             subject,
             emailTemplate
         );
-        console.log('Email sent successfully',mailResponsne);
+       
     } catch (error) {
-        console.log('error occured while sending email', error);
+        console.error('error occured while sending email', error);
         
     }
 }
 
 otpSchema.pre("save", async function (next) {
-	console.log("New document saved to database");
-
 	// Only send an email when a new document is created
 	if (this.isNew) {
 		await sendVerificationEmail(this.email, this.otp, this.scenario);

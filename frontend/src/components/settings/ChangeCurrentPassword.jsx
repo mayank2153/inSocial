@@ -46,10 +46,7 @@ const ChangeCurrentPassword = () => {
             // Logging out the user
             await UserLogout(userData, dispatch);
     
-            // Redirect or handle post-logout actions
-            // Example: navigate to the login page
-            // navigate('/login');
-        } catch (error) {
+            } catch (error) {
             console.error("Error during form submission:", error);
             alert("An error occurred during submission. Please try again.");
         }

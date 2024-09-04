@@ -7,7 +7,6 @@ export const mailAcknowledgment = async(formData) => {
         const response = await axios.post(`${url}api/contact/acknowledgement`,{
             ...formData
         })
-        // console.log(response);
         
     } catch (error) {
         console.error(error)

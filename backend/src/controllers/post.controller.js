@@ -11,7 +11,7 @@ import {Category} from "../models/category.model.js"
 
 const createNewPost = asyncHandler(async (req, res) => {
     const { title, description, category } = req.body;
-    console.log(category);
+    
 
     if ([title, category, description].some((field) => field === "")) {
         throw new ApiError(400, "Please provide necessary details");
@@ -59,7 +59,7 @@ const createNewPost = asyncHandler(async (req, res) => {
 const updatePost = asyncHandler(async (req, res) => {
     const { postId } = req.params;
     const { title, description, category } = req.body;
-    console.log("body:",req.body)
+    
     // Check valid input
     if ([title, description, category].some(field => field && field.trim() === "")) {
         throw new ApiError(400, "Please provide necessary details");
@@ -89,7 +89,7 @@ const updatePost = asyncHandler(async (req, res) => {
         post.description = description;
     }
     if (category) {
-        console.log(category)
+        
         const existingCategory = await Category.findById(category)
         if (!existingCategory) {
             throw new ApiError(400, "Category does not exist");
@@ -97,13 +97,13 @@ const updatePost = asyncHandler(async (req, res) => {
         post.category = existingCategory._id;
     }
     // Save updated post
-    console.log("updating post before saving")
+   
     await post.save();
-    console.log("updating post after saving")
+    
     
     // Fetch updated post with populated category
     const updatedPost = await Post.findById(postId).populate('category');
-    console.log("found post ")
+    
 
     return res.status(200).json(
         new ApiResponse(200, updatedPost, "Post has been successfully updated")
@@ -129,7 +129,7 @@ const getPostsByUser= asyncHandler(async(req,res)=>{
     const posts=await Post.find({owner:userId});
     
     if (posts.length === 0) {
-        throw new ApiError(404, "No posts found for this user");
+        new ApiResponse(200, "User doesnt have any post.");
     }
 
     return res.status(200).json(
