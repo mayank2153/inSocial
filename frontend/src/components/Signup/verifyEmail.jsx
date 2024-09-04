@@ -43,7 +43,7 @@ function VerifyEmail() {
       
       const response = await UserRegister({ ...signUpData, otp });
 
-      toast.success(response?.data?.message)
+      
       setLoading(false)
       setTimeout(() => {
         navigate("/login")  
@@ -61,7 +61,7 @@ function VerifyEmail() {
       await sendOtp(signUpData.email,'registration');
       
     } catch (error) {
-      toast.error('Unexpected Error')
+      toast.error(error?.response?.data?.message || 'Unexpected Error')
     }
   };
 
