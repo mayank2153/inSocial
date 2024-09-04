@@ -47,23 +47,28 @@ const Header = ({ toggleCategories }) => {
             <div className="container mx-auto px-4 lg:px-6 max-w-full">
                 <nav className="flex items-center justify-between h-16 lg:h-20">
                     <div className="flex items-center">
-                        <button
-                            className="lg:hidden p-2 text-white"
-                            onClick={toggleCategories}
-                        >
-                            <FaBars size={25} className='mt-2' />
-                        </button>
+                        {/* Conditionally render the FaBars button on small screens only when search is not open */}
+                        {!isSearchOpen && (
+                            <button
+                                className="lg:hidden p-2 text-white"
+                                onClick={toggleCategories}
+                            >
+                                <FaBars size={25} className='mt-2' />
+                            </button>
+                        )}
                         <Link to="/" title="Home" className="flex items-center ml-4">
                             <img className="h-12 lg:h-14 lg:w-28 hidden lg:block" src={logo} alt="Logo" />
                             <img className={`w-auto h-8 lg:h-10 lg:hidden`} src={logo_img} alt="Logo" />
                         </Link>
                     </div>
 
+                    {/* Display SearchBar always on large screens, and conditionally on small screens */}
                     <div className={`flex-grow ${isSearchOpen ? 'flex' : 'hidden'} lg:flex items-center justify-center`}>
                         <SearchBar isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} />
                     </div>
 
                     <div className="flex items-center space-x-4">
+                        {/* Hide the search button on small screens when search is open */}
                         {!isSearchOpen && (
                             <button
                                 type="button"
@@ -74,24 +79,37 @@ const Header = ({ toggleCategories }) => {
                             </button>
                         )}
 
-                        <div className='relative cursor-pointer text-slate-200' onClick={handleReadCount}>
-                            <IoNotificationsSharp size={30} className='mr-4' />
-                            {unreadCount > 0 && (
-                                <span className='absolute -top-2 -right-2 bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center mr-4'>
-                                    {unreadCount}
-                                </span>
-                            )}
-                        </div>
+                        {/* Conditionally render the notification icon on small screens only when search is not open */}
+                        {!isSearchOpen && (
+                            <div className='relative cursor-pointer text-slate-200' onClick={handleReadCount}>
+                                <IoNotificationsSharp size={30} className='mr-4' />
+                                {unreadCount > 0 && (
+                                    <span className='absolute -top-2 -right-2 bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center mr-4'>
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </div>
+                        )}
+                        {isSearchOpen && (
+                            <div className='relative cursor-pointer text-slate-200 hidden lg:block' onClick={handleReadCount}>
+                                <IoNotificationsSharp size={30} className='mr-4' />
+                                {unreadCount > 0 && (
+                                    <span className='absolute -top-2 -right-2 bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center mr-4'>
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </div>
+                        )}
 
                         <div className="relative overflow-hidden">
-                          <Link to={`/UserProfile/${userId}`}>
-                          <img
-                                src={userProfileImage}
-                                alt="user Profile"
-                                className="w-12 h-12 rounded-full object-cover cursor-pointer"
-                                onClick={toggleProfile}
-                            />
-                          </Link>
+                            <Link to={`/UserProfile/${userId}`}>
+                                <img
+                                    src={userProfileImage}
+                                    alt="user Profile"
+                                    className="w-12 h-12 rounded-full object-cover cursor-pointer"
+                                    onClick={toggleProfile}
+                                />
+                            </Link>
 
                             {/* {isProfileOpen && <ProfilePage isProfileOpen={isProfileOpen} setIsProfileOpen={setIsProfileOpen} />} */}
                         </div>

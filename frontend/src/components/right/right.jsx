@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
@@ -12,6 +12,7 @@ import { FaUser } from "react-icons/fa";
 import { UserLogout } from "../../api/userLogout.js";
 import toast from "react-hot-toast";
 import ClipLoader from "react-spinners/ClipLoader.js";
+import { closeChat } from "../../utils/chatSlice.jsx";
 
 const Right = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -20,6 +21,7 @@ const Right = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.user);
+  const isOpenChat = useSelector((state) => state.chat.isOpen);
   const userId = userData?.data.user
     ? userData?.data?.user?._id
     : userData?.data?._id;
@@ -29,9 +31,18 @@ const Right = () => {
     setShowSettings(false);
   };
 
+  useEffect(() => {
+    if(isOpenChat){
+      setShowConversations(true);
+      setShowSettings(false);
+    }
+  },[isOpenChat])
+
+
   const handleSettingsClick = () => {
     setShowSettings(true);
     setShowConversations(false);
+    dispatch(closeChat());
   };
 
   const handleBackClick = () => {
