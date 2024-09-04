@@ -24,8 +24,8 @@ const SearchBar = ({ isSearchOpen, setIsSearchOpen }) => {
     };
 
     const handleCancelSearch = () => {
-        setSearchQuery(''); // Clear the input
-        if (window.innerWidth < 1024) { // Close the search bar on smaller screens
+        setSearchQuery(''); 
+        if (window.innerWidth < 1024) { 
             setIsSearchOpen(false);
         }
         if(window.innerWidth > 1024){
@@ -47,11 +47,30 @@ const SearchBar = ({ isSearchOpen, setIsSearchOpen }) => {
                     />
                     <button
                         type="button"
-                        className="p-2 text-red-500 bg-white rounded-r-full cursor-pointer"
+                        className={`p-2 text-red-500 bg-white hidden  rounded-r-full cursor-pointer ${searchQuery ===''?'lg:hidden':'lg:block'}`}
                         onClick={handleCancelSearch}
                     >
                         <IoMdClose size={25} />
                     </button>
+                    <button
+                        type="button"
+                        className={`p-2 text-red-500 bg-white rounded-r-full cursor-pointer lg:hidden`}
+                        onClick={handleCancelSearch}
+                    >
+                        <IoMdClose size={25} />
+                    </button>
+                    {isSearchOpen && (
+                        <div>
+                            <button 
+                                type='button'
+                                className={`${searchQuery ===''?'lg:block':'lg:hidden'} bg-white rounded-r-full cursor-pointer p-2 text-gray-600 hidden`}
+                            >
+                            
+                                <IoIosSearch size={25} />
+                            </button>
+                        </div>
+                    )}
+                    
                 </>
             )}
             {!isSearchOpen && (
