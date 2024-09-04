@@ -13,9 +13,13 @@ export const UserRegister = async(formData) => {
         }
         );
         
+        if(response.status === 200){
+            toast.success('Registered Successfully');
+        }
+        
 
     } catch (error) {
         console.error('error in user register', error);
-        toast.error('Please Register Again')
+        toast.error('error?.response?.data?.message')
     }
 };

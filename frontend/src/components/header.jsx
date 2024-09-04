@@ -6,7 +6,7 @@ import logo from "../assets/images/logo.png";
 import logo_img from "../assets/images/logo_img.png";
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import ProfilePage from './userProfile/profilePage';
+// import ProfilePage from './userProfile/profilePage';
 import SearchBar from './searchBar/searchBar.jsx';
 import { CountUnreadNotification } from '../api/unreadNotificationCount.js';
 import { UpdateCount } from '../api/updateReadNotificationCount.js';
