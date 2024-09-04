@@ -129,7 +129,7 @@ const getPostsByUser= asyncHandler(async(req,res)=>{
     const posts=await Post.find({owner:userId});
     
     if (posts.length === 0) {
-        throw new ApiError(404, "No posts found for this user");
+        new ApiResponse(200, "User doesnt have any post.");
     }
 
     return res.status(200).json(
