@@ -8,7 +8,8 @@ export const initializeSocket = (url, options) => {
         socket = io(url, options);
 
         socket.on('connect', () => {
-            console.log('Connected to socket server:', socket.id);
+            console.log('connected');
+            
         });
 
         socket.on('connect_error', (error) => {

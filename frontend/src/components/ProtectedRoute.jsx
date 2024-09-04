@@ -7,7 +7,6 @@ import loading_gif from "../assets/gifs/loading.gif";
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated_redux = useSelector((state) => state.auth.isAuthenticated);
-  console.log("isAuthenticated_redux:",isAuthenticated_redux)
   const dispatch = useDispatch();
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(isAuthenticated_redux); // Use Redux state initially
@@ -15,7 +14,6 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     const validateToken = async () => {
       const isValid = await checkTokenValidity();
-      console.log("is valid:",isValid)
       if (!isValid) {
         dispatch(logout());
         setIsAuthenticated(false);

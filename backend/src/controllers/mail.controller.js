@@ -38,7 +38,7 @@ const MailReciever = asyncHandler(async (req, res) => {
 
     try {
         const info = await transporter.sendMail(mailOptions);
-        // console.log('Email sent: ' + info.response);
+        
 
         return res.status(200).json(
             new ApiResponse(200, 'Email sent successfully', null)
@@ -65,7 +65,7 @@ const UserAcknowledgment = asyncHandler(async(req,res) => {
 
     try {
         const info = await transporter.sendMail(mailOptions);
-        // console.log('Email sent: ' + info.response);
+        
 
         return res.status(200).json(
             new ApiResponse(200, 'Email sent successfully', null)
