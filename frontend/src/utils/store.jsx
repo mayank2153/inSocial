@@ -8,6 +8,7 @@ import themeReducer from "./darkmodeSlice";
 import socketReducer from "./socketslice"
 import commentReducer from "./commentsSlice.jsx"
 import notificationReducer from "./notificationSlice.jsx"
+import chatReducer from './chatSlice';
 
 const persistConfig = {
   key: 'root',
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
   theme: themeReducer,
   socket: socketReducer,
   comments: commentReducer,
-  notification: notificationReducer
+  notification: notificationReducer,
+  chat: chatReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

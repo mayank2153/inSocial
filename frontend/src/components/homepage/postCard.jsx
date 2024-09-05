@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { FaRegCommentAlt } from "react-icons/fa";
 import { AiOutlineLike, AiOutlineDislike } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { fetchOwnerDetails } from '../../api/fetchOwnerDetails.js';
 import { fetchCategoryDetails } from '../../api/fetchCategoryDetails.js';
 import { MdEdit } from "react-icons/md";
-import { connectSocket } from '../../utils/socketslice.jsx';
+// import { connectSocket } from '../../utils/socketslice.jsx';
+import { useSocket } from "../context/SocketContext.jsx";
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
@@ -20,20 +21,22 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   const voteCount = votes.length;
   const [voteNumber, setVoteNumber] = useState(voteCount);
 
-  const dispatch = useDispatch();
-  const socket = useSelector((state) => state.socket.socket);
+  // const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.user);
-  // console.log("check:",useSelector((state) => state.auth))
-  // console.log("user Data:",userData)
   const currentUser = userData?.data?.user?userData?.data?.user?._id:userData?.data?._id;
-  // console.log("current user in post card:",currentUser)
   const userName =userData?.data?.user?userData?.data?.user?.userName:userData?.data?.userName;
-
+  
+  const isConnected = useSelector((state) => state.socket.isConnected);
+  const socket = useSocket();
+  
   useEffect(() => {
-    if (!socket) {
-      dispatch(connectSocket());
+    if (!isConnected) {
+        if(socket){
+          socket.connect();
+        }
     }
-  }, []);
+  }, [socket]);
+
 
   useEffect(() => {
     if (currentUser) {
@@ -41,9 +44,9 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
       if (userVote) {
         setUserVote(userVote.voteType);
       }
-      // console.log("currentUser:", currentUser);
     }
   }, [currentUser, votes]);
+
   const handleVote = async (voteType) => {
     if (userVote) {
       // If the user is clicking the same vote type again, remove the vote
@@ -55,23 +58,31 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
     } else {
       // Otherwise, cast the vote
       try {
+        
         const response = await axios.post(`${url}vote/create-vote/${_id}`, { voteType }, {
           withCredentials: true
         });
-        // console.log('Vote response:', response.data);
         setUserVote(voteType);
-
-        if (socket) {
-          const emitData = {
-            message: `User ${userName} reacted on your post`,
-            postId: _id,
-            actor: currentUser,
-            receiver: owner,
-            type: voteType
-          };
-
-          socket.emit('likePost', emitData);
-          
+        
+        
+        
+        try {
+          if (socket) {
+            const emitData = {
+              message: `User ${userName} reacted on your post`,
+              postId: _id,
+              actor: currentUser,
+              receiver: owner,
+              type: 'like'
+            };
+            
+            socket.emit('likePost', emitData);
+            
+            
+          }
+        } catch (error) {
+        console.error('socket error: ' + error);
+        
         }
 
         if (voteNumber <= voteCount) {
@@ -101,7 +112,6 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        // console.log("owner,category",owner,"  ",category);
         const [ownerResponse, categoryResponse] = await Promise.all([
           fetchOwnerDetails(owner),
           fetchCategoryDetails(category)

@@ -1,21 +1,20 @@
 import { createConversation } from "../../../api/createConversation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaRegPaperPlane } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { openChat } from "../../../utils/chatSlice.jsx";
 
 const UserCard = ({ avatar, bio, userName, _id,inChat=false }) => {
+    const dispatch = useDispatch();
     const userData = useSelector((state) => state.auth.user);
-    // console.log("user:",userData)
+    console.log("user:",userData)
     const userId = userData.data.user?userData?.data?.user?._id:userData?.data?._id;
-    // console.log(userId);
-
-    // console.log(_id);
-    
-
+    const isOpenChat = useSelector((state) => state.chat.isOpen);
     const handleCreateConversation = async () => {
         try {
             const conversation = await createConversation({ participants: [_id, userId] });
-            
+            // onClick(conversation);
+            dispatch(openChat());
         } catch (error) {
             console.error(error.message);
         }
@@ -42,7 +41,7 @@ const UserCard = ({ avatar, bio, userName, _id,inChat=false }) => {
                 </button>
             </div>
         </div>
-    )
+    );
 };
 
 export default UserCard;

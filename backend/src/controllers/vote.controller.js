@@ -6,6 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
 
 const createVote = asyncHandler(async (req, res) => {
+   
     const { voteType } = req.body;
     const { postId } = req.params;
     const userId = req.user?.id; // Safe navigation operator
@@ -48,7 +49,7 @@ const createVote = asyncHandler(async (req, res) => {
         }
 
 
-
+        
         return res.status(201).json(
             new ApiResponse(200, { vote, post }, "Vote has been successfully created")
         );

@@ -11,7 +11,7 @@ import {Category} from "../models/category.model.js"
 
 const createNewPost = asyncHandler(async (req, res) => {
     const { title, description, category } = req.body;
-    console.log(category);
+    
 
     if ([title, category, description].some((field) => field === "")) {
         throw new ApiError(400, "Please provide necessary details");
@@ -58,9 +58,7 @@ const createNewPost = asyncHandler(async (req, res) => {
 
 const updatePost = asyncHandler(async (req, res) => {
     const { postId } = req.params;
-    console.log("post id",postId)
-    const { title, description, category,removeMedia } = req.body;
-    console.log("title, description, category,removeMedia",title, description, category,removeMedia);
+    const { title, description, category } = req.body;
     // Check valid input
     if ([title, description, category].some(field => field && field.trim() === "")) {
         throw new ApiError(400, "Please provide necessary details");
@@ -93,7 +91,6 @@ const updatePost = asyncHandler(async (req, res) => {
         post.description = description;
     }
     if (category) {
-        console.log(category)
         const existingCategory = await Category.findOne({ name: category });
         if (!existingCategory) {
             throw new ApiError(400, "Category does not exist");
@@ -102,13 +99,13 @@ const updatePost = asyncHandler(async (req, res) => {
         console.log("category saved")
     }
     // Save updated post
-    console.log("updating post before saving")
+   
     await post.save();
-    console.log("updating post after saving")
+    
     
     // Fetch updated post with populated category
     const updatedPost = await Post.findById(postId).populate('category');
-    console.log("found post ")
+    
 
     return res.status(200).json(
         new ApiResponse(200, updatedPost, "Post has been successfully updated")

@@ -43,18 +43,18 @@ const SearchBar = ({ isSearchOpen, setIsSearchOpen }) => {
                         value={searchQuery}
                         onChange={handleInputChange}
                         onKeyPress={handleKeyPress}
-                        className="w-full py-2 px-4 border border-gray-300 rounded-l-full outline-none"
+                        className="w-full py-2 px-4 border border-gray-300 rounded-l-full border-r-white outline-none"
                     />
                     <button
                         type="button"
-                        className={`p-2 text-red-500 bg-white hidden  rounded-r-full cursor-pointer ${searchQuery ===''?'lg:hidden':'lg:block'}`}
+                        className={`p-2 text-red-500 bg-white hidden border-r-white rounded-r-full cursor-pointer ${searchQuery ===''?'lg:hidden':'lg:block'}`}
                         onClick={handleCancelSearch}
                     >
                         <IoMdClose size={25} />
                     </button>
                     <button
                         type="button"
-                        className={`p-2 text-red-500 bg-white rounded-r-full cursor-pointer lg:hidden`}
+                        className={`p-2 text-red-500 bg-white rounded-r-full border-l-white cursor-pointer lg:hidden`}
                         onClick={handleCancelSearch}
                     >
                         <IoMdClose size={25} />

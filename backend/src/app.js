@@ -92,14 +92,12 @@ app.get("/", (req, res) => {
 
 // Socket.io Connection
 io.on('connection', (socket) => {
-    console.log(`User connected: ${socket.id}`);
 
     socket.on('joinConversation', async (conversationId) => {
         socket.join(conversationId);
 
         try {
             // Fetch past messages for this conversation and emit them to the user
-            console.log('socket cid', conversationId);
             const messages = await getMessages(conversationId);
             socket.emit('conversationMessages', messages);
         } catch (error) {
@@ -110,7 +108,6 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', async (messageData) => {
         try {
             // Emit the message to all users in the conversation room
-            console.log(messageData.content);
             io.to(messageData.conversationId).emit('receiveMessage', messageData);
         } catch (error) {
             console.error('Error sending message:', error);
@@ -120,7 +117,6 @@ io.on('connection', (socket) => {
     // Notification on someone liking a post
     socket.on('likePost', async(data) => {
         try {
-            console.log('Notification data before saving', data);
             const notificationData = {
                 actor: data.actor,
                 type: 'like',
@@ -128,12 +124,10 @@ io.on('connection', (socket) => {
                 postId: data.postId,
                 receiver: data.receiver
             };
-            console.log('notificationData:', notificationData);
             const savedNotification = await Notification.create(notificationData);
-            console.log('Notification saved:', savedNotification);
             io.emit('notification', notificationData);
         } catch (error) {
-            console.log('Error processing like post notification:', error);
+            console.error('Error processing like post notification:', error);
             socket.emit('error', { message: 'Error processing like post notification' });
         }
     });
@@ -141,7 +135,6 @@ io.on('connection', (socket) => {
     // Notification on commenting a post
     socket.on('commentPost', async(data) => {
         try {
-            console.log('Notification data before saving', data);
             const notificationData = {
                 actor: data.actor,
                 type: 'comment',
@@ -149,12 +142,10 @@ io.on('connection', (socket) => {
                 postId: data.postId,
                 receiver: data.receiver
             };
-            console.log('notificationData:', notificationData);
             const savedNotification = await Notification.create(notificationData);
-            console.log('Notification saved:', savedNotification);
             io.emit('notification', notificationData);
         } catch (error) {
-            console.log('Error processing comment post notification:', error);
+            console.error('Error processing comment post notification:', error);
             socket.emit('error', { message: 'Error processing comment post notification' });
         }
     });
@@ -162,7 +153,6 @@ io.on('connection', (socket) => {
     // Notification on replying to a comment
     socket.on('ReplyComment', async(data) => {
         try {
-            console.log('Notification data before saving', data);
             const notificationData = {
                 actor: data.actor,
                 type: 'Reply',
@@ -170,12 +160,10 @@ io.on('connection', (socket) => {
                 postId: data.postId,
                 receiver: data.receiver
             };
-            console.log('notificationData:', notificationData);
             const savedNotification = await Notification.create(notificationData);
-            console.log('Notification saved:', savedNotification);
             io.emit('notification', notificationData);
         } catch (error) {
-            console.log('Error processing reply comment notification:', error);
+            console.error('Error processing reply comment notification:', error);
             socket.emit('error', { message: 'Error processing reply comment notification' });
         }
     });

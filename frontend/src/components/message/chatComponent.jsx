@@ -10,7 +10,6 @@ import { IoSend } from "react-icons/io5";
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
 const ChatComponent = ({ conversationId, userId, receiver }) => {
-    // console.log('id',conversationId);
     
     const dispatch = useDispatch();
     const socket = useSocket();

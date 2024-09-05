@@ -3,7 +3,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 // import { connectSocket } from '../../utils/socketslice.jsx';
 import {connectSocket} from "../../../utils/socketslice.jsx"
-import {useSocket} from "../../context/SocketContext.jsx"
+import {useSocket} from "../../context/SocketContext.jsx";
 
 const url = import.meta.env.VITE_BASE_URL|| `http://localhost:8000/`;
 
@@ -42,19 +42,25 @@ const CommentInputReply = ({ postId , parentCommentId,userName}) => {
       setComment(""); // Clear the comment input after successful submission
       setIsInputFocused(false)
       
-
-      if(socket){
-        const emitData = {
-          message: `User ${userName} replied to your comment`,
-          postId: postId,
-          actor: userId,
-          receiver: response?.data?.data?.postOwner,
-          type: 'Reply'
+try {
+        
+        if(socket){
+          
+          const emitData = {
+            message: `User ${userName} replied to your comment`,
+            postId: postId,
+            actor: userId,
+            receiver: response?.data?.data?.postOwner,
+            type: 'Reply'
+          }
+          socket.emit('ReplyComment', emitData);
+          
+          
         }
-        socket.emit('ReplyComment', emitData);
-        
-        
-      }
+} catch (error) {
+  console.error(error);
+  
+}
 
     } catch (error) {
       alert(error.response?.data?.message || "Unable to add comment");

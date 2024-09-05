@@ -38,15 +38,12 @@ const Login = () => {
         try {
             
             const response = await axios.post(`${url}users/login`, user, { withCredentials: true });
-            // console.log("response:",response.data)
             dispatch(loginSuccess(response.data));
             setLoading(false);
             navigate('/');
             toast.success(response?.data?.message) // Redirect to the homepage after successful login
         } catch (error) {
             console.error(error?.response?.data);
-            // Display notification with error message
-            // notifyError(error?.response?.data?.message || "Login failed");
             toast.error(error?.response?.data?.message || "Login failed", {
                 duration:4000,
                 
@@ -130,17 +127,6 @@ const Login = () => {
                             {Loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Login'}
                         </button>
                     </div>
-                    {/* <div className="mb-4">
-                        <button
-                            type="button"
-                            onClick={handleGoogleLogin}
-                            className="w-full bg-white text-black py-2 rounded-full flex justify-center gap-4 font-bold hover:bg-gray-200"
-                        >
-                            <FaGoogle className="text-blue-600 mt-1" />
-                            Sign In With 
-                            <span className="text-blue-600"> Google</span>
-                        </button>
-                    </div> */}
                 </form>
                 <div className="text-center flex gap-2 justify-center">
                     <p className="text-slate-300">Don't have an account?</p>

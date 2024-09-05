@@ -25,7 +25,6 @@ const CategoryPage = () => {
         const fetchedCategories = response.data.categories;
         setCategories(fetchedCategories);
       }
-      // console.log(response)
     } catch (error) {
       console.error('There seems to be an error in fetching Categories:', error);
     }
@@ -33,7 +32,6 @@ const CategoryPage = () => {
 
   useEffect(() => {
     fetchCategories();
-    // console.log("category",categories)
   }, []);
 
   const handleCategorySelect = (categoryId) => {
@@ -60,8 +58,6 @@ const CategoryPage = () => {
           withCredentials: true
         }
       );
-      // console.log(response);
-
       // Dispatch the addCategories action to update the Redux store
       dispatch(addCategory(selectedCategories));
       setLoading(false);

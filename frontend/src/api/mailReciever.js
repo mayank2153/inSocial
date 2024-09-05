@@ -10,7 +10,6 @@ export const mailReciever = async(formData) => {
         if(!response){
             toast.error('Unexpected Error')
         }
-        // console.log(response);
         
     } catch (error) {
         console.error(error)
