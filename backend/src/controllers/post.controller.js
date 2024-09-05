@@ -58,8 +58,9 @@ const createNewPost = asyncHandler(async (req, res) => {
 
 const updatePost = asyncHandler(async (req, res) => {
     const { postId } = req.params;
-    const { title, description, category } = req.body;
-    console.log("body:",req.body)
+    console.log("post id",postId)
+    const { title, description, category,removeMedia } = req.body;
+    console.log("title, description, category,removeMedia",title, description, category,removeMedia);
     // Check valid input
     if ([title, description, category].some(field => field && field.trim() === "")) {
         throw new ApiError(400, "Please provide necessary details");
@@ -69,6 +70,9 @@ const updatePost = asyncHandler(async (req, res) => {
 
     if (!post) {
         throw new ApiError(404, "Post not found or there was an error in finding the post");
+    }
+    if (removeMedia === true) {
+        post.media = null; // Remove the media from the post
     }
 
     // Update media if present
@@ -90,11 +94,12 @@ const updatePost = asyncHandler(async (req, res) => {
     }
     if (category) {
         console.log(category)
-        const existingCategory = await Category.findById(category)
+        const existingCategory = await Category.findOne({ name: category });
         if (!existingCategory) {
             throw new ApiError(400, "Category does not exist");
         }
         post.category = existingCategory._id;
+        console.log("category saved")
     }
     // Save updated post
     console.log("updating post before saving")
