@@ -1,99 +1,88 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";  // Use Redux to get logged-in user info
 import PostByUser from "../homepage/postByUser/postByUser";
 import { useParams } from "react-router-dom";
 import { fetchOwnerDetails } from "../../api/fetchOwnerDetails";  
 import UserProfileShimmer from "../shimmer/userShimmer";
 import { MdOutlineEdit } from "react-icons/md";
 import { UploadCoverImage } from "../../api/UploadCoverImage";
-// import { UploadAvatarImage } from "../../api/UploadAvatarImage";  // Import your avatar upload API
 import toast from "react-hot-toast";
-import { FaSpinner } from "react-icons/fa"; // Import spinner icon
+import { FaSpinner } from "react-icons/fa";
 import { editUserDetails } from "../../api/editUserDetails";
 
 const UserProfile = () => {
   const [userData, setUserData] = useState(null);
-  const [isCoverHovering, setIsCoverHovering] = useState(false); // State to manage hover effect for cover image
-  const [isAvatarHovering, setIsAvatarHovering] = useState(false); // State to manage hover effect for avatar
-  const { userId } = useParams();
+  const [isCoverHovering, setIsCoverHovering] = useState(false);
+  const [isAvatarHovering, setIsAvatarHovering] = useState(false);
+  const { userId } = useParams();  // Get userId from the URL
   const [formData, setFormData] = useState({
     coverImage: "",
-    avatar: "",  // Add avatar image to formData
+    avatar: "",
   });
-  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Get the logged-in user from Redux store (assuming you store user data there)
+  const loggedInUser = useSelector((state) => state.auth.user); 
+  console.log(loggedInUser) // Adjust according to your Redux state structure
 
   const fetchUserData = async () => {
     try {
-      const response = await fetchOwnerDetails(userId); 
+      const response = await fetchOwnerDetails(userId);
       setUserData(response);
     } catch (error) {
-      console.error('Seems to be an error while fetching user data', error);
+      console.error('Error while fetching user data', error);
     }
   };
 
   const handleCoverImageChange = (e) => {
     const { files } = e.target;
     if (files && files[0]) {
-      setFormData({ ...formData, coverImage: files[0] });  // Update cover image
+      setFormData({ ...formData, coverImage: files[0] });
     }
   };
 
   const handleAvatarImageChange = (e) => {
     const { files } = e.target;
     if (files && files[0]) {
-      setFormData({ ...formData, avatar: files[0] });  // Update avatar image
+      setFormData({ ...formData, avatar: files[0] });
     }
   };
 
   useEffect(() => {
-    const uploadCoverImage = async () => {
-      if (!formData) return; // Ensure we have valid form data before uploading
-
-      setIsLoading(true); // Set loading to true when upload starts
-  
-      try {
-        await UploadCoverImage(userId, formData);
-        toast.success('Cover Image Uploaded Successfully');
-
-        // Re-fetch user data to update the cover image immediately
-        fetchUserData();  // Call fetchUserData to update the state with new cover image
-        
-      } catch (error) {
-        toast.error('Unexpected Error');
-      } finally {
-        setIsLoading(false); // Set loading to false when upload ends
-      }
-    };
-
-    if (formData.coverImage) {  // Check if formData.coverImage is set
+    if (formData.coverImage) {
+      const uploadCoverImage = async () => {
+        setIsLoading(true);
+        try {
+          await UploadCoverImage(userId, formData);
+          toast.success('Cover Image Uploaded Successfully');
+          fetchUserData();
+        } catch (error) {
+          toast.error('Error uploading cover image');
+        } finally {
+          setIsLoading(false);
+        }
+      };
       uploadCoverImage();
     }
-  }, [formData.coverImage, userId]);  // Listen to changes in coverImage
+  }, [formData.coverImage, userId]);
 
   useEffect(() => {
-    const uploadAvatarImage = async () => {
-      if (!formData) return; // Ensure we have valid form data before uploading
-
-      setIsLoading(true); // Set loading to true when upload starts
-
-      try {
-        await editUserDetails(userId, formData); // Your avatar upload API call
-        toast.success('Avatar Uploaded Successfully');
-
-        // Re-fetch user data to update the avatar image immediately
-        fetchUserData(); // Call fetchUserData to update the state with new avatar image
-
-      } catch (error) {
-        toast.error('Unexpected Error');
-      } finally {
-        setIsLoading(false); // Set loading to false when upload ends
-      }
-    };
-
-    if (formData.avatar) {  // Check if formData.avatarImage is set
+    if (formData.avatar) {
+      const uploadAvatarImage = async () => {
+        setIsLoading(true);
+        try {
+          await editUserDetails(userId, formData);
+          toast.success('Avatar Uploaded Successfully');
+          fetchUserData();
+        } catch (error) {
+          toast.error('Error uploading avatar');
+        } finally {
+          setIsLoading(false);
+        }
+      };
       uploadAvatarImage();
     }
-  }, [formData.avatar, userId]);  // Listen to changes in avatarImage
+  }, [formData.avatar, userId]);
 
   useEffect(() => {
     fetchUserData();
@@ -106,6 +95,8 @@ const UserProfile = () => {
       </div>
     );
   }
+
+  const isCurrentUser = loggedInUser && loggedInUser?.data?.user?._id === userId;
 
   return (
     <div className="w-full bg-[rgb(13,17,20)] overflow-y-scroll no-scrollbar max-h-screen flex flex-col items-center h-screen">
@@ -124,13 +115,12 @@ const UserProfile = () => {
             />
           )}
 
-          {/* Edit Button for Cover Image (appears on hover) */}
-          {isCoverHovering && (
+          {/* Conditionally render edit button and file input for cover image */}
+          {isCurrentUser && isCoverHovering && (
             <div className="absolute inset-0 flex justify-end bg-black bg-opacity-50">
               <label htmlFor="coverImageInput" className="cursor-pointer">
                 <MdOutlineEdit className="text-gray-500 text-2xl" />
               </label>
-              {/* Hidden file input for selecting cover image */}
               <input
                 type="file"
                 id="coverImageInput"
@@ -141,7 +131,6 @@ const UserProfile = () => {
             </div>
           )}
 
-          {/* Show spinner when loading */}
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75">
               <FaSpinner className="animate-spin text-white text-2xl" />
@@ -158,13 +147,12 @@ const UserProfile = () => {
           >
             <img src={userData.avatar} alt="avatar" className="h-24 w-24 rounded-full object-cover" />
 
-            {/* Edit Button for Avatar (appears on hover) */}
-            {isAvatarHovering && (
+            {/* Conditionally render edit button and file input for avatar */}
+            {isCurrentUser && isAvatarHovering && (
               <div className="absolute inset-0 flex justify-end bg-black bg-opacity-0">
                 <label htmlFor="avatarInput" className="cursor-pointer">
                   <MdOutlineEdit className="text-gray-500 text-2xl mr-[5px] mt-[5px]" />
                 </label>
-                {/* Hidden file input for selecting avatar image */}
                 <input
                   type="file"
                   id="avatarInput"

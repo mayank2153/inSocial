@@ -288,7 +288,8 @@ const TwoStepForm = () => {
                 <label className="block text-white">
                   Or Upload Your Own Avatar
                 </label>
-                <div className="relative w-24 h-24 rounded-full overflow-hidden bg-black cursor-pointer mt-2">
+                <div className="relative w-24 h-24 rounded-full overflow-hidden bg-black cursor-pointer mt-2 border-2 border-gray-600
+                ">
                   <label
                     htmlFor="avatar-upload"
                     className="cursor-pointer w-full h-full"
@@ -310,7 +311,7 @@ const TwoStepForm = () => {
                       name="avatar"
                       accept="image/*"
                       onChange={handleChange}
-                      className="hidden"
+                      className="hidden "
                     />
                   </label>
                 </div>
@@ -327,7 +328,8 @@ const TwoStepForm = () => {
               <div className="flex justify-between">
                 <button
                   type="button"
-                  onClick={prevStep}
+                  onCl
+                  ick={prevStep}
                   className="bg-gray-500 w-[100px] h-[40px] text-white rounded-full mt-6 text-lg font-mono hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   Previous

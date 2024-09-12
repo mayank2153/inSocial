@@ -24,6 +24,7 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [ forgetPassword, setForgetPassword ] = useState(false);
     const[Loading, setLoading] = useState(false);
+    
 
     const handleInput = (e) => {
         const name = e.target.name;
@@ -31,15 +32,22 @@ const Login = () => {
         setUser({ ...user, [name]: value });
     };
 
+    const demoLogin = () => {
+        user.email = "demo@demo.com",
+        user.password = "demoUser"
+    }
+
     const handleLogin = async (e) => {
 
         e.preventDefault();
         setLoading(true);
+        
         try {
             
             const response = await axios.post(`${url}users/login`, user, { withCredentials: true });
             dispatch(loginSuccess(response.data));
             setLoading(false);
+            
             navigate('/');
             toast.success(response?.data?.message) // Redirect to the homepage after successful login
         } catch (error) {
@@ -50,6 +58,7 @@ const Login = () => {
                 icon: <AiOutlineCloseCircle />,
             })
             setLoading(false);
+            
             dispatch(loginFailure(error?.response?.data?.message));
             // alert(error.response.data.message || "Login failed");
             setForgetPassword(true);
@@ -125,6 +134,16 @@ const Login = () => {
                             className="w-full bg-blue-500 text-slate-200 py-2 rounded-full hover:bg-blue-700  focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100"
                         >
                             {Loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Login'}
+                        </button>
+                    </div>
+                    <div className="mb-4">
+                        <button
+                            
+                            onClick={demoLogin}
+                            type="submit"
+                            className="w-full bg-blue-500 text-slate-200 py-2 rounded-full hover:bg-blue-700  focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100"
+                        >
+                            demoLogin
                         </button>
                     </div>
                 </form>
