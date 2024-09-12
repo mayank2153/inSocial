@@ -92,7 +92,7 @@ const Login = () => {
                             value={user.email}
                             onChange={handleInput}
                             className="w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
+                            
                         />
                     </div>
                     <div className="mb-4">
@@ -104,7 +104,7 @@ const Login = () => {
                                 value={user.password}
                                 onChange={handleInput}
                                 className="w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                required
+                                
                             />
                             <button
                                 type="button"
