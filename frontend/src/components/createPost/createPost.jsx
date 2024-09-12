@@ -10,7 +10,7 @@ import ClipLoader from 'react-spinners/ClipLoader';
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
-function Previews({ setFormData, initialMedia }) {
+const Previews = ({ setFormData, initialMedia }) => {
     const [files, setFiles] = useState([]);
 
     useEffect(() => {
@@ -31,7 +31,8 @@ function Previews({ setFormData, initialMedia }) {
             })));
             setFormData(prevData => ({
                 ...prevData,
-                media: acceptedFiles[0]
+                media: acceptedFiles[0],
+                removeMedia: false, // Reset removeMedia flag when a new image is dropped
             }));
         },
         onDropRejected: rejectedFiles => {
@@ -43,7 +44,8 @@ function Previews({ setFormData, initialMedia }) {
         setFiles([]);
         setFormData(prevData => ({
             ...prevData,
-            media: null
+            media: null,
+            removeMedia: true, // Set removeMedia flag when deleting an image
         }));
     };
 
@@ -80,7 +82,8 @@ function Previews({ setFormData, initialMedia }) {
             </aside>
         </section>
     );
-}
+};
+
 
 const PostForm = ({ isEdit }) => {
     const [categories, setCategories] = useState([]);
@@ -128,6 +131,7 @@ const PostForm = ({ isEdit }) => {
                         headers: { 'Content-Type': 'application/json' },
                         withCredentials: true
                     });
+                    console.log("data is isEdit?",data)
                     setFormData({
                         category: data.data.category,
                         title: data.data.title,
@@ -162,7 +166,7 @@ const PostForm = ({ isEdit }) => {
         setSelectSize(1);
     };
 
-    const handleSubmit = async e => {
+    const handleSubmit = async (e) => {
         setLoading(true);
         e.preventDefault();
         try {
@@ -175,13 +179,14 @@ const PostForm = ({ isEdit }) => {
                 : await axios.post(`${url}posts/create-post`, data, { withCredentials: true });
             navigate("/");
             setLoading(false);
-            toast.success("Post Created successfully");
+            toast.success("Post created/updated successfully");
         } catch (error) {
             setLoading(false);
-            toast.error("Error creating post");
+            toast.error("Error creating/updating post");
             console.error(error);
         }
     };
+    
 
     return (
         <div className="w-full flex justify-center lg:py-8 bg-[#13181d] min-h-[100vh] overflow-y-scroll no-scrollbar">
