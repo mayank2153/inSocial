@@ -23,7 +23,6 @@ const UserProfile = () => {
 
   // Get the logged-in user from Redux store (assuming you store user data there)
   const loggedInUser = useSelector((state) => state.auth.user); 
-  console.log(loggedInUser) // Adjust according to your Redux state structure
 
   const fetchUserData = async () => {
     try {
