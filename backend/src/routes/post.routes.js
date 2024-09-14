@@ -15,7 +15,11 @@ postRouter.route("/create-post").post(verifyJWT,
 );
 
 postRouter.route("/delete-post/:postId").post(verifyJWT,deletePost);
-postRouter.route("/update-post/:postId").post(updatePost);
+postRouter.route("/update-post/:postId").post(verifyJWT,
+    upload.fields([{
+        name: "media",
+        maxCount: 1
+    }]),updatePost);
 postRouter.route("/user/:userId").get(verifyJWT,getPostsByUser);
 postRouter.route("/AllPosts").get(verifyJWT,fetchPosts);
 postRouter.route("/getPost/:postId").get(verifyJWT,getPostById);

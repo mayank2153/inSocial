@@ -6,7 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { User } from "../models/user.model.js"
 import {Category} from "../models/category.model.js"
-
+import mongoose from "mongoose"
 
 
 const createNewPost = asyncHandler(async (req, res) => {
@@ -58,7 +58,8 @@ const createNewPost = asyncHandler(async (req, res) => {
 
 const updatePost = asyncHandler(async (req, res) => {
     const { postId } = req.params;
-    const { title, description, category } = req.body;
+    const { title, description, category,removeMedia } = req.body;
+    // console.log( media)
     // Check valid input
     if ([title, description, category].some(field => field && field.trim() === "")) {
         throw new ApiError(400, "Please provide necessary details");
@@ -72,7 +73,7 @@ const updatePost = asyncHandler(async (req, res) => {
     if (removeMedia === true) {
         post.media = null; // Remove the media from the post
     }
-
+    console.log("req.files:",req.files)
     // Update media if present
     if (req.files && Array.isArray(req.files.media) && req.files.media.length > 0) {
         const mediaLocalPath = req.files.media[0].path;
@@ -91,7 +92,9 @@ const updatePost = asyncHandler(async (req, res) => {
         post.description = description;
     }
     if (category) {
-        const existingCategory = await Category.findOne({ name: category });
+        const existingCategory = mongoose.Types.ObjectId.isValid(category)
+        ? await Category.findById(category) // If valid ObjectId, fetch by ID
+        : await Category.findOne({ name: category }); // Else, fetch by name
         if (!existingCategory) {
             throw new ApiError(400, "Category does not exist");
         }

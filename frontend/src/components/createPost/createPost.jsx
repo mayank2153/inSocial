@@ -100,6 +100,7 @@ const PostForm = ({ isEdit }) => {
         description: "",
         owner: "",
         media: null,
+        removeMedia: false
     });
 
     useEffect(() => {
@@ -174,8 +175,14 @@ const PostForm = ({ isEdit }) => {
             Object.keys(formData).forEach(key => {
                 data.append(key, formData[key]);
             });
+            console.log(formData)
             const response = isEdit
-                ? await axios.post(`${url}posts/update-post/${postId}`, formData, { withCredentials: true })
+                ? await axios.post(`${url}posts/update-post/${postId}`, formData, { 
+                    headers: {
+                        "Content-Type": "multipart/form-data", 
+                    },
+                    withCredentials: true 
+                })
                 : await axios.post(`${url}posts/create-post`, data, { withCredentials: true });
             navigate("/");
             setLoading(false);
@@ -193,7 +200,7 @@ const PostForm = ({ isEdit }) => {
             <div className="flex flex-col items-center bg-[#0d1114] rounded-2xl max-h-[100vh] text-white px-6 py-5 md:px-10 md:py-8 gap-4 w-full max-w-[600px]">
                 <h1 className="text-2xl md:text-3xl">{isEdit ? "Edit Post" : "Create Post"}</h1>
                 <div>
-                    <form onSubmit={handleSubmit} className="flex flex-col text-lg md:text-2xl gap-6 md:gap-8 w-full">
+                    <form onSubmit={handleSubmit} encType="multipart/form-data" className="flex flex-col text-lg md:text-2xl gap-6 md:gap-8 w-full">
                         <div className='lg:max-h-20 overflow-auto no-scrollbar max-h-20'>
                             <select 
                                 name="category" 
