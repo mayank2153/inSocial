@@ -54,7 +54,7 @@ const PostPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center bg-[#0d1114] h-screen max-h-[100vh] overflow-y-scroll no-scrollbar py-10  w-full   min-w-[200px] break-words max-w-[880px]">
+    <div className="flex flex-col items-center bg-[#0d1114] h-screen max-h-[100vh] overflow-y-scroll no-scrollbar py-10  w-full   min-w-[200px] break-words ">
       <div className="bg-[#0d1114] lg:px-4 px-2 py-2 rounded-2xl w-full flex flex-col items-center">
         <div className="flex bg-[#0d1114]">
           <Link to='/'>
