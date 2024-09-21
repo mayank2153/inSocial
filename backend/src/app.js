@@ -10,6 +10,7 @@ import "./middlewares/discordauth.middleware.js";
 import { sendMessage, getMessages } from './controllers/message.controller.js'; // Assuming you have these controllers
 import { Notification } from './models/notification.model.js';
 
+import "./middlewares/googleauth.middleware.js";
 // Initialize the Express app and HTTP server
 const app = express();
 const server = createServer(app); // Create an HTTP server

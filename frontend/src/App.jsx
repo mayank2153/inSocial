@@ -26,7 +26,7 @@ import Notifications from './components/notification/notifications.jsx';
 import VerifyEmail from './components/Signup/verifyEmail.jsx';
 import VerifyNewEmail from './components/settings/verifyChangeEmail.jsx';
 import ContactUs from './components/contactUs/contactUs.jsx';
-
+import GoogleRedirectHandler from './components/redirect/redirectHandler.jsx';
 
 
 function Layout() {
@@ -86,6 +86,10 @@ const appRouting = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/redirect",
+    element: <GoogleRedirectHandler />,
   },
   {
     path: "/register",
