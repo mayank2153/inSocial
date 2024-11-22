@@ -35,6 +35,12 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
           socket.connect();
         }
     }
+    if(socket){
+      socket.on('receiveLike', (data) => {
+        console.log(data);
+        setVoteNumber(voteNumber + 1);
+      });
+    }
   }, [socket]);
 
 
@@ -46,7 +52,15 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
       }
     }
   }, [currentUser, votes]);
-
+  useEffect(()=>{
+    console.log("socket")
+    if(socket){
+      socket.on('receiveLike', (data) => {
+        console.log(data);
+        setVoteNumber(voteNumber + 1);
+      });
+    }
+  },[socket,voteNumber])
   const handleVote = async (voteType) => {
     if (userVote) {
       // If the user is clicking the same vote type again, remove the vote
@@ -75,7 +89,7 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
               receiver: owner,
               type: 'like'
             };
-            
+            console.log("emited")
             socket.emit('likePost', emitData);
             
             

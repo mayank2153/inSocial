@@ -124,8 +124,11 @@ io.on('connection', (socket) => {
                 postId: data.postId,
                 receiver: data.receiver
             };
+            console.log('Notification data:', notificationData);
             const savedNotification = await Notification.create(notificationData);
             io.emit('notification', notificationData);
+            io.to(data.receiver).emit('receiveLike',notificationData);
+            
         } catch (error) {
             console.error('Error processing like post notification:', error);
             socket.emit('error', { message: 'Error processing like post notification' });
