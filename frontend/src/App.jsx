@@ -80,7 +80,7 @@ const appRouting = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/landing",
+    path: "/",
     element: <LandingPageComponent />,
   },
   {
