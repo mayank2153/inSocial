@@ -1,33 +1,31 @@
-import React from 'react';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-import Header from './components/header.jsx';
-import Login from './components/Login/login.jsx';
-import { Provider } from 'react-redux';
-import { store, persistor } from './utils/store.jsx'; // Corrected import
-import MultiStepForm from './components/Signup/multistepForm.jsx';
-import ShowCategories from './components/category/category.jsx';
-import HomePage from './components/homepage/homepage.jsx';
-import PostPage from './components/homepage/postPage/postPage.jsx';
-import CreatePost from './components/createPost/createPost.jsx';
-import PostByCategory from './components/homepage/postByCategory/postByCategory.jsx';
-import CategoryPage from './components/category/categoryPage.jsx';
-import ProtectedRoute from './components/ProtectedRoute.jsx';
-import UserProfile from './components/userProfile/userprofile.jsx';
-import SearchResults from './components/searchResults/searchResults.jsx';
-import EditPost from './components/homepage/editPost/editPost.jsx';
-import Right from './components/right/right.jsx';
-import { PersistGate } from 'redux-persist/integration/react';
-import ChangeCurrentPassword from './components/settings/ChangeCurrentPassword.jsx';
-import ForgetPassword from './components/ForgetPassword/ForgetPassword.jsx';
-import ResetPassword from './components/ForgetPassword/resetPassword.jsx';
-import ChangeCurrentEmail from './components/settings/ChangeCurrentEmail.jsx';
-import { useState } from 'react';
-import Notifications from './components/notification/notifications.jsx';
-import VerifyEmail from './components/Signup/verifyEmail.jsx';
-import VerifyNewEmail from './components/settings/verifyChangeEmail.jsx';
-import ContactUs from './components/contactUs/contactUs.jsx';
-
-
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import Header from "./components/header.jsx";
+import Login from "./components/Login/login.jsx";
+import { Provider } from "react-redux";
+import { store, persistor } from "./utils/store.jsx"; // Corrected import
+import MultiStepForm from "./components/Signup/multistepForm.jsx";
+import ShowCategories from "./components/category/category.jsx";
+import HomePage from "./components/homepage/homepage.jsx";
+import PostPage from "./components/homepage/postPage/postPage.jsx";
+import CreatePost from "./components/createPost/createPost.jsx";
+import PostByCategory from "./components/homepage/postByCategory/postByCategory.jsx";
+import CategoryPage from "./components/category/categoryPage.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import UserProfile from "./components/userProfile/userprofile.jsx";
+import SearchResults from "./components/searchResults/searchResults.jsx";
+import EditPost from "./components/homepage/editPost/editPost.jsx";
+import Right from "./components/right/right.jsx";
+import { PersistGate } from "redux-persist/integration/react";
+import ChangeCurrentPassword from "./components/settings/ChangeCurrentPassword.jsx";
+import ForgetPassword from "./components/ForgetPassword/ForgetPassword.jsx";
+import ResetPassword from "./components/ForgetPassword/resetPassword.jsx";
+import ChangeCurrentEmail from "./components/settings/ChangeCurrentEmail.jsx";
+import { useState } from "react";
+import Notifications from "./components/notification/notifications.jsx";
+import VerifyEmail from "./components/Signup/verifyEmail.jsx";
+import VerifyNewEmail from "./components/settings/verifyChangeEmail.jsx";
+import ContactUs from "./components/contactUs/contactUs.jsx";
+import LandingPageComponent from "./components/landingPage/landingPage.jsx";
 
 function Layout() {
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
@@ -53,7 +51,6 @@ function Layout() {
           <ShowCategories hideCategories={hideCategories} />
         </div>
 
-
         {/* Main content section, hide when categories are visible on mobile */}
         <div
           className={`flex-grow ${
@@ -77,15 +74,14 @@ function Layout() {
   );
 }
 
-
-
-
-
-
 const appRouting = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/",
+    element: <LandingPageComponent />,
   },
   {
     path: "/register",
@@ -101,7 +97,7 @@ const appRouting = createBrowserRouter([
   },
   {
     path: "/contact-us",
-    element: <ContactUs />
+    element: <ContactUs />,
   },
   {
     path: "/change-current-email",
