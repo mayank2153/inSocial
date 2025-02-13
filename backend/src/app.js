@@ -89,7 +89,9 @@ app.use(errorHandler);
 app.get("/", (req, res) => {
     res.send("WHISPERHUB");
 });
-
+app.get("/health", (req, res) => {
+    res.send("OK");
+})
 // Socket.io Connection
 io.on('connection', (socket) => {
 
