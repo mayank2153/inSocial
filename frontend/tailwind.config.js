@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',
@@ -8,12 +8,8 @@ module.exports = {
     extend: {
       keyframes: {
         shimmerAnimation: {
-          '0%': {
-            backgroundPosition: '-500px 0',
-          },
-          '100%': {
-            backgroundPosition: '500px 0',
-          },
+          '0%': { backgroundPosition: '-500px 0' },
+          '100%': { backgroundPosition: '500px 0' },
         },
       },
       animation: {
