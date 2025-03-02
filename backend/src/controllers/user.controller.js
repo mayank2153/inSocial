@@ -190,13 +190,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .status(200)
       .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", newrefreshToken, options)
-      .json(
-        new ApiResponse(
-          200,
-          { accessToken, refreshToken: newrefreshToken },
-          "Acccess token Refreshed",
-        ),
-      );
+      .json(new ApiResponse(200, "Acccess token Refreshed"));
   } catch (error) {
     throw new ApiError(401, error?.message || "Invalid access token");
   }
@@ -262,6 +256,14 @@ const removeLikedCategory = asyncHandler(async (req, res) => {
     );
 });
 
+/**
+ * @description Used to fetch user by userID
+ *
+ * @param {String} userId
+ * @returns {Object} user
+ *
+ * @author RahulBhardwaj
+ */
 const getUserById = asyncHandler(async (req, res) => {
   const { userId } = req.params;
 
@@ -277,6 +279,14 @@ const getUserById = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @description Used to update the current password of the user
+ *
+ * @param {string} userId
+ * takes current password and new password as input
+ *
+ * @author RahulBhardwaj
+ */
 const updateCurrentPassword = asyncHandler(async (req, res) => {
   const { userId } = req.params;
   const { currentPassword, newPassword } = req.body;
@@ -292,89 +302,85 @@ const updateCurrentPassword = asyncHandler(async (req, res) => {
   if (!isPasswordCorrect) {
     throw new ApiError(400, "Incorrect old currentPassword");
   }
+
   user.password = newPassword;
 
   await user.save({ validateBeforeSave: false });
 
-  const mailResponsne = await mailSender(
-    user.email,
-    "Password Successfully Changed",
-    PasswordSuccessfullyChanged(),
-  );
   return res
     .status(200)
     .json(new ApiResponse(200, {}, "Password updated successfully"));
 });
 
-const UploadCoverImage = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+// const UploadCoverImage = asyncHandler(async (req, res) => {
+//   const { userId } = req.params;
 
-  // Check if cover image exists in the request
-  const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+//   // Check if cover image exists in the request
+//   const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
 
-  if (!coverImageLocalPath) {
-    throw new ApiError(404, "Cover Image not found");
-  }
+//   if (!coverImageLocalPath) {
+//     throw new ApiError(404, "Cover Image not found");
+//   }
 
-  // Find the user by ID
-  const user = await User.findById(userId);
-  if (!user) {
-    throw new ApiError(404, "User Not Found");
-  }
+//   // Find the user by ID
+//   const user = await User.findById(userId);
+//   if (!user) {
+//     throw new ApiError(404, "User Not Found");
+//   }
 
-  // Upload image to Cloudinary
-  let coverImage;
-  if (coverImageLocalPath) {
-    coverImage = await uploadOnCloudinary(coverImageLocalPath);
-    if (!coverImage) {
-      throw new ApiError(500, "Failed to upload cover image."); // Changed status code to 500 for server error
-    }
-  }
+//   // Upload image to Cloudinary
+//   let coverImage;
+//   if (coverImageLocalPath) {
+//     coverImage = await uploadOnCloudinary(coverImageLocalPath);
+//     if (!coverImage) {
+//       throw new ApiError(500, "Failed to upload cover image."); // Changed status code to 500 for server error
+//     }
+//   }
 
-  // Update user document with the new cover image URL
-  user.coverImage = coverImage.secure_url;
-  await user.save();
+//   // Update user document with the new cover image URL
+//   user.coverImage = coverImage.secure_url;
+//   await user.save();
 
-  // Return success response
-  return res
-    .status(200)
-    .json(new ApiResponse(200, user, "Cover Image uploaded successfully"));
-});
+//   // Return success response
+//   return res
+//     .status(200)
+//     .json(new ApiResponse(200, user, "Cover Image uploaded successfully"));
+// });
 
-const EditAvatar = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+// const EditAvatar = asyncHandler(async (req, res) => {
+//   const { userId } = req.params;
 
-  // Check if cover image exists in the request
-  const avatarLocalPath = req.files?.avatar?.[0]?.path;
+//   // Check if cover image exists in the request
+//   const avatarLocalPath = req.files?.avatar?.[0]?.path;
 
-  if (!avatarLocalPath) {
-    throw new ApiError(404, "Avatar not found");
-  }
+//   if (!avatarLocalPath) {
+//     throw new ApiError(404, "Avatar not found");
+//   }
 
-  // Find the user by ID
-  const user = await User.findById(userId);
-  if (!user) {
-    throw new ApiError(404, "User Not Found");
-  }
+//   // Find the user by ID
+//   const user = await User.findById(userId);
+//   if (!user) {
+//     throw new ApiError(404, "User Not Found");
+//   }
 
-  // Upload image to Cloudinary
-  let avatar;
-  if (avatarLocalPath) {
-    avatar = await uploadOnCloudinary(avatarLocalPath);
-    if (!avatar) {
-      throw new ApiError(500, "Failed to upload Avatar."); // Changed status code to 500 for server error
-    }
-  }
+//   // Upload image to Cloudinary
+//   let avatar;
+//   if (avatarLocalPath) {
+//     avatar = await uploadOnCloudinary(avatarLocalPath);
+//     if (!avatar) {
+//       throw new ApiError(500, "Failed to upload Avatar."); // Changed status code to 500 for server error
+//     }
+//   }
 
-  // Update user document with the new cover image URL
-  user.avatar = avatar.secure_url;
-  await user.save();
+//   // Update user document with the new cover image URL
+//   user.avatar = avatar.secure_url;
+//   await user.save();
 
-  // Return success response
-  return res
-    .status(200)
-    .json(new ApiResponse(200, user, "Avatar uploaded successfully"));
-});
+//   // Return success response
+//   return res
+//     .status(200)
+//     .json(new ApiResponse(200, user, "Avatar uploaded successfully"));
+// });
 
 const ChangeCurrentEmail = asyncHandler(async (req, res) => {
   const { userId } = req.params;
@@ -418,28 +424,23 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
 const forgetPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
-  // Finding the user by email
   const user = await User.findOne({ email });
 
-  // If user is not found, throw an error
   if (!user) {
     throw new ApiError(404, "User not found");
   }
 
-  // Generate access token
   const { accessToken } = await generateAccessAndRefereshTokens(user._id);
-  // Check if access token was generated successfully
   if (!accessToken) {
     throw new ApiError(500, "Failed to generate access token");
   }
 
-  // Construct the reset link
   const resetlink = `${process.env.CLIENT_URL}reset-password/${accessToken}`;
   user.resetlink = accessToken;
   await user.save({ validateBeforeSave: false });
 
   try {
-    const mailContent = await mailSender(
+    await mailSender(
       email,
       "Password Reset Link",
       PasswordResetTemplate(resetlink),
