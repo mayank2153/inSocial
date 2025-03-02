@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "nodemon -r dotenv/config src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format" : "prettier --write ./src/**/*.{js,jsx,json,md}"
   },
   "author": "",
   "license": "ISC",
@@ -30,6 +31,7 @@
     "passport-discord": "^0.1.4",
     "passport-google-oauth20": "^2.0.0",
     "passport-oauth2": "^1.8.0",
+    "prettier": "^3.5.2",
     "socket.io": "^4.7.5",
     "zod": "^3.24.2"
   },

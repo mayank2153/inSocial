@@ -28,7 +28,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
   } catch (error) {
     throw new ApiError(
       500,
-      "something went wrong while generating refresh and access tokens"
+      "something went wrong while generating refresh and access tokens",
     );
   }
 };
@@ -43,6 +43,7 @@ const generateAccessAndRefereshTokens = async (userId) => {
  *
  * @author RahulBhardwaj
  */
+
 const registerUser = asyncHandler(async (req, res, next) => {
   const isValidData = RegisterValidator.safeParse(req.body);
   if (!isValidData.success) {
@@ -56,20 +57,6 @@ const registerUser = asyncHandler(async (req, res, next) => {
   });
 
   await registeredUser.save();
-
-  const jwtToken = jwt.sign(
-    { email: registerUser.email, id: registerUser._id },
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" }
-  );
-
-  const confirmationLink = `${process.env.CLIENT_URL}/verify-email/${jwtToken}`;
-
-  await mailSender(
-    registerUser.email,
-    "Email Confirmation",
-    EmailConfirmationTemplate(confirmationLink)
-  );
 
   return res
     .status(201)
@@ -100,63 +87,45 @@ const loginUser = asyncHandler(async (req, res) => {
   }).lean();
 
   if (!existedUser) {
-    throw new ApiError(400, "User doesnot exist");
+    res.status(404).json(new ApiResponse(404, "User not found"));
+    return;
   }
 
   const isPasswordValid = await existedUser.isPasswordCorrect(password);
 
   if (!isPasswordValid) {
-    throw new ApiError(401, "Invalid User Credentials");
+    res.status(401).json(new ApiResponse(401, "Invalid Password"));
+    return;
   }
 
   const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
-    existedUser._id
+    existedUser._id,
   );
 
   const loggedInUser = await User.findById(existedUser._id).select(
-    "-password -refreshToken"
+    "-password -refreshToken",
   );
 
-  const options = {
+  const accessTokenoptions = {
     httpOnly: true,
     maxAge: 15 * 60 * 1000,
     sameSite: "none",
     secure: true,
   };
 
+  const refreshTokenOptions = {
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    sameSite: "none",
+    secure: true,
+  };
+
   return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, accessTokenoptions)
+    .cookie("refreshToken", refreshToken, refreshTokenOptions)
     .json(new ApiResponse(200, "User loggedIn successfully"));
 });
-
-// const handleGoogleLogin = async (user, res) => {
-//   try {
-//     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
-//       user._id
-//     );
-
-//     const loggedInUser = await User.findById(user._id).select(
-//       "-password -refreshToken"
-//     );
-
-//     const options = {
-//       httpOnly: true,
-//     };
-
-//     res.cookie("accessToken", accessToken, options);
-//     res.cookie("refreshToken", refreshToken, options);
-
-//     // Include the isGoogleAuth flag in the redirect URL
-//     res.redirect(
-//       `${process.env.CORS_ORIGIN}/redirect?userId=${user._id}&isGoogleAuth=true`
-//     );
-//   } catch (error) {
-//     console.error("Error handling Google login:", error);
-//     res.redirect("/login"); // Redirect to login on error
-//   }
-// };
 
 /**
  * @description for logging out user clears tokens from cookies
@@ -173,7 +142,7 @@ const logOutUser = asyncHandler(async (req, res) => {
     },
     {
       new: true,
-    }
+    },
   );
 
   const options = {
@@ -198,7 +167,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   try {
     const decodedToken = jwt.verify(
       incomingRefreshtoken,
-      process.env.REFRESH_TOKEN_SECRET
+      process.env.REFRESH_TOKEN_SECRET,
     );
 
     const user = User.findById(decodedToken?._id);
@@ -225,8 +194,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         new ApiResponse(
           200,
           { accessToken, refreshToken: newrefreshToken },
-          "Acccess token Refreshed"
-        )
+          "Acccess token Refreshed",
+        ),
       );
   } catch (error) {
     throw new ApiError(401, error?.message || "Invalid access token");
@@ -264,8 +233,8 @@ const addLikedCategories = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         user.likedCategories,
-        "Categories added to liked categories"
-      )
+        "Categories added to liked categories",
+      ),
     );
 });
 
@@ -288,8 +257,8 @@ const removeLikedCategory = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         user.likedCategories,
-        "Category removed from liked categories"
-      )
+        "Category removed from liked categories",
+      ),
     );
 });
 
@@ -330,7 +299,7 @@ const updateCurrentPassword = asyncHandler(async (req, res) => {
   const mailResponsne = await mailSender(
     user.email,
     "Password Successfully Changed",
-    PasswordSuccessfullyChanged()
+    PasswordSuccessfullyChanged(),
   );
   return res
     .status(200)
@@ -434,7 +403,7 @@ const ChangeCurrentEmail = asyncHandler(async (req, res) => {
     await user.save();
 
     const currentUser = await User.findById(userId).select(
-      "-password -refreshToken"
+      "-password -refreshToken",
     );
 
     return res
@@ -473,7 +442,7 @@ const forgetPassword = asyncHandler(async (req, res) => {
     const mailContent = await mailSender(
       email,
       "Password Reset Link",
-      PasswordResetTemplate(resetlink)
+      PasswordResetTemplate(resetlink),
     );
   } catch (error) {
     throw new ApiError(404, "Unexpected Error");
@@ -500,7 +469,7 @@ const resetPassword = asyncHandler(async (req, res) => {
         password: hashedPassword, // Update with hashed password
         resetlink: "",
       },
-      { new: true } // returns the updated document
+      { new: true }, // returns the updated document
     );
 
     if (!user) {
@@ -510,7 +479,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     const mailContent = await mailSender(
       user.email,
       "Password Reset Successful",
-      PasswordSuccessfullyChanged()
+      PasswordSuccessfullyChanged(),
     );
 
     return res

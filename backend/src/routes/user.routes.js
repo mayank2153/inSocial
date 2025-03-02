@@ -57,7 +57,7 @@ userRouter.route("/upload-cover-image/:userId").post(
       maxCount: 1,
     },
   ]),
-  UploadCoverImage
+  UploadCoverImage,
 );
 
 userRouter.route("/edit-avatar/:userId").post(
@@ -67,7 +67,7 @@ userRouter.route("/edit-avatar/:userId").post(
       maxCount: 1,
     },
   ]),
-  EditAvatar
+  EditAvatar,
 );
 
 userRouter.get("/auth/discord", passport.authenticate("discord"));
@@ -77,7 +77,7 @@ userRouter.get(
   passport.authenticate("discord"),
   (req, res) => {
     res.send("Authentication successfull");
-  }
+  },
 );
 
 export default userRouter;

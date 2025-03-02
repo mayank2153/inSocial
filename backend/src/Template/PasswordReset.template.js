@@ -1,5 +1,5 @@
 const PasswordResetTemplate = (resetLink) => {
-	return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 	<html>
 	
 	<head>

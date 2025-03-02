@@ -1,5 +1,5 @@
 const contactUsTemplate = (name, email, message) => {
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
     <html>
     
     <head>

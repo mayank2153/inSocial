@@ -1,5 +1,5 @@
 const FeedbackAcknowledgmentTemplate = (name) => {
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
     <html>
     
     <head>
