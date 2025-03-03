@@ -567,6 +567,20 @@ const verifyUser = asyncHandler(async (req, res) => {
   }
 });
 
+const CheckUniqueUsername = asyncHandler(async (req, res) => {
+  const { username } = req.body;
+  const existingUser = await User.findOne({
+    userName: username,
+  });
+
+  if (existingUser) {
+    return res
+      .status(400)
+      .json(new ApiResponse(400, false, "Username already exists"));
+  }
+
+  return res.status(200).json(new ApiResponse(200, true, "Username is unique"));
+});
 export {
   registerUser,
   loginUser,
@@ -581,7 +595,6 @@ export {
   forgetPassword,
   resetPassword,
   sendOtp,
-  UploadCoverImage,
-  EditAvatar,
   verifyUser,
+  CheckUniqueUsername,
 };
