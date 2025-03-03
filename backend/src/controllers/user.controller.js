@@ -567,6 +567,14 @@ const verifyUser = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @description Checks if the username is unique
+ * @param {string} username
+ *
+ * @returns {boolean} isUnique
+ *
+ * @author RahulBhardwaj
+ */
 const CheckUniqueUsername = asyncHandler(async (req, res) => {
   const { username } = req.body;
   const existingUser = await User.findOne({
@@ -574,12 +582,10 @@ const CheckUniqueUsername = asyncHandler(async (req, res) => {
   });
 
   if (existingUser) {
-    return res
-      .status(400)
-      .json(new ApiResponse(400, false, "Username already exists"));
+    return false;
   }
 
-  return res.status(200).json(new ApiResponse(200, true, "Username is unique"));
+  return true;
 });
 export {
   registerUser,
