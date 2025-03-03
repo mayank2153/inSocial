@@ -90,6 +90,7 @@ const LikedCategories = () => {
     };
 
     useEffect(() => {
+        console.log("category call in liked")
         if (likedCategories_redux && likedCategories_redux.length > 0) {
             fetchingCategoriesByid();
         }

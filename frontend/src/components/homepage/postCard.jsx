@@ -12,9 +12,9 @@ import { useSocket } from "../context/SocketContext.jsx";
 
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
-const PostCard = ({ title, description, owner, votes, updatedAt, media, comments, category, _id,bgColor="#13181d" }) => {
-  const [ownerDetails, setOwnerDetails] = useState(null);
-  const [categoryDetails, setCategoryDetails] = useState(null);
+const PostCard = ({ title, description, votes, updatedAt, media, comments, _id,bgColor="#13181d",owner,category }) => {
+  const [ownerDetails, setOwnerDetails] = useState(owner);
+  const [categoryDetails, setCategoryDetails] = useState(category);
   const [error, setError] = useState(null);
   const [userVote, setUserVote] = useState(null);
   const [hoveredPost, setHoveredPost] = useState(null);
@@ -109,23 +109,23 @@ const PostCard = ({ title, description, owner, votes, updatedAt, media, comments
     }
   };
 
-  useEffect(() => {
-    const fetchDetails = async () => {
-      try {
-        const [ownerResponse, categoryResponse] = await Promise.all([
-          fetchOwnerDetails(owner),
-          fetchCategoryDetails(category)
-        ]);
-        setOwnerDetails(ownerResponse);
-        setCategoryDetails(categoryResponse);
-      } catch (error) {
-        setError('Error fetching details');
-        console.error('Error fetching details:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchDetails = async () => {
+  //     try {
+  //       const [ownerResponse, categoryResponse] = await Promise.all([
+  //         fetchOwnerDetails(owner),
+  //         fetchCategoryDetails(category)
+  //       ]);
+  //       setOwnerDetails(ownerResponse);
+  //       setCategoryDetails(categoryResponse);
+  //     } catch (error) {
+  //       setError('Error fetching details');
+  //       console.error('Error fetching details:', error);
+  //     }
+  //   };
 
-    fetchDetails();
-  }, [owner, category]);
+  //   fetchDetails();
+  // }, [owner, category]);
   if (error) {
     return <div className="error-message">{error}</div>;
   }

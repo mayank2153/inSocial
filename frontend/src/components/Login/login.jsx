@@ -4,8 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess, loginFailure } from "../../utils/authslice.jsx";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { FaGoogle } from "react-icons/fa";
-import { notifyError } from "../../utils/notifications.jsx";
 import logo from "../../assets/images/logo.jpg"
 import logo_img_black from "../../assets/images/logo_img_black.png"
 import toast from "react-hot-toast";
@@ -32,10 +30,6 @@ const Login = () => {
         setUser({ ...user, [name]: value });
     };
 
-    const demoLogin = () => {
-        user.email = "demo@demo.com",
-        user.password = "demoUser"
-    }
 
     const handleLogin = async (e) => {
 
@@ -74,86 +68,97 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center  flex-col lg:flex-row lg:justify-evenly min-h-screen bg-black w-full max-w-screen-2xl px-10">
-            <div className="mt-14 hidden lg:block">
-                <img src={logo} alt="logo.png"/>
-            </div>
-            <div className="mt-10 block lg:hidden w-20 mb-20">
-                <img src={logo_img_black} alt="logo.png"/>
-            </div>
-            <div className="bg-black  mr-0 w-full max-w-md">
-                <h2 className="text-5xl text-center text-white mb-6">Login</h2>
+        <div className="flex items-center  flex-col lg:flex-row lg:justify-evenly min-h-screen  w-full ">
+        <div className="bg-[#1e1e1e] h-screen  mr-0 max-w-full w-[70%] flex flex-col justify-center">
+            {/* <div>
+                <img src={logo_img_black}></img>
+            </div> */}
+                <div className="w-[500px] ml-40">
+                <h2 className="text-3xl text-left text-white mb-6">Sign In</h2>
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">
-                        <label className="block text-xl text-white pl-4 pb-1">Email</label>
+                        <label className="block text-md text-[#EDEDED]  pb-1">Enter your username or email address</label>
                         <input
                             type="email"
                             name="email"
                             value={user.email}
                             onChange={handleInput}
-                            className="w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 text-[#BDBDBD]  rounded-md bg-[#1e1e1e]  focus:outline-none border border-[#BDBDBD]"
                             
                         />
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-white  text-xl pl-4 pb-1">Password</label>
+                    <div className="mb-6">
+                        <label className="block text-[#EDEDED]  text-md pb-1">Password</label>
                         <div className="relative">
                             <input
                                 type={showPassword ? "text" : "password"}
                                 name="password"
                                 value={user.password}
                                 onChange={handleInput}
-                                className="w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 text-[#BDBDBD]  rounded-md bg-[#1e1e1e]  focus:outline-none border border-[#BDBDBD]"
                                 
                             />
                             <button
                                 type="button"
                                 onClick={togglePasswordVisibility}
-                                className="absolute inset-y-0 right-0 px-3 py-2 focus:outline-none"
+                                className="absolute inset-y-0 right-0 px-3 py-2 focus:outline-none text-[#BDBDBD]"
                             >
                                 {showPassword ? <FaEyeSlash size={22} /> : <FaEye size={22}/>}
                             </button>
                             
                         </div>
-                        { forgetPassword && 
+                        <div className="flex justify-end mt-2">
+                            { forgetPassword && 
                             <div>
                             <Link to="/Forget-Password">
-                            <span className=" pl-4 text-sm font-sans pt-1 hover:cursor-pointer text-red-400 hover:text-red-600 transition-all duration-300">
+                            <span className="   text-right w-full text-sm font-sans pt-1 hover:cursor-pointer text-red-400 hover:text-red-600 transition-all duration-300">
                                 forget Password?
                             </span>
                             </Link>
                             
-                        </div>
+                            </div>
                             
-                        }
+                            }
+                        </div>
                         
                     </div>
-                    <div className="mb-4">
+                    <div className="space-y-4 mb-4">
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-slate-200 py-2 rounded-full hover:bg-blue-700  focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100"
+                            className="w-full bg-[#7F3FBF] text-slate-200 py-2 rounded-md hover:bg-[#6b30a7]  focus:outline-none  font-semibold duration-200"
                         >
-                            {Loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Login'}
+                            {Loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Sign In'}
                         </button>
-                    </div>
-                    <div className="mb-4">
+                        <p className="text-[#D9D9D9] text-center w-full">Or</p>
                         <button
-                            
-                            onClick={demoLogin}
                             type="submit"
-                            className="w-full bg-blue-500 text-slate-200 py-2 rounded-full hover:bg-blue-700  focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100"
+                            className="w-full  text-slate-200 py-2 rounded-md    font-semibold duration-200 border border-[#BDBDBD]"
                         >
-                            demoLogin
+                            
+                            <div className="flex justify-center items-center gap-2 text-[#D9D9D9]">
+                                <img src="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1740912973/google_1_ws7mje.svg" className="h-6">
+                            </img>
+                            <p>Sign In With Google</p>
+                                </div>
+                        
                         </button>
                     </div>
                 </form>
                 <div className="text-center flex gap-2 justify-center">
-                    <p className="text-slate-300">Don't have an account?</p>
-                    <Link to="/register" className="text-blue-500 hover:underline">
-                        Register
+                    <p className="text-[#D9D9D9]">Don't have an account yet?</p>
+                    <Link to="/register" className="text-[#7F3FBF]  font-semibold">
+                        Sign Up
                     </Link>
                 </div>
+                </div>
             </div>
+            <div className="absolute w-full my-auto right-72 rounded-lg h-full max-w-[500px] max-h-[600px] bg-[#121212] ">
+            </div>
+            <div className="w-[30%] h-screen bg-[#7F3FBF]">
+                  
+            
+                </div>
+            
         </div>
     );
 };
