@@ -17,19 +17,17 @@
 //   const isAuthenticated = useSelector((state) => state?.user?.isAuthenticated);
 //   const userData = useSelector((state) => state.auth.user);
 //   const [isChecked, setIsChecked]= useState(false);
-  
-  
-  
+
 //   const userId = userData?.data.user?userData?.data?.user?._id:userData?.data?._id;
 //   const userProfileImage = userData?.data.user?userData?.data?.user?.avatar:userData?.data?.avatar;
 //   const userName = userData?.data?.user?userData?.data?.user?.userName:userData?.data?.userName;
-    
+
 //   const userLogOut = async() => {
 //     setIsChecked(true);
 //     await UserLogout(userData, dispatch);
 //     setIsChecked(false)
 //     toast.success('User successfully logged out')
-//   } 
+//   }
 
 //   if(isChecked){
 //     return (
@@ -45,31 +43,31 @@
 //         <img src={userProfileImage} alt="User Profile" className="w-12 h-12 rounded-full mr-1"/>
 //         <div>
 //         <Link to={`/UserProfile/${userId}`}>
-//           <span 
+//           <span
 //           onClick={() => {setIsProfileOpen(false)}}
 //           className="flex cursor-pointer items-center text-slate-300 font-mono text-xl transition-all duration-300 hover:underline pl-2"> View Profile</span>
 //         </Link>
 //         <span className="text-sm text-slate-400 mt-0 hover:text-slate-200 transition-all duration-300 hover:underline">{userName}</span>
 //         </div>
-        
+
 //       </div>
 //       <div className="mb-2 ml-9 mt-6">
-//         <span 
+//         <span
 //         onClick={() => {setIsProfileOpen(false)}}
 //         className="flex  text-slate-300 cursor-pointer items-center font-mono text-xl transition-all duration-300 hover:underline"><FaEdit className="mr-6 text-white "size={20} /> Edit Profile</span>
 //       </div>
 //       <div className="ml-8 my-6">
-//         <button 
+//         <button
 //           onClick={userLogOut}
 //         >
-//         <span 
+//         <span
 //         onClick={() => {setIsProfileOpen(false)}}
 //         className="flex text-slate-300  cursor-pointer items-center font-mono text-xl transition-all duration-300 hover:underline"><MdExitToApp className="mr-6 text-white" size={23} /> Logout</span>
 //         </button>
-        
+
 //       </div>
 //     </div>
-//   ) 
+//   )
 // }
 
 // export default ProfilePage;

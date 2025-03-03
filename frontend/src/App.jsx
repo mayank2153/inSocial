@@ -27,8 +27,6 @@ import VerifyEmail from './components/Signup/verifyEmail.jsx';
 import VerifyNewEmail from './components/settings/verifyChangeEmail.jsx';
 import ContactUs from './components/contactUs/contactUs.jsx';
 
-
-
 function Layout() {
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
 
@@ -47,17 +45,16 @@ function Layout() {
         {/* Categories section, visible by default on large screens */}
         <div
           className={`lg:block ${
-            isCategoriesVisible ? "block" : "hidden"
+            isCategoriesVisible ? 'block' : 'hidden'
           } lg:w-1/4 lg:max-w-xs h-full lg:h-auto overflow-y-auto lg:overflow-y-visible bg-[#0d1114]`}
         >
           <ShowCategories hideCategories={hideCategories} />
         </div>
 
-
         {/* Main content section, hide when categories are visible on mobile */}
         <div
           className={`flex-grow ${
-            isCategoriesVisible ? "hidden" : "block"
+            isCategoriesVisible ? 'hidden' : 'block'
           } lg:block overflow-y-auto h-full`}
         >
           <Outlet />
@@ -77,30 +74,29 @@ function Layout() {
   );
 }
 
-
 const appRouting = createBrowserRouter([
   {
-    path: "/login",
+    path: '/login',
     element: <Login />,
   },
   {
-    path: "/register",
+    path: '/register',
     element: <MultiStepForm />,
   },
   {
-    path: "/verifyEmail",
+    path: '/verifyEmail',
     element: <VerifyEmail />,
   },
   {
-    path: "/Forget-Password",
+    path: '/Forget-Password',
     element: <ForgetPassword />,
   },
   {
-    path: "/contact-us",
-    element: <ContactUs />
+    path: '/contact-us',
+    element: <ContactUs />,
   },
   {
-    path: "/change-current-email",
+    path: '/change-current-email',
     element: (
       <ProtectedRoute>
         <ChangeCurrentEmail />
@@ -108,7 +104,7 @@ const appRouting = createBrowserRouter([
     ),
   },
   {
-    path: "/change-current-email/verify-otp",
+    path: '/change-current-email/verify-otp',
     element: (
       <ProtectedRoute>
         <VerifyNewEmail />
@@ -116,11 +112,11 @@ const appRouting = createBrowserRouter([
     ),
   },
   {
-    path: "/reset-password/:accessToken",
+    path: '/reset-password/:accessToken',
     element: <ResetPassword />,
   },
   {
-    path: "/",
+    path: '/',
     element: (
       <ProtectedRoute>
         <Layout />
@@ -128,43 +124,43 @@ const appRouting = createBrowserRouter([
     ),
     children: [
       {
-        path: "/",
+        path: '/',
         element: <HomePage />,
       },
       {
-        path: "/registerCategory",
+        path: '/registerCategory',
         element: <CategoryPage />,
       },
       {
-        path: "/post/:postId",
+        path: '/post/:postId',
         element: <PostPage />,
       },
       {
-        path: "/createPost",
+        path: '/createPost',
         element: <CreatePost />,
       },
       {
-        path: "posts/category/:categoryId",
+        path: 'posts/category/:categoryId',
         element: <PostByCategory />,
       },
       {
-        path: "/UserProfile/:userId",
+        path: '/UserProfile/:userId',
         element: <UserProfile />,
       },
       {
-        path: "/searchresults",
+        path: '/searchresults',
         element: <SearchResults />,
       },
       {
-        path: "/post/edit-post/:postId",
+        path: '/post/edit-post/:postId',
         element: <EditPost />,
       },
       {
-        path: "/Update-current-password",
+        path: '/Update-current-password',
         element: <ChangeCurrentPassword />,
       },
       {
-        path: "/notification/:userId",
+        path: '/notification/:userId',
         element: <Notifications />,
       },
     ],

@@ -6,7 +6,7 @@ export const fetchCategoryDetails = async (categoryId) => {
   try {
     const response = await axios.get(`${url}category/category/${categoryId}`, {
       headers: { 'Content-Type': 'application/json' },
-      withCredentials: true
+      withCredentials: true,
     });
     return response.data.data;
   } catch (error) {

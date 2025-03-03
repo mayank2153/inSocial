@@ -1,19 +1,19 @@
-import { useState } from "react";
-import axios from "axios";
-import { resetPassword } from "../../api/resetPassword";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import ClipLoader from "react-spinners/ClipLoader";
+import { useState } from 'react';
+import axios from 'axios';
+import { resetPassword } from '../../api/resetPassword';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 const ResetPassword = () => {
-  const url = import.meta.env.VITE_BASE_URL || "http://localhost:8000/";
+  const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
   const navigate = useNavigate();
   // Extract the reset token from the URL
-  const resetToken = window.location.href.split("/")[4];
+  const resetToken = window.location.href.split('/')[4];
   const [Loading, setLoading] = useState(false);
   const [reset, setReset] = useState({
-    password: "",
-    newPassword: "",
+    password: '',
+    newPassword: '',
     resetlink: resetToken, // Correctly initialize with the extracted token
   });
 
@@ -29,34 +29,39 @@ const ResetPassword = () => {
     setLoading(true);
     // Check if passwords match
     if (reset.password !== reset.newPassword) {
-      alert("New password and confirm password must be the same");
+      alert('New password and confirm password must be the same');
       return;
     }
 
     try {
-      
-
       await resetPassword(reset); // Call the resetPassword function with the reset object
 
-      
-      setReset({ password: "", newPassword: "", resetlink: resetToken }); // Reset state
+      setReset({ password: '', newPassword: '', resetlink: resetToken }); // Reset state
       setLoading(false);
-      toast.success("Password reset successfully");
-      navigate('/login')
+      toast.success('Password reset successfully');
+      navigate('/login');
     } catch (error) {
-      console.error("There seems to be an error in resetting the password", error);
+      console.error(
+        'There seems to be an error in resetting the password',
+        error,
+      );
       setLoading(false);
-      setReset({ password: "", newPassword: "", resetlink: resetToken }); // Reset state on error
+      setReset({ password: '', newPassword: '', resetlink: resetToken }); // Reset state on error
     }
   };
 
   return (
     <div className="w-full h-[100vh] bg-black">
       <div className="text-center pt-[30vh]">
-        <span className="text-slate-200 text-3xl font-mono">Reset Password</span>
+        <span className="text-slate-200 text-3xl font-mono">
+          Reset Password
+        </span>
       </div>
       <div>
-        <form className="flex flex-col items-center mt-8" onSubmit={handleSubmit}>
+        <form
+          className="flex flex-col items-center mt-8"
+          onSubmit={handleSubmit}
+        >
           <input
             type="password"
             name="password" // Name attribute for state management
@@ -77,7 +82,11 @@ const ResetPassword = () => {
             type="submit" // Changed to submit to handle the form in the onSubmit handler
             className="w-36 bg-blue-500 text-slate-300 py-2 rounded-full mt-4 hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-700 font-semibold duration-100 transition-all duration-300"
           >
-            {Loading ? <ClipLoader color="#ffffff" size={20} className="mt-1" /> : 'Reset Password'}
+            {Loading ? (
+              <ClipLoader color="#ffffff" size={20} className="mt-1" />
+            ) : (
+              'Reset Password'
+            )}
           </button>
         </form>
       </div>

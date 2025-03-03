@@ -1,16 +1,16 @@
-import { useState } from "react";
-import axios from "axios";
-import { useSelector } from "react-redux";
-import { sendOtp } from "../../api/sendOtp";
-import logo from "../../assets/images/logo.jpg";
-import { Link, useNavigate } from "react-router-dom";
-import logo_mini from "../../assets/images/logo_img_black.png"
+import { useState } from 'react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { sendOtp } from '../../api/sendOtp';
+import logo from '../../assets/images/logo.jpg';
+import { Link, useNavigate } from 'react-router-dom';
+import logo_mini from '../../assets/images/logo_img_black.png';
 
 const ChangeCurrentEmail = () => {
   const UserData = useSelector((state) => state.auth.user);
   const userId = UserData?.data?.user?._id;
   const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
-  
+
   const [formData, setFormData] = useState({
     email: '',
     newEmail: '',
@@ -26,14 +26,11 @@ const ChangeCurrentEmail = () => {
   };
 
   const handleSubmit = async () => {
-
-
     try {
       const response = await sendOtp(formData.newEmail, 'emailChange');
-      
 
       // Navigate to verify-otp after successful OTP sending
-      navigate("/change-current-email/verify-otp", {state : formData});
+      navigate('/change-current-email/verify-otp', { state: formData });
     } catch (error) {
       console.error('seems to be a problem while sending otp', error);
     }
@@ -47,7 +44,7 @@ const ChangeCurrentEmail = () => {
       <div className="lg:hidden block h-40 w-40 -ml-36">
         <img src={logo_mini} alt="logo.png" />
       </div>
-      
+
       <div className="bg-black shadow-xl -mt-20 rounded-lg p-8 w-full max-w-md mr-40">
         <div className="text-slate-200 text-center pt-20">
           <h2 className="text-2xl font-mono">Change Email</h2>

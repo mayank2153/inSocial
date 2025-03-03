@@ -1,13 +1,13 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-import authReducer from "./authslice.jsx";
-import postsReducer from "./postsSlice.jsx";
-import likedCategoriesReducer from "./categoryslice.jsx"
-import themeReducer from "./darkmodeSlice";
-import socketReducer from "./socketslice"
-import commentReducer from "./commentsSlice.jsx"
-import notificationReducer from "./notificationSlice.jsx"
+import authReducer from './authslice.jsx';
+import postsReducer from './postsSlice.jsx';
+import likedCategoriesReducer from './categoryslice.jsx';
+import themeReducer from './darkmodeSlice';
+import socketReducer from './socketslice';
+import commentReducer from './commentsSlice.jsx';
+import notificationReducer from './notificationSlice.jsx';
 import chatReducer from './chatSlice';
 
 const persistConfig = {
@@ -19,7 +19,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   posts: postsReducer,
-  likedCategories : likedCategoriesReducer,
+  likedCategories: likedCategoriesReducer,
   theme: themeReducer,
   socket: socketReducer,
   comments: commentReducer,

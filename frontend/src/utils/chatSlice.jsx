@@ -4,17 +4,13 @@ const chatSlice = createSlice({
   name: 'chat',
   initialState: {
     isOpen: false,
-    
-
   },
   reducers: {
     openChat(state, action) {
       state.isOpen = true;
-      
     },
     closeChat(state) {
-        state.isOpen = false;
-        
+      state.isOpen = false;
     },
   },
 });

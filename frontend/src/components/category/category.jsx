@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { FaHome, FaPlus } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { fetchCategories } from "../../api/fetchAllCategories";
-import { useSelector } from "react-redux";
-import { IoIosArrowDown } from "react-icons/io";
-import LikedCategories from "./likedCategories.jsx"; // Import the LikedCategories component
+import React, { useEffect, useState } from 'react';
+import { FaHome, FaPlus } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { fetchCategories } from '../../api/fetchAllCategories';
+import { useSelector } from 'react-redux';
+import { IoIosArrowDown } from 'react-icons/io';
+import LikedCategories from './likedCategories.jsx'; // Import the LikedCategories component
 // import { MdKeyboardArrowUp } from "react-icons/md";
-import { IoIosArrowUp } from "react-icons/io";
+import { IoIosArrowUp } from 'react-icons/io';
 
 const ShowCategories = ({ hideCategories }) => {
   const [categories, setCategories] = useState([]);
@@ -20,7 +20,10 @@ const ShowCategories = ({ hideCategories }) => {
         const categories = await fetchCategories();
         setCategories(categories);
       } catch (error) {
-        console.error("There seems to be an error in fetching Categories:", error);
+        console.error(
+          'There seems to be an error in fetching Categories:',
+          error,
+        );
       }
     };
 
@@ -50,8 +53,16 @@ const ShowCategories = ({ hideCategories }) => {
           className="pl-6 text-slate-200 cursor-pointer flex justify-between items-center"
           onClick={toggleLikedCategories}
         >
-          <span><h1 className="text text-slate-400">Liked Categories</h1></span>
-          <span className="text-lg">{isLikedCategoriesOpen ?  <IoIosArrowUp className="mr-1"/>: <IoIosArrowDown className="mr-1"/>}</span>
+          <span>
+            <h1 className="text text-slate-400">Liked Categories</h1>
+          </span>
+          <span className="text-lg">
+            {isLikedCategoriesOpen ? (
+              <IoIosArrowUp className="mr-1" />
+            ) : (
+              <IoIosArrowDown className="mr-1" />
+            )}
+          </span>
         </div>
         {isLikedCategoriesOpen && (
           <div className="pl-6 mt-2">
@@ -60,7 +71,8 @@ const ShowCategories = ({ hideCategories }) => {
         )}
         <Link
           to="/registerCategory"
-          className="px-6 py-3 text-slate-200 font-mono text-lg flex gap-4 hover:text-white hover:underline transition-all duration-300 hover:text-xl" onClick={hideCategories}
+          className="px-6 py-3 text-slate-200 font-mono text-lg flex gap-4 hover:text-white hover:underline transition-all duration-300 hover:text-xl"
+          onClick={hideCategories}
         >
           <FaPlus className="mt-1" /> Add Categories
         </Link>
@@ -71,8 +83,16 @@ const ShowCategories = ({ hideCategories }) => {
           className="pl-6 text-slate-200 cursor-pointer flex justify-between items-center"
           onClick={toggleCategories}
         >
-          <span><h1 className="text text-slate-400">Categories</h1></span>
-          <span className="text-lg">{isCategoriesOpen ? <IoIosArrowUp className="mr-1"/> : <IoIosArrowDown className="mr-1"/>}</span>
+          <span>
+            <h1 className="text text-slate-400">Categories</h1>
+          </span>
+          <span className="text-lg">
+            {isCategoriesOpen ? (
+              <IoIosArrowUp className="mr-1" />
+            ) : (
+              <IoIosArrowDown className="mr-1" />
+            )}
+          </span>
         </div>
         {isCategoriesOpen && (
           <div className="mt-3 pl-8">

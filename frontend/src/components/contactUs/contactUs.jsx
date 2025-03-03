@@ -53,7 +53,7 @@ const ContactUs = () => {
       await mailReciever(formData);
       await mailAcknowledgment(formData);
 
-      toast.success('Mail Sent Successfully')
+      toast.success('Mail Sent Successfully');
       setFormData({
         name: '',
         email: '',
@@ -62,10 +62,10 @@ const ContactUs = () => {
       });
 
       setLoading(false);
-      navigate('/')
+      navigate('/');
     } catch (err) {
-        console.error(err);
-        setLoading(false);
+      console.error(err);
+      setLoading(false);
     }
   };
 
@@ -78,10 +78,14 @@ const ContactUs = () => {
         <img src={logo_img_black} alt="logo" />
       </div>
       <div className="bg-black w-full max-w-md">
-        <h2 className="text-3xl text-center text-white font-mono mb-6">Contact Us</h2>
+        <h2 className="text-3xl text-center text-white font-mono mb-6">
+          Contact Us
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xl text-white  font-mono pl-4 pb-1">Name</label>
+            <label className="block text-xl text-white  font-mono pl-4 pb-1">
+              Name
+            </label>
             <div className="relative">
               <input
                 type="text"
@@ -92,11 +96,16 @@ const ContactUs = () => {
                 placeholder="Your Name"
                 required
               />
-              <FaUser className="absolute top-3 left-4 text-gray-400" size={20} />
+              <FaUser
+                className="absolute top-3 left-4 text-gray-400"
+                size={20}
+              />
             </div>
           </div>
           <div>
-            <label className="block text-xl text-white font-mono pl-4 pb-1">Email</label>
+            <label className="block text-xl text-white font-mono pl-4 pb-1">
+              Email
+            </label>
             <div className="relative">
               <input
                 type="email"
@@ -107,11 +116,16 @@ const ContactUs = () => {
                 placeholder="your.email@example.com"
                 required
               />
-              <FaEnvelope className="absolute top-3 left-4 text-gray-400" size={20} />
+              <FaEnvelope
+                className="absolute top-3 left-4 text-gray-400"
+                size={20}
+              />
             </div>
           </div>
           <div>
-            <label className="block text-xl text-white font-mono pl-4 pb-1">Subject</label>
+            <label className="block text-xl text-white font-mono pl-4 pb-1">
+              Subject
+            </label>
             <div className="relative">
               <input
                 type="text"
@@ -122,11 +136,16 @@ const ContactUs = () => {
                 placeholder="Subject"
                 required
               />
-              <FaPenFancy className="absolute top-3 left-4 text-gray-400" size={20} />
+              <FaPenFancy
+                className="absolute top-3 left-4 text-gray-400"
+                size={20}
+              />
             </div>
           </div>
           <div>
-            <label className="block text-xl text-white font-mono pl-4 pb-1">Message</label>
+            <label className="block text-xl text-white font-mono pl-4 pb-1">
+              Message
+            </label>
             <textarea
               name="message"
               value={formData.message}
@@ -137,35 +156,36 @@ const ContactUs = () => {
             />
           </div>
           {success && (
-            <p className="text-center text-green-500 font-semibold">{success}</p>
+            <p className="text-center text-green-500 font-semibold">
+              {success}
+            </p>
           )}
           {error && (
             <p className="text-center text-red-500 font-semibold">{error}</p>
           )}
-          
-            <div className="flex flex-col items-center lg:flex-row lg:justify-between mt-4">
-                <Link to="/" className="mb-4 lg:mb-0 lg:mr-auto">
-                    <span className="font-mono text-slate-200 cursor-pointer hover:underline">
-                        Back to HomePage
-                    </span>
-                </Link>
+
+          <div className="flex flex-col items-center lg:flex-row lg:justify-between mt-4">
+            <Link to="/" className="mb-4 lg:mb-0 lg:mr-auto">
+              <span className="font-mono text-slate-200 cursor-pointer hover:underline">
+                Back to HomePage
+              </span>
+            </Link>
 
             <button
-                type="submit"
-                className="w-full lg:w-[200px] bg-blue-500 text-[#0f031c] py-2 rounded-full hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100 flex items-center justify-center"
-                disabled={loading}
+              type="submit"
+              className="w-full lg:w-[200px] bg-blue-500 text-[#0f031c] py-2 rounded-full hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold duration-100 flex items-center justify-center"
+              disabled={loading}
             >
-            {loading ? (
+              {loading ? (
                 <ClipLoader color="#0f031c" size={20} />
-                )    : (
-            <>
-                Send Message
-            <FaPaperPlane className="ml-2" />
-            </>
-            )}
+              ) : (
+                <>
+                  Send Message
+                  <FaPaperPlane className="ml-2" />
+                </>
+              )}
             </button>
-            </div>
-
+          </div>
         </form>
       </div>
     </div>

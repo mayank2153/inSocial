@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";  // Use Redux to get logged-in user info
-import PostByUser from "../homepage/postByUser/postByUser";
-import { useParams } from "react-router-dom";
-import { fetchOwnerDetails } from "../../api/fetchOwnerDetails";  
-import UserProfileShimmer from "../shimmer/userShimmer";
-import { MdOutlineEdit } from "react-icons/md";
-import { UploadCoverImage } from "../../api/UploadCoverImage";
-import toast from "react-hot-toast";
-import { FaSpinner } from "react-icons/fa";
-import { editUserDetails } from "../../api/editUserDetails";
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux'; // Use Redux to get logged-in user info
+import PostByUser from '../homepage/postByUser/postByUser';
+import { useParams } from 'react-router-dom';
+import { fetchOwnerDetails } from '../../api/fetchOwnerDetails';
+import UserProfileShimmer from '../shimmer/userShimmer';
+import { MdOutlineEdit } from 'react-icons/md';
+import { UploadCoverImage } from '../../api/UploadCoverImage';
+import toast from 'react-hot-toast';
+import { FaSpinner } from 'react-icons/fa';
+import { editUserDetails } from '../../api/editUserDetails';
 
 const UserProfile = () => {
   const [userData, setUserData] = useState(null);
   const [isCoverHovering, setIsCoverHovering] = useState(false);
   const [isAvatarHovering, setIsAvatarHovering] = useState(false);
-  const { userId } = useParams();  // Get userId from the URL
+  const { userId } = useParams(); // Get userId from the URL
   const [formData, setFormData] = useState({
-    coverImage: "",
-    avatar: "",
+    coverImage: '',
+    avatar: '',
   });
   const [isLoading, setIsLoading] = useState(false);
 
   // Get the logged-in user from Redux store (assuming you store user data there)
-  const loggedInUser = useSelector((state) => state.auth.user); 
+  const loggedInUser = useSelector((state) => state.auth.user);
 
   const fetchUserData = async () => {
     try {
@@ -95,7 +95,8 @@ const UserProfile = () => {
     );
   }
 
-  const isCurrentUser = loggedInUser && loggedInUser?.data?.user?._id === userId;
+  const isCurrentUser =
+    loggedInUser && loggedInUser?.data?.user?._id === userId;
 
   return (
     <div className="w-full bg-[rgb(13,17,20)] overflow-y-scroll no-scrollbar max-h-screen flex flex-col items-center h-screen">
@@ -139,12 +140,16 @@ const UserProfile = () => {
 
         {/* Avatar Section */}
         <div className="flex gap-10 rounded-full">
-          <div 
+          <div
             className="relative h-24 w-24 rounded-full bg-black ml-4 -mt-12 z-1"
             onMouseEnter={() => setIsAvatarHovering(true)}
             onMouseLeave={() => setIsAvatarHovering(false)}
           >
-            <img src={userData.avatar} alt="avatar" className="h-24 w-24 rounded-full object-cover" />
+            <img
+              src={userData.avatar}
+              alt="avatar"
+              className="h-24 w-24 rounded-full object-cover"
+            />
 
             {/* Conditionally render edit button and file input for avatar */}
             {isCurrentUser && isAvatarHovering && (

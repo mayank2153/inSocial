@@ -8,12 +8,12 @@ export const fetchPosts = () => async (dispatch) => {
 
   try {
     const response = await axios.get(`${url}posts/AllPosts`, {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        withCredentials: true 
-      });
-    dispatch(setPosts(response.data)); 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      withCredentials: true,
+    });
+    dispatch(setPosts(response.data));
   } catch (error) {
     dispatch(setError(error.message));
   }

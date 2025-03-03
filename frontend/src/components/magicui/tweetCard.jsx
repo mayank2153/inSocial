@@ -1,7 +1,7 @@
-import { Suspense } from "react";
-import { enrichTweet, useTweet } from "react-tweet";
-import { getTweet } from "react-tweet/api";
-import { cn } from "./lib/utils.ts";
+import { Suspense } from 'react';
+import { enrichTweet, useTweet } from 'react-tweet';
+import { getTweet } from 'react-tweet/api';
+import { cn } from './lib/utils.ts';
 
 const Twitter = ({ className, ...props }) => (
   <svg
@@ -43,7 +43,7 @@ export const truncate = (str, length) => {
 const Skeleton = ({ className, ...props }) => {
   return (
     <div
-      className={cn("animate-pulse rounded-md bg-primary/10", className)}
+      className={cn('animate-pulse rounded-md bg-primary/10', className)}
       {...props}
     />
   );
@@ -52,8 +52,8 @@ const Skeleton = ({ className, ...props }) => {
 export const TweetSkeleton = ({ className, ...props }) => (
   <div
     className={cn(
-      "flex h-full max-h-max w-full min-w-[18rem] flex-col gap-2 rounded-lg border p-4",
-      className
+      'flex h-full max-h-max w-full min-w-[18rem] flex-col gap-2 rounded-lg border p-4',
+      className,
     )}
     {...props}
   >
@@ -68,8 +68,8 @@ export const TweetSkeleton = ({ className, ...props }) => (
 export const TweetNotFound = ({ className, ...props }) => (
   <div
     className={cn(
-      "flex h-full w-full flex-col items-center justify-center gap-2 rounded-lg border p-4",
-      className
+      'flex h-full w-full flex-col items-center justify-center gap-2 rounded-lg border p-4',
+      className,
     )}
     {...props}
   >
@@ -125,10 +125,10 @@ export const TweetBody = ({ tweet }) => (
   <div className="break-words leading-normal tracking-tighter">
     {tweet.entities.map((entity, idx) => {
       switch (entity.type) {
-        case "url":
-        case "symbol":
-        case "hashtag":
-        case "mention":
+        case 'url':
+        case 'symbol':
+        case 'hashtag':
+        case 'mention':
           return (
             <a
               key={idx}
@@ -140,7 +140,7 @@ export const TweetBody = ({ tweet }) => (
               <span>{entity.text}</span>
             </a>
           );
-        case "text":
+        case 'text':
           return (
             <span
               key={idx}
@@ -177,7 +177,7 @@ export const TweetMedia = ({ tweet }) => (
           <img
             key={photo.url}
             src={photo.url}
-            title={"Photo by " + tweet.user.name}
+            title={'Photo by ' + tweet.user.name}
             alt={tweet.text}
             className="h-64 w-5/6 shrink-0 snap-center snap-always rounded-xl border object-cover shadow-sm"
           />
@@ -198,18 +198,13 @@ export const TweetMedia = ({ tweet }) => (
   </div>
 );
 
-export const MagicTweet = ({
-  tweet,
-  components,
-  className,
-  ...props
-}) => {
+export const MagicTweet = ({ tweet, components, className, ...props }) => {
   const enrichedTweet = enrichTweet(tweet);
   return (
     <div
       className={cn(
-        "relative flex h-full w-full max-w-[32rem] flex-col gap-2 overflow-hidden rounded-lg border p-4 backdrop-blur-md",
-        className
+        'relative flex h-full w-full max-w-[32rem] flex-col gap-2 overflow-hidden rounded-lg border p-4 backdrop-blur-md',
+        className,
       )}
       {...props}
     >

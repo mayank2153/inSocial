@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Navigate } from "react-router-dom";
-import { checkTokenValidity } from "../utils/userAuth.jsx";
-import { logout } from "../utils/authslice.jsx";
-import loading_gif from "../assets/gifs/loading.gif";
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Navigate } from 'react-router-dom';
+import { checkTokenValidity } from '../utils/userAuth.jsx';
+import { logout } from '../utils/authslice.jsx';
+import loading_gif from '../assets/gifs/loading.gif';
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated_redux = useSelector((state) => state.auth.isAuthenticated);
+  const isAuthenticated_redux = useSelector(
+    (state) => state.auth.isAuthenticated,
+  );
   const dispatch = useDispatch();
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(isAuthenticated_redux); // Use Redux state initially
@@ -20,7 +22,7 @@ const ProtectedRoute = ({ children }) => {
       } else {
         setIsAuthenticated(true);
       }
-      
+
       setIsChecking(false); // Finish checking the token
     };
 

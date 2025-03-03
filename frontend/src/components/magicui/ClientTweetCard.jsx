@@ -1,11 +1,7 @@
-"use client";
+'use client';
 
-import { useTweet } from "react-tweet";
-import {
-  MagicTweet,
-  TweetNotFound,
-  TweetSkeleton,
-} from "./tweetCard.jsx";
+import { useTweet } from 'react-tweet';
+import { MagicTweet, TweetNotFound, TweetSkeleton } from './tweetCard.jsx';
 
 const ClientTweetCard = ({
   id,

@@ -1,36 +1,38 @@
-import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
-import { connectSocket } from "../../../utils/socketslice.jsx";
-import { useDispatch, useSelector } from "react-redux";
-import { addComment } from "../../../utils/commentsSlice.jsx";
-import { useSocket } from "../../context/SocketContext.jsx";
+import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
+import { connectSocket } from '../../../utils/socketslice.jsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { addComment } from '../../../utils/commentsSlice.jsx';
+import { useSocket } from '../../context/SocketContext.jsx';
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
 const CommentInput = ({ postId }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
   const textareaRef = useRef(null);
-  
+
   const dispatch = useDispatch();
   const socket = useSocket();
   const isConnected = useSelector((state) => state.socket.isConnected);
-  const userName = useSelector((state) => state.auth.user?.data?.user?.userName);
+  const userName = useSelector(
+    (state) => state.auth.user?.data?.user?.userName,
+  );
   const userId = useSelector((state) => state.auth.user?.data?.user?._id);
 
   // const userData = useSelector((state) => state.auth.user)
   // console.log('data',userData);
-  
+
   useEffect(() => {
     if (!isConnected) {
-        if(socket){
-          socket.connect();
-        }
-    } 
+      if (socket) {
+        socket.connect();
+      }
+    }
   }, [socket]);
 
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [comment]);
@@ -40,14 +42,14 @@ const CommentInput = ({ postId }) => {
       const response = await axios.post(
         `${url}comments/create-comment/${postId}`,
         { content: comment },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
-      setComment(""); // Clear the comment input after successful submission
+      setComment(''); // Clear the comment input after successful submission
       setIsInputFocused(false);
-      
-      dispatch(addComment(response.data.data))
-      
+
+      dispatch(addComment(response.data.data));
+
       if (socket) {
         const emitData = {
           message: `User ${userName} commented on your post`,
@@ -57,22 +59,20 @@ const CommentInput = ({ postId }) => {
           type: 'comment',
         };
 
-        
         socket.emit('commentPost', emitData);
-        
       } else {
-        console.error("Socket is not connected, cannot emit event.");
+        console.error('Socket is not connected, cannot emit event.');
       }
     } catch (error) {
-      console.error("Error submitting comment:", error); // Log the entire error object for debugging
-      alert(error.response?.data?.message || "Unable to add comment");
+      console.error('Error submitting comment:', error); // Log the entire error object for debugging
+      alert(error.response?.data?.message || 'Unable to add comment');
     }
   };
 
   return (
     <div
       className={`flex flex-col items-center  mt-4 border border-gray-600 py-2 px-4 m-2 bg-[#0d1114] transition-all duration-200 ${
-        isInputFocused ? "rounded-2xl" : "rounded-full"
+        isInputFocused ? 'rounded-2xl' : 'rounded-full'
       } min-w-[300px] lg:min-w-[650px]`}
     >
       <textarea

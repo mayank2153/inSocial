@@ -1,44 +1,44 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { FaEye, FaEyeSlash, FaEdit } from "react-icons/fa";
-import { useNavigate, Link } from "react-router-dom";
-import avatar1 from "./avatar/avatar-1.webp";
-import avatar2 from "./avatar/avatar-2.webp";
-import avatar3 from "./avatar/avatar-3.webp";
-import avatar4 from "./avatar/avatar-4.jpeg";
-import logo from "../../assets/images/logo.jpg";
-import logo_img_black from "../../assets/images/logo_img_black.png"
-import { FaSyncAlt } from "react-icons/fa";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { FaEye, FaEyeSlash, FaEdit } from 'react-icons/fa';
+import { useNavigate, Link } from 'react-router-dom';
+import avatar1 from './avatar/avatar-1.webp';
+import avatar2 from './avatar/avatar-2.webp';
+import avatar3 from './avatar/avatar-3.webp';
+import avatar4 from './avatar/avatar-4.jpeg';
+import logo from '../../assets/images/logo.jpg';
+import logo_img_black from '../../assets/images/logo_img_black.png';
+import { FaSyncAlt } from 'react-icons/fa';
 
-import { useDispatch, useSelector } from "react-redux";
-import { sendOtp } from "../../api/sendOtp";
-import usernameGenerator from "../../api/usernameGenerator.js";
-import ClipLoader from "react-spinners/ClipLoader.js";
+import { useDispatch, useSelector } from 'react-redux';
+import { sendOtp } from '../../api/sendOtp';
+import usernameGenerator from '../../api/usernameGenerator.js';
+import ClipLoader from 'react-spinners/ClipLoader.js';
 
 const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 
 const predefinedAvatars = [avatar1, avatar2, avatar3, avatar4];
-
 
 const TwoStepForm = () => {
   const dispatch = useDispatch();
   // const navigate = useNavigate();
   const tempUserData = useSelector((state) => state.auth.tempUserData);
 
-
   const [step, setStep] = useState(1);
-  const[Loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState(tempUserData || {
-    email: "",
-    userName: "",
-    password: "",
-    bio: "",
-    avatar: null,
-  });
+  const [Loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState(
+    tempUserData || {
+      email: '',
+      userName: '',
+      password: '',
+      bio: '',
+      avatar: null,
+    },
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [preview, setPreview] = useState(null);
-  const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(null); // Updated to handle file type
   const navigate = useNavigate();
 
@@ -61,21 +61,21 @@ const TwoStepForm = () => {
   const validateForm = () => {
     let formErrors = {};
     if (!formData.email) {
-      formErrors.email = "Email is required";
+      formErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      formErrors.email = "Email is invalid";
+      formErrors.email = 'Email is invalid';
     }
 
     if (!formData.userName) {
-      formErrors.userName = "Username is required";
+      formErrors.userName = 'Username is required';
     }
 
     if (!formData.password) {
-      formErrors.password = "Password is required";
+      formErrors.password = 'Password is required';
     }
 
-    if(!formData.avatar){
-      formData.avatar = "Please Upload avatar"
+    if (!formData.avatar) {
+      formData.avatar = 'Please Upload avatar';
     }
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
@@ -88,10 +88,9 @@ const TwoStepForm = () => {
         userName: username,
       }));
     } catch (error) {
-      console.error("Error generating unique username:", error);
+      console.error('Error generating unique username:', error);
     }
   };
-  
 
   const handleSubmit = async (e) => {
     setLoading(true);
@@ -103,15 +102,17 @@ const TwoStepForm = () => {
         ...formData,
         avatar: selectedAvatar || formData.avatar,
       };
-      await sendOtp(formData.email,'registration')
+      await sendOtp(formData.email, 'registration');
       setLoading(false);
-      navigate("/verifyEmail", { state: signUpData });
+      navigate('/verifyEmail', { state: signUpData });
     } catch (error) {
       setLoading(false);
       if (error.response) {
-        setServerError(error.response.data.message || "An error occurred. Please try again.");
+        setServerError(
+          error.response.data.message || 'An error occurred. Please try again.',
+        );
       } else {
-        setServerError("Failed to connect to the server. Please try again.");
+        setServerError('Failed to connect to the server. Please try again.');
       }
     }
   };
@@ -125,9 +126,8 @@ const TwoStepForm = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleAvatarSelect = async (avatarUrl) => {
-    
-    const avatarFile = await convertUrlToFile(avatarUrl, "avatar.png");
-    
+    const avatarFile = await convertUrlToFile(avatarUrl, 'avatar.png');
+
     setSelectedAvatar(avatarFile);
     setPreview(avatarUrl);
   };
@@ -141,11 +141,11 @@ const TwoStepForm = () => {
   return (
     <div className="flex items-center  flex-col lg:flex-row lg:justify-evenly min-h-screen bg-black w-full max-w-screen-2xl px-10">
       <div className="mt-14 hidden lg:block">
-                <img src={logo} alt="logo.png"/>
-            </div>
-            <div className="mt-10 block lg:hidden w-20 mb-20">
-                <img src={logo_img_black} alt="logo.png"/>
-            </div>
+        <img src={logo} alt="logo.png" />
+      </div>
+      <div className="mt-10 block lg:hidden w-20 mb-20">
+        <img src={logo_img_black} alt="logo.png" />
+      </div>
 
       <div className="bg-black shadow-xl rounded-lg w-full max-w-md flex flex-col items-center">
         <h2 className="text-2xl text-white font-mono  lg:ml-2">
@@ -180,7 +180,7 @@ const TwoStepForm = () => {
               {/* Username */}
               <div className="mb-4 mt-4">
                 <label className="block text-white ml-4">Username *</label>
-                <div className="flex items-center bg-white rounded-full focus-within:ring-2   focus-within:ring-blue-500 " >
+                <div className="flex items-center bg-white rounded-full focus-within:ring-2   focus-within:ring-blue-500 ">
                   <input
                     type="text"
                     name="userName"
@@ -198,19 +198,16 @@ const TwoStepForm = () => {
                   </button>
                 </div>
                 {errors.userName && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.userName}
-                  </p>
+                  <p className="text-red-500 text-sm mt-1">{errors.userName}</p>
                 )}
               </div>
-
 
               {/* Password */}
               <div className="mb-4">
                 <label className="block text-white ml-4">Password *</label>
                 <div className="relative">
                   <input
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
@@ -226,9 +223,7 @@ const TwoStepForm = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.password}
-                  </p>
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
                 )}
               </div>
 
@@ -242,14 +237,16 @@ const TwoStepForm = () => {
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              <p className="text-slate-200 my-1 font-mono">Already have an Account?
-                  <Link to="/login">
-                  <span className="cursor-pointer text-blue-600 font-mono">Login</span>
-                  </Link>
-                   </p>
+              <p className="text-slate-200 my-1 font-mono">
+                Already have an Account?
+                <Link to="/login">
+                  <span className="cursor-pointer text-blue-600 font-mono">
+                    Login
+                  </span>
+                </Link>
+              </p>
               {/* Next Step Button */}
               <div className="flex justify-end">
-                
                 <button
                   type="button"
                   onClick={nextStep}
@@ -274,8 +271,8 @@ const TwoStepForm = () => {
                       alt="Predefined Avatar"
                       className={`w-16 h-16 rounded-full cursor-pointer border-2 ${
                         selectedAvatar === avatarUrl
-                          ? "border-blue-500"
-                          : "border-gray-300"
+                          ? 'border-blue-500'
+                          : 'border-gray-300'
                       }`}
                       onClick={() => handleAvatarSelect(avatarUrl)}
                     />
@@ -288,8 +285,10 @@ const TwoStepForm = () => {
                 <label className="block text-white">
                   Or Upload Your Own Avatar
                 </label>
-                <div className="relative w-24 h-24 rounded-full overflow-hidden bg-black cursor-pointer mt-2 border-2 border-gray-600
-                ">
+                <div
+                  className="relative w-24 h-24 rounded-full overflow-hidden bg-black cursor-pointer mt-2 border-2 border-gray-600
+                "
+                >
                   <label
                     htmlFor="avatar-upload"
                     className="cursor-pointer w-full h-full"
@@ -315,13 +314,9 @@ const TwoStepForm = () => {
                     />
                   </label>
                 </div>
-                {
-                  errors.avatar && (
-                    <p className="text-red-500 text-sm mt-1">
-                    {errors.avatar}
-                    </p>
-                  )
-                }
+                {errors.avatar && (
+                  <p className="text-red-500 text-sm mt-1">{errors.avatar}</p>
+                )}
               </div>
 
               {/* Previous and Submit Buttons */}
@@ -338,13 +333,17 @@ const TwoStepForm = () => {
                   type="submit"
                   className="bg-blue-500 w-[100px] h-[40px] text-white pt-[2px] mt-6 rounded-full text-lg font-mono hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  {Loading ? <ClipLoader color="#ffffff" size={20} className="mt-1"/> :'Submit'}
+                  {Loading ? (
+                    <ClipLoader color="#ffffff" size={20} className="mt-1" />
+                  ) : (
+                    'Submit'
+                  )}
                 </button>
               </div>
 
               {/* Login Redirect */}
               <p className="text-center text-white mt-4">
-                Already have an account?{" "}
+                Already have an account?{' '}
                 <Link to="/login" className="text-blue-500">
                   Login
                 </Link>
@@ -358,4 +357,3 @@ const TwoStepForm = () => {
 };
 
 export default TwoStepForm;
-

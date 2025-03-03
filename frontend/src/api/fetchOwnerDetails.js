@@ -6,7 +6,7 @@ export const fetchOwnerDetails = async (ownerId) => {
   try {
     const response = await axios.get(`${url}users/get-user/${ownerId}`, {
       headers: { 'Content-Type': 'application/json' },
-      withCredentials: true
+      withCredentials: true,
     });
     return response.data.data;
   } catch (error) {

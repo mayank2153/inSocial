@@ -1,44 +1,39 @@
-
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import OtpInput from "react-otp-input";
-import { Link, useNavigate } from "react-router-dom";
-import { BiArrowBack } from "react-icons/bi";
-import { RxCountdownTimer } from "react-icons/rx";
-import { useDispatch, useSelector } from "react-redux";
-import { UserRegister } from "../../api/userRegister";
-import { sendOtp } from "../../api/sendOtp";
-import { ChangeCurrentEmail } from "../../api/changeEmail";
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import OtpInput from 'react-otp-input';
+import { Link, useNavigate } from 'react-router-dom';
+import { BiArrowBack } from 'react-icons/bi';
+import { RxCountdownTimer } from 'react-icons/rx';
+import { useDispatch, useSelector } from 'react-redux';
+import { UserRegister } from '../../api/userRegister';
+import { sendOtp } from '../../api/sendOtp';
+import { ChangeCurrentEmail } from '../../api/changeEmail';
 
 function VerifyNewEmail() {
-
   const UserData = useSelector((state) => state.auth.user);
   const userId = UserData?.data?.user?._id;
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const formData = location.state;
-  
+
   useEffect(() => {
     if (!formData) {
       navigate('/change-current-email');
     }
   }, [formData, navigate]);
   const handleChangeEmail = async () => {
-
     try {
-        await ChangeCurrentEmail(formData, otp, userId);
-        navigate("/")
-        
+      await ChangeCurrentEmail(formData, otp, userId);
+      navigate('/');
     } catch (error) {
-        console.error('problem while changing email', error);
+      console.error('problem while changing email', error);
     }
   };
 
   const resendOtp = async () => {
     try {
       await sendOtp(formData.newEmail, 'emailChange');
-      
     } catch (error) {
       console.error('Error in sending OTP', error);
     }
@@ -63,14 +58,14 @@ function VerifyNewEmail() {
                 {...props}
                 placeholder="-"
                 style={{
-                  boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
+                  boxShadow: 'inset 0px -1px 0px rgba(255, 255, 255, 0.18)',
                 }}
                 className="w-[48px] lg:w-[60px] border-0 bg-richblack-800 rounded-[0.5rem] text-richblack-5 aspect-square text-center focus:border-0 focus:outline-2 focus:outline-yellow-50"
               />
             )}
             containerStyle={{
-              justifyContent: "space-between",
-              gap: "0 6px",
+              justifyContent: 'space-between',
+              gap: '0 6px',
             }}
           />
           <button

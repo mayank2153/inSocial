@@ -4,27 +4,26 @@ import { io } from 'socket.io-client';
 let socket;
 
 export const initializeSocket = (url, options) => {
-    if (!socket) {
-        socket = io(url, options);
+  if (!socket) {
+    socket = io(url, options);
 
-        socket.on('connect', () => {
-            console.log('connected');
-            
-        });
+    socket.on('connect', () => {
+      console.log('connected');
+    });
 
-        socket.on('connect_error', (error) => {
-            console.error('Connection error:', error);
-        });
-    }
-    return socket;  // Return the socket instance
+    socket.on('connect_error', (error) => {
+      console.error('Connection error:', error);
+    });
+  }
+  return socket; // Return the socket instance
 };
 
 export const disconnectSocket = () => {
-    if (socket) {
-        socket.disconnect();
-        console.log('Socket disconnected');
-        socket = null;
-    }
+  if (socket) {
+    socket.disconnect();
+    console.log('Socket disconnected');
+    socket = null;
+  }
 };
 
 export const getSocket = () => socket;
