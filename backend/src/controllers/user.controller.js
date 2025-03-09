@@ -573,7 +573,6 @@ const verifyUser = asyncHandler(async (req, res) => {
  *
  * @returns {boolean} isUnique
  *
- * @author RahulBhardwaj
  */
 const CheckUniqueUsername = asyncHandler(async (req, res) => {
   const { username } = req.body;
@@ -585,7 +584,7 @@ const CheckUniqueUsername = asyncHandler(async (req, res) => {
     return false;
   }
 
-  return true;
+  return res.status(200).json(new ApiResponse(200, true, "Username is unique"));
 });
 export {
   registerUser,
