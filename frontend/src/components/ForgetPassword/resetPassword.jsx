@@ -51,36 +51,36 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="w-full h-[100vh] bg-black">
-      <div className="text-center pt-[30vh]">
-        <span className="text-slate-200 text-3xl font-mono">
+    <div className="text-[#ededed] mx-auto sm:px-10 ">
+      <div className="text-center ">
+        <span className="font-semibold text-xl lg:text-2xl ">
           Reset Password
         </span>
       </div>
       <div>
         <form
-          className="flex flex-col items-center mt-8"
+          className="flex flex-col items-center mt-4 space-y-4"
           onSubmit={handleSubmit}
         >
           <input
             type="password"
-            name="password" // Name attribute for state management
+            name="password" 
             placeholder="New Password"
-            value={reset.password} // Bind the value to state
+            value={reset.password} 
             onChange={handleInput}
-            className="w-96 p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 h-12 text-[#BDBDBD]  rounded-lg bg-[#1e1e1e]  focus:outline-none border border-[#BDBDBD]"
           />
           <input
             type="password"
-            name="newPassword" // Name attribute for state management
+            name="newPassword" 
             placeholder="Confirm Password"
-            value={reset.newPassword} // Bind the value to state
+            value={reset.newPassword}
             onChange={handleInput}
-            className="w-96 p-2 mt-4 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            className="w-full px-3 py-2 h-12 text-[#BDBDBD]  rounded-lg bg-[#1e1e1e]  focus:outline-none border border-[#BDBDBD]"
+            />
           <button
-            type="submit" // Changed to submit to handle the form in the onSubmit handler
-            className="w-36 bg-blue-500 text-slate-300 py-2 rounded-full mt-4 hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-700 font-semibold duration-100 transition-all duration-300"
+            type="submit" 
+            className="w-full bg-[#7F3FBF] h-12 text-slate-200 py-2 rounded-xl hover:bg-[#6b30a7]  focus:outline-none  font-semibold duration-200"
           >
             {Loading ? (
               <ClipLoader color="#ffffff" size={20} className="mt-1" />

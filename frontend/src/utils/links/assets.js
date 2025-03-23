@@ -1,0 +1,7 @@
+export const logo="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1741524635/Frame_1618872439_1_gurkri.svg"
+export const sojoFull="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1741525002/WhatsApp_Image_2025-03-06_at_16.57_Background_Removed.48_1_jjxvlp.svg"
+export const flowerFrame="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1741534523/Frame_yxpyk5.svg"
+export const chatPurple="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1741534581/Chat_wnypus.svg"
+export const heartPurple="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1741534582/Heart_e77nov.svg"
+export const sendPurple="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1741534582/Send_xbsgyg.svg"
+export const userPurple="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1741534582/User_lc6dyz.svg"

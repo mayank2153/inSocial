@@ -3,8 +3,8 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Header from './components/header.jsx';
 import Login from './components/Login/login.jsx';
 import { Provider } from 'react-redux';
-import { store, persistor } from './utils/store.jsx'; // Corrected import
-import MultiStepForm from './components/Signup/multistepForm.jsx';
+import { store, persistor } from './utils/store.jsx'; 
+import  Register  from './components/Signup/register.jsx';
 import ShowCategories from './components/category/category.jsx';
 import HomePage from './components/homepage/homepage.jsx';
 import PostPage from './components/homepage/postPage/postPage.jsx';
@@ -26,7 +26,8 @@ import Notifications from './components/notification/notifications.jsx';
 import VerifyEmail from './components/Signup/verifyEmail.jsx';
 import VerifyNewEmail from './components/settings/verifyChangeEmail.jsx';
 import ContactUs from './components/contactUs/contactUs.jsx';
-
+import AuthLayout from './components/layouts/authLayout.jsx';
+import LandingPage from './components/landingPage/landingPage.jsx';
 function Layout() {
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
 
@@ -76,20 +77,30 @@ function Layout() {
 
 const appRouting = createBrowserRouter([
   {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/register',
-    element: <MultiStepForm />,
-  },
-  {
-    path: '/verifyEmail',
-    element: <VerifyEmail />,
-  },
-  {
-    path: '/Forget-Password',
-    element: <ForgetPassword />,
+    path: '/auth',
+    element: <AuthLayout />,
+    children: [
+      {
+        path: 'login',
+        element: <Login />,
+      },
+      {
+        path: 'register',
+        element: <Register />,
+      },
+      {
+        path: 'verifyEmail',
+        element: <VerifyEmail />,
+      },
+      {
+        path: 'Forget-Password',
+        element: <ForgetPassword />,
+      },
+      {
+        path: 'reset-password/:accessToken',
+        element: <ResetPassword />,
+      },
+    ],
   },
   {
     path: '/contact-us',
@@ -111,10 +122,10 @@ const appRouting = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  {
-    path: '/reset-password/:accessToken',
-    element: <ResetPassword />,
-  },
+   {
+        path: '/landing',
+        element: <LandingPage />,
+   },
   {
     path: '/',
     element: (
@@ -124,7 +135,7 @@ const appRouting = createBrowserRouter([
     ),
     children: [
       {
-        path: '/',
+        path: '/home',
         element: <HomePage />,
       },
       {

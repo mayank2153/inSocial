@@ -154,7 +154,13 @@ const fetchPosts=asyncHandler(async(req,res)=>{
     let posts;
     if (user.likedCategories && user.likedCategories.length > 0) {
         // Fetch posts from liked categories
-        posts = await Post.find({ category: { $in: user.likedCategories } }).sort({ createdAt: -1 });
+        posts = await Post.find(
+            { 
+                category: { $in: user.likedCategories } 
+            }
+            ).populate('category')
+            .populate('owner',"_id userName avatar")
+            .sort({ createdAt: -1 });
     } else {
         // Fetch all posts
         posts = await Post.find({}).sort({ createdAt: -1 });

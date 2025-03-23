@@ -4,11 +4,18 @@ import { Link } from 'react-router-dom';
 import { forgetPassword } from '../../api/forgetPassword';
 import toast from 'react-hot-toast';
 import ClipLoader from 'react-spinners/ClipLoader';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleDarkMode } from '../../utils/darkmodeSlice';
 const ForgetPassword = () => {
   const [email, setEmail] = useState('');
   const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
+  const dispatch=useDispatch();
   const [Loading, setLoading] = useState(false);
+  const darkMode= useSelector((state) => state.theme.darkMode);
+  console.log("dark mode: " + darkMode);
+  const handleInput = (e) => {
+    setEmail(e.target.value);
+  }
 
   const handleForgetPassword = async () => {
     setLoading(true);
@@ -23,48 +30,31 @@ const ForgetPassword = () => {
   };
 
   return (
-    <div className="w-full bg-black h-[100vh] flex justify-center ">
-      <div className="w-full max-w-md mx-auto mt-[225px]">
-        <h2 className="text-3xl text-center text-slate-300 font-mono mb-6">
-          Forget Password
-        </h2>
-        <form>
-          <div className="mb-4">
-            <label className="block text-xl font-mono text-white pl-4 pb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 text-xl bg-slate-200 rounded-full"
-            />
-          </div>
-          <div>
-            <p className="text-white pl-4 -mt-2 font-mono">
-              Remember Password ?
-              <Link to="/login">
-                <span className="text-blue-500 cursor-pointer hover:underline">
-                  Login
-                </span>
-              </Link>
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={handleForgetPassword}
-            className="w-[125px] ml-[150px] mt-6 py-2 text-xl font-mono bg-blue-500 rounded-full
-                        text-white hover:bg-blue-700 transition-all duration-400"
-          >
-            {Loading ? (
-              <ClipLoader color="#ffffff" size={20} className="mt-1" />
-            ) : (
-              'Submit'
-            )}
-          </button>
-        </form>
-      </div>
+    <div className="text-[#ededed] mx-auto px-10">
+      <p className=' font-semibold text-xl lg:text-2xl'>Forget Password</p>
+      <p className='text-[#e0e0e099] text-md lg:text-lg'>Enter your email and we will send you instructions to reset your password</p>
+      <div className="my-4">
+              <input
+                type="email"
+                name="email"
+                value={email}
+                onChange={handleInput}
+                placeholder='Enter your Email Address'
+                className="w-full px-3 py-2 text-[#BDBDBD] h-12  rounded-md bg-[#1e1e1e]  focus:outline-none border border-[#BDBDBD]"
+              />
+            </div>
+       <div className="space-y-4 mt-8">
+              <button
+                className="w-full bg-[#7F3FBF] h-12 text-slate-200 py-2 rounded-xl hover:bg-[#6b30a7]  focus:outline-none  font-semibold duration-200"
+              >
+                {Loading ? (
+                  <ClipLoader color="#ffffff" size={20} className="mt-1 text-lg" />
+                ) : (
+                  'Reset Password'
+                )}
+              </button>
+              
+            </div>
     </div>
   );
 };
