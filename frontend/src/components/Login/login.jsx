@@ -41,7 +41,7 @@ const Login = () => {
       setLoading(false);
 
       navigate('/');
-      toast.success(response?.data?.message); // Redirect to the homepage after successful login
+      toast.success(response?.data?.message); 
     } catch (error) {
       console.error(error?.response?.data);
       toast.error(error?.response?.data?.message || 'Login failed', {
@@ -52,7 +52,6 @@ const Login = () => {
       setLoading(false);
 
       dispatch(loginFailure(error?.response?.data?.message));
-      // alert(error.response.data.message || "Login failed");
       setForgetPassword(true);
     }
   };
@@ -66,7 +65,7 @@ const Login = () => {
 
   return (
  
-        <div className="">
+        <div className="lg:w-[calc(100%-40%)] sm:w-[calc(100%-35%)] ">
           <h2 className="text-3xl text-left text-white mb-6">Sign In</h2>
           <form onSubmit={handleLogin}>
             <div className="mb-4">
@@ -79,7 +78,7 @@ const Login = () => {
                 value={user.email}
                 placeholder='Enter your Email Address'
                 onChange={handleInput}
-                className="w-full px-3 h-12 py-2 text-[#BDBDBD]  rounded-lg bg-[#1e1e1e]  focus:outline-none border border-[#BDBDBD]"
+                className="w-full px-3 h-12 py-2 min-w-[60%] text-[#BDBDBD]  rounded-lg bg-[#1e1e1e]  focus:outline-none border border-[#BDBDBD]"
               />
             </div>
             <div className="mb-6">

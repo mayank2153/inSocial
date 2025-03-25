@@ -53,7 +53,7 @@ function VerifyEmail() {
 
 
   return (
-    <div className="text-[#ededed]">
+    <div className="text-[#ededed] px-40">
       <p className=' font-semibold text-2xl'>Verify your Email</p>
       <p className='text-[#e0e0e099] text-lg'>To Start using Insocial, confirm your email address with the email we sent to:</p>
       <p className='my-4'>Dummy email</p>

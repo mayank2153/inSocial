@@ -5,3 +5,4 @@ export const chatPurple="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1741
 export const heartPurple="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1741534582/Heart_e77nov.svg"
 export const sendPurple="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1741534582/Send_xbsgyg.svg"
 export const userPurple="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1741534582/User_lc6dyz.svg"
+export const authWrapper="https://res.cloudinary.com/dhrbg2jbi/image/upload/v1742895665/Frame_1984078126_cy4fie.svg"

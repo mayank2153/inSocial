@@ -55,7 +55,7 @@ const Register = ()=>{
     setShowPassword(!showPassword);
   };
   return(
-     <div className="">
+     <div className="lg:w-[calc(100%-40%)] sm:w-[calc(100%-35%)] ">
           <h2 className="text-3xl text-left text-white mb-6">Sign Up</h2>
           <form onSubmit={handlesignup} className="space-y-4">
             
