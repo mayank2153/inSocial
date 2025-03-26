@@ -1,5 +1,5 @@
 const PasswordSuccessfullyChanged = () => {
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html>
 
 <head>
@@ -78,7 +78,6 @@ const PasswordSuccessfullyChanged = () => {
 </body>
 
 </html>`;
-
-}
+};
 
 export default PasswordSuccessfullyChanged;

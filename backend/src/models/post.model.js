@@ -1,46 +1,53 @@
 import mongoose, { Schema } from "mongoose";
 
-const PostSchema = new Schema({
+const PostSchema = new Schema(
+  {
     title: {
-        type: String,
-        required: true,
-        trim: true,
-        maxlength: 255,
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 255,
     },
     description: {
-        type: String
+      type: String,
     },
     media: {
-        type: String // cloudinary url
+      type: String, // cloudinary url
     },
     owner: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     category: {
-        type: Schema.Types.ObjectId,
-        ref: "Category"
+      type: Schema.Types.ObjectId,
+      ref: "Category",
     },
-    votes: [{
+    votes: [
+      {
         voteId: {
-            type: Schema.Types.ObjectId,
-            ref: "Vote"
+          type: Schema.Types.ObjectId,
+          ref: "Vote",
         },
         voteOwner: {
-            type: Schema.Types.ObjectId,
-            ref: "User"
+          type: Schema.Types.ObjectId,
+          ref: "User",
         },
         voteType: {
-            type: String
-        }
-    }],
-    comments: [{
+          type: String,
+        },
+      },
+    ],
+    comments: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment'
-    }]
-}, {
-    timestamps: true
-});
+        ref: "Comment",
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  },
+);
 
 export const Post = mongoose.model("Post", PostSchema);

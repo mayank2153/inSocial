@@ -1,5 +1,5 @@
 const PasswordResetSuccessTemplate = () => {
-	return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 	<html>
 	
 	<head>

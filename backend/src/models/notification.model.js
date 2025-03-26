@@ -1,35 +1,39 @@
 import mongoose, { Schema } from "mongoose";
 
-const notificationSchema = new Schema({
-    receiver: {  // Corrected spelling
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+const notificationSchema = new Schema(
+  {
+    receiver: {
+      // Corrected spelling
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     actor: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     type: {
-        type: String,
-        enum: ['like', 'comment','Reply'],
-        required: true
+      type: String,
+      enum: ["like", "comment", "Reply"],
+      required: true,
     },
     postId: {
-        type: Schema.Types.ObjectId,
-        ref: "Post",
+      type: Schema.Types.ObjectId,
+      ref: "Post",
     },
     message: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     isRead: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
-}, {
-    timestamps: true
-});
+  },
+  {
+    timestamps: true,
+  },
+);
 
 export const Notification = mongoose.model("Notification", notificationSchema);
