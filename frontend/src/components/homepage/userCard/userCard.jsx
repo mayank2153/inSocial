@@ -8,9 +8,7 @@ const UserCard = ({ avatar, bio, userName, _id, inChat = false }) => {
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.user);
   console.log('user:', userData);
-  const userId = userData.data.user
-    ? userData?.data?.user?._id
-    : userData?.data?._id;
+  const userId = userData?._id;
   const isOpenChat = useSelector((state) => state.chat.isOpen);
   const handleCreateConversation = async () => {
     try {

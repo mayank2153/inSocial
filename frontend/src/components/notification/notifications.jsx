@@ -16,7 +16,7 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
   const userData = useSelector((state) => state.auth.user);
-  const userId = userData?.data?.user?._id;
+  const userId = userData?._id;
   const isConnected = useSelector((state) => state.socket.isConnected);
   // Function to fetch previous notifications from the backend
   const fetchNotifications = async () => {

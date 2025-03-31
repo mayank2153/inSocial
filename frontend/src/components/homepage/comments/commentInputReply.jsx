@@ -14,7 +14,7 @@ const CommentInputReply = ({ postId, parentCommentId, userName }) => {
   const dispatch = useDispatch();
   const isConnected = useSelector((state) => state.socket.isConnected);
   const socket = useSocket();
-  const userId = useSelector((state) => state.auth.user?.data?.user?._id);
+  const userId = useSelector((state) => state.auth.user._id);
 
   useEffect(() => {
     if (!isConnected) {

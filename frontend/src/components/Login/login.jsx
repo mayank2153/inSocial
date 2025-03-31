@@ -9,7 +9,7 @@ import logo_img_black from '../../assets/images/logo_img_black.png';
 import toast from 'react-hot-toast';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import ClipLoader from 'react-spinners/ClipLoader.js';
-
+import { loginUser } from '../../api/auth.api.js';
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
 const Login = () => {
@@ -34,13 +34,12 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${url}users/login`, user, {
-        withCredentials: true,
-      });
-      dispatch(loginSuccess(response.data));
+      const response = await loginUser(user);
+      console.log("response data",response.data);
+      dispatch(loginSuccess(response.data.data));
       setLoading(false);
 
-      navigate('/');
+      navigate('/home');
       toast.success(response?.data?.message); 
     } catch (error) {
       console.error(error?.response?.data);

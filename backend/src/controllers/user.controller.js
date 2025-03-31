@@ -72,60 +72,77 @@ const registerUser = asyncHandler(async (req, res, next) => {
  * @author RahulBhardwaj
  */
 const loginUser = asyncHandler(async (req, res) => {
-  const isValidData = LoginValidator.safeParse(req.body);
-  if (!isValidData.success) {
-    res
-      .status(404)
-      .json(new ApiResponse(404, isValidData.error.errors[0].message));
+  try {
+
+    const isValidData = LoginValidator.safeParse(req.body);
+    if (!isValidData.success) {
+      console.error("Validation Error:", isValidData.error.errors[0].message);
+      return res
+        .status(400)
+        .json(new ApiResponse(400, isValidData.error.errors[0].message));
+    }
+
+    const { email, username, password } = isValidData.data;
+
+    let searchQuery = {};
+    if (email) {
+      searchQuery.email = email;
+    } else if (username) {
+      searchQuery.userName = username;
+    } else {
+      return res.status(400).json(new ApiResponse(400, "Email or username is required"));
+    }
+
+    const existedUser = await User.findOne(searchQuery);
+
+    if (!existedUser) {
+      console.warn("User not found:", searchQuery);
+      return res.status(404).json(new ApiResponse(404, "User not found"));
+    }
+
+    const isPasswordValid = await existedUser.isPasswordCorrect(password);
+    if (!isPasswordValid) {
+      console.warn("Invalid password for user:", existedUser._id);
+      return res.status(401).json(new ApiResponse(401, "Invalid Password"));
+    }
+
+
+    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
+      existedUser._id
+    );
+
+    const loggedInUser = await User.findById(existedUser._id).select(
+      "-password -refreshToken"
+    );
+
+    const accessTokenOptions = {
+      httpOnly: true,
+      maxAge: 15 * 60 * 1000,
+      sameSite: "none",
+      secure: true,
+    };
+
+    const refreshTokenOptions = {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: "none",
+      secure: true,
+    };
+
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, accessTokenOptions)
+      .cookie("refreshToken", refreshToken, refreshTokenOptions)
+      .json(new ApiResponse(200,loggedInUser, "User logged in successfully"));
+  } catch (error) {
+    console.error("Token Generation Error:", error);
+    return res.status(500).json(new ApiResponse(500, "Internal Server Error"));
   }
-
-  const existedUser = await User.findOne({
-    $or: [
-      { email: isValidData.data.email },
-      { userName: isValidData.data.username },
-    ],
-  }).lean();
-
-  if (!existedUser) {
-    res.status(404).json(new ApiResponse(404, "User not found"));
-    return;
-  }
-
-  const isPasswordValid = await existedUser.isPasswordCorrect(password);
-
-  if (!isPasswordValid) {
-    res.status(401).json(new ApiResponse(401, "Invalid Password"));
-    return;
-  }
-
-  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
-    existedUser._id,
-  );
-
-  const loggedInUser = await User.findById(existedUser._id).select(
-    "-password -refreshToken",
-  );
-
-  const accessTokenoptions = {
-    httpOnly: true,
-    maxAge: 15 * 60 * 1000,
-    sameSite: "none",
-    secure: true,
-  };
-
-  const refreshTokenOptions = {
-    httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: "none",
-    secure: true,
-  };
-
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, accessTokenoptions)
-    .cookie("refreshToken", refreshToken, refreshTokenOptions)
-    .json(new ApiResponse(200, "User loggedIn successfully"));
 });
+ 
+
+
 
 /**
  * @description for logging out user clears tokens from cookies
@@ -312,75 +329,75 @@ const updateCurrentPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password updated successfully"));
 });
 
-// const UploadCoverImage = asyncHandler(async (req, res) => {
-//   const { userId } = req.params;
+const UploadCoverImage = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
 
-//   // Check if cover image exists in the request
-//   const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+  // Check if cover image exists in the request
+  const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
 
-//   if (!coverImageLocalPath) {
-//     throw new ApiError(404, "Cover Image not found");
-//   }
+  if (!coverImageLocalPath) {
+    throw new ApiError(404, "Cover Image not found");
+  }
 
-//   // Find the user by ID
-//   const user = await User.findById(userId);
-//   if (!user) {
-//     throw new ApiError(404, "User Not Found");
-//   }
+  // Find the user by ID
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, "User Not Found");
+  }
 
-//   // Upload image to Cloudinary
-//   let coverImage;
-//   if (coverImageLocalPath) {
-//     coverImage = await uploadOnCloudinary(coverImageLocalPath);
-//     if (!coverImage) {
-//       throw new ApiError(500, "Failed to upload cover image."); // Changed status code to 500 for server error
-//     }
-//   }
+  // Upload image to Cloudinary
+  let coverImage;
+  if (coverImageLocalPath) {
+    coverImage = await uploadOnCloudinary(coverImageLocalPath);
+    if (!coverImage) {
+      throw new ApiError(500, "Failed to upload cover image."); // Changed status code to 500 for server error
+    }
+  }
 
-//   // Update user document with the new cover image URL
-//   user.coverImage = coverImage.secure_url;
-//   await user.save();
+  // Update user document with the new cover image URL
+  user.coverImage = coverImage.secure_url;
+  await user.save();
 
-//   // Return success response
-//   return res
-//     .status(200)
-//     .json(new ApiResponse(200, user, "Cover Image uploaded successfully"));
-// });
+  // Return success response
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Cover Image uploaded successfully"));
+});
 
-// const EditAvatar = asyncHandler(async (req, res) => {
-//   const { userId } = req.params;
+const EditAvatar = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
 
-//   // Check if cover image exists in the request
-//   const avatarLocalPath = req.files?.avatar?.[0]?.path;
+  // Check if cover image exists in the request
+  const avatarLocalPath = req.files?.avatar?.[0]?.path;
 
-//   if (!avatarLocalPath) {
-//     throw new ApiError(404, "Avatar not found");
-//   }
+  if (!avatarLocalPath) {
+    throw new ApiError(404, "Avatar not found");
+  }
 
-//   // Find the user by ID
-//   const user = await User.findById(userId);
-//   if (!user) {
-//     throw new ApiError(404, "User Not Found");
-//   }
+  // Find the user by ID
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, "User Not Found");
+  }
 
-//   // Upload image to Cloudinary
-//   let avatar;
-//   if (avatarLocalPath) {
-//     avatar = await uploadOnCloudinary(avatarLocalPath);
-//     if (!avatar) {
-//       throw new ApiError(500, "Failed to upload Avatar."); // Changed status code to 500 for server error
-//     }
-//   }
+  // Upload image to Cloudinary
+  let avatar;
+  if (avatarLocalPath) {
+    avatar = await uploadOnCloudinary(avatarLocalPath);
+    if (!avatar) {
+      throw new ApiError(500, "Failed to upload Avatar."); // Changed status code to 500 for server error
+    }
+  }
 
-//   // Update user document with the new cover image URL
-//   user.avatar = avatar.secure_url;
-//   await user.save();
+  // Update user document with the new cover image URL
+  user.avatar = avatar.secure_url;
+  await user.save();
 
-//   // Return success response
-//   return res
-//     .status(200)
-//     .json(new ApiResponse(200, user, "Avatar uploaded successfully"));
-// });
+  // Return success response
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Avatar uploaded successfully"));
+});
 
 const ChangeCurrentEmail = asyncHandler(async (req, res) => {
   const { userId } = req.params;
@@ -575,17 +592,19 @@ const verifyUser = asyncHandler(async (req, res) => {
  *
  */
 const CheckUniqueUsername = asyncHandler(async (req, res) => {
-  const { username } = req.body;
+  const { username } = req.params;
   const existingUser = await User.findOne({
     userName: username,
   });
 
   if (existingUser) {
-    return false;
+    throw new ApiError(400, "Username already exists");
   }
 
   return res.status(200).json(new ApiResponse(200, true, "Username is unique"));
 });
+
+
 export {
   registerUser,
   loginUser,
@@ -602,4 +621,6 @@ export {
   sendOtp,
   verifyUser,
   CheckUniqueUsername,
+  EditAvatar,
+  UploadCoverImage
 };

@@ -13,9 +13,7 @@ import ClipLoader from 'react-spinners/ClipLoader.js';
 const SettingAccordian = ({ title, children }) => {
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.user);
-  const userId = userData?.data.user
-    ? userData?.data?.user?._id
-    : userData?.data?._id;
+  const userId = userData?._id;
 
   const [isOpen, setIsOpen] = useState(false);
 

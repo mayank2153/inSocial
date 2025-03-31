@@ -10,9 +10,7 @@ const Conversations = () => {
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null); // State to track selected conversation
   const userData = useSelector((state) => state.auth.user);
-  const ownerID = userData?.data.user
-    ? userData?.data?.user?._id
-    : userData?.data?._id;
+  const ownerID = userData?._id;
 
   const fetchConversations = async () => {
     try {

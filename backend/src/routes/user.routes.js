@@ -12,15 +12,17 @@ import {
   forgetPassword,
   resetPassword,
   sendOtp,
-  handleGoogleLogin,
   UploadCoverImage,
   EditAvatar,
+  CheckUniqueUsername,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/authjwt.middleware.js";
 import passport from "passport";
 const userRouter = Router();
 
+
+userRouter.route("/check-username/:username").get(CheckUniqueUsername)
 userRouter.route("/register").post(registerUser);
 
 userRouter.route("/login").post(loginUser);

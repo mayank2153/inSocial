@@ -16,7 +16,7 @@ const LikedCategories = () => {
   const [user, setUser] = useState(null);
   const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
   const userD = useSelector((state) => state.auth.user);
-  const ownerID = userD?.data?.user ? userD?.data?.user?._id : userD?.data?._id;
+  const ownerID = userD?._id;
   const [categories, setCategories] = useState([]);
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const navigate = useNavigate();

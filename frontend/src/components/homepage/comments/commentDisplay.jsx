@@ -23,9 +23,7 @@ const CommentDisplay = ({
 
   const { postId } = useParams();
   const userData = useSelector((state) => state.auth.user);
-  const user = userData?.data.user
-    ? userData?.data?.user?._id
-    : userData?.data?._id;
+  const user = userData?._id;
 
   const handleCommentDelete = async () => {
     try {

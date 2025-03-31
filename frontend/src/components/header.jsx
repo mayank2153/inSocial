@@ -17,13 +17,9 @@ const Header = ({ toggleCategories }) => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const userData = useSelector((state) => state.auth.user);
-  const userId = userData?.data.user
-    ? userData?.data?.user?._id
-    : userData?.data?._id;
-  const userProfileImage = userData?.data.user
-    ? userData?.data?.user?.avatar
-    : userData?.data?.avatar;
-
+  console.log('userData', userData);
+  const userId = userData?._id
+  const userProfileImage = userData?.avatar
   const navigate = useNavigate();
   const unreadCount = useSelector((state) => state.notification.unreadCount);
 

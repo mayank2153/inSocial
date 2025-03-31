@@ -60,7 +60,7 @@ const AuthLayout = () => {
               </p>
           </div>
         )}
-        <img src={image} alt="Background " className='w-[800px]' />
+        <img src={image} alt="Background " className='lg:w-[600px] ' />
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ const url = import.meta.env.VITE_BASE_URL || `http://localhost:8000/`;
 import { useNavigate } from 'react-router-dom';
 
 const PostPage = () => {
+  console.log('PostPage');
   const { postId } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);

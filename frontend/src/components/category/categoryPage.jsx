@@ -55,9 +55,7 @@ const CategoryPage = () => {
       const response = await axios.post(
         `${url}users/add-liked-categories`,
         {
-          userId: userData?.data.user
-            ? userData?.data?.user?._id
-            : userData?.data?._id,
+          userId: userData?._id,
           categoryIds: selectedCategories,
         },
         {

@@ -15,9 +15,9 @@ const CommentInput = ({ postId }) => {
   const socket = useSocket();
   const isConnected = useSelector((state) => state.socket.isConnected);
   const userName = useSelector(
-    (state) => state.auth.user?.data?.user?.userName,
+    (state) => state.auth.user?.userName,
   );
-  const userId = useSelector((state) => state.auth.user?.data?.user?._id);
+  const userId = useSelector((state) => state.auth.user?._id);
 
   // const userData = useSelector((state) => state.auth.user)
   // console.log('data',userData);

@@ -18,6 +18,7 @@ const authSlice = createSlice({
     },
     // Authentication reducers
     loginSuccess: (state, action) => {
+      console.log('action', action);
       state.user = action.payload;
       state.isAuthenticated = true;
       state.error = null;

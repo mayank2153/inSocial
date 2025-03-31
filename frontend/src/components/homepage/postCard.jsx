@@ -34,12 +34,8 @@ const PostCard = ({
 
   // const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.user);
-  const currentUser = userData?.data?.user
-    ? userData?.data?.user?._id
-    : userData?.data?._id;
-  const userName = userData?.data?.user
-    ? userData?.data?.user?.userName
-    : userData?.data?.userName;
+  const currentUser = userData?._id;
+  const userName = userData?.userName;
 
   const isConnected = useSelector((state) => state.socket.isConnected);
   const socket = useSocket();

@@ -28,6 +28,7 @@ import VerifyNewEmail from './components/settings/verifyChangeEmail.jsx';
 import ContactUs from './components/contactUs/contactUs.jsx';
 import AuthLayout from './components/layouts/authLayout.jsx';
 import LandingPage from './components/landingPage/landingPage.jsx';
+import { MdHomeWork } from 'react-icons/md';
 function Layout() {
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
 
@@ -37,6 +38,7 @@ function Layout() {
   const hideCategories = () => {
     setIsCategoriesVisible(false);
   };
+  console.log('isCategoriesVisible', isCategoriesVisible);
 
   return (
     <div className="montserrat-medium">
@@ -53,6 +55,7 @@ function Layout() {
         </div>
 
         {/* Main content section, hide when categories are visible on mobile */}
+
         <div
           className={`flex-grow ${
             isCategoriesVisible ? 'hidden' : 'block'
@@ -136,7 +139,7 @@ const appRouting = createBrowserRouter([
     children: [
       {
         path: '/home',
-        element: <HomePage />,
+        element: <HomePage/>,
       },
       {
         path: '/registerCategory',

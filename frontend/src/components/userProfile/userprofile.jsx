@@ -96,7 +96,7 @@ const UserProfile = () => {
   }
 
   const isCurrentUser =
-    loggedInUser && loggedInUser?.data?.user?._id === userId;
+    loggedInUser && loggedInUser?._id === userId;
 
   return (
     <div className="w-full bg-[rgb(13,17,20)] overflow-y-scroll no-scrollbar max-h-screen flex flex-col items-center h-screen">

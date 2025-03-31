@@ -11,7 +11,7 @@ import { ChangeCurrentEmail } from '../../api/changeEmail';
 
 function VerifyNewEmail() {
   const UserData = useSelector((state) => state.auth.user);
-  const userId = UserData?.data?.user?._id;
+  const userId = UserData._id;
   const [otp, setOtp] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
