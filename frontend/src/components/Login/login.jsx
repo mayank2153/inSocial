@@ -4,12 +4,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { loginSuccess, loginFailure } from '../../utils/authslice.jsx';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import logo from '../../assets/images/logo.jpg';
-import logo_img_black from '../../assets/images/logo_img_black.png';
+import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import ClipLoader from 'react-spinners/ClipLoader.js';
 import { loginUser } from '../../api/auth.api.js';
+import { useLocation } from 'react-router-dom';
 const url = import.meta.env.VITE_BASE_URL || 'http://localhost:8000/';
 
 const Login = () => {
@@ -19,6 +19,18 @@ const Login = () => {
     email: '',
     password: '',
   });
+  const location = useLocation();
+  const data = location.state?.user;
+  console.log("data",data);
+  useEffect(() => {
+    if (data?.email || data?.password) {
+      setUser({
+        email: data?.email || '',
+        password: data?.password || '',
+      });
+    }
+  }, [data]);
+
   const [showPassword, setShowPassword] = useState(false);
   const [forgetPassword, setForgetPassword] = useState(false);
   const [Loading, setLoading] = useState(false);
@@ -74,7 +86,7 @@ const Login = () => {
               <input
                 type="email"
                 name="email"
-                value={user.email}
+                value={data?.email? data.email: user.email}
                 placeholder='Enter your Email Address'
                 onChange={handleInput}
                 className="w-full px-3 h-12 py-2 min-w-[60%] text-[#BDBDBD]  rounded-lg bg-[#1e1e1e]  focus:outline-none border border-[#BDBDBD]"
@@ -89,7 +101,7 @@ const Login = () => {
                   type={showPassword ? 'text' : 'password'}
                   name="password"
                   placeholder='Enter your Password'
-                  value={user.password}
+                  value={data?.password?data.password: user.password }
                   onChange={handleInput}
                   className="w-full px-3 py-2 h-12 text-[#BDBDBD]  rounded-lg bg-[#1e1e1e]  focus:outline-none border border-[#BDBDBD]"
                 />

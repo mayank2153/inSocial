@@ -49,19 +49,34 @@ const registerUser = asyncHandler(async (req, res, next) => {
   if (!isValidData.success) {
     throw new ApiError(400, isValidData.error.errors[0].message);
   }
+  const existingUser = await User.findOne({ email: isValidData.data.email });
+  if (existingUser) {
+    throw new ApiError(400, "User with this email already exists");
+  }
 
-  const registeredUser = new User({
+  const newUser = new User({
     email: isValidData.data.email,
     userName: isValidData.data.username,
-    password: isValidData.data.password,
+    password: isValidData.data.password, 
+    isVerified: false,
+    avatar:
+      "https://res.cloudinary.com/dhrbg2jbi/image/upload/v1743491325/ChatGPT_Image_Apr_1_2025_12_37_12_PM_mipb0m.png",
   });
 
-  await registeredUser.save();
-
-  return res
-    .status(201)
-    .json(new ApiResponse(201, "User Registered Successfully"));
+  try {
+    await newUser.save();
+    newUser.password = undefined; 
+    return res
+      .status(201)
+      .json(new ApiResponse(201, newUser, "User Registered Successfully"));
+  } catch (error) {
+    if (error.code === 11000) {
+      throw new ApiError(400, "Email or username already exists");
+    }
+    throw new ApiError(500, "Internal Server Error");
+  }
 });
+
 
 /**
  * @description for user login
@@ -594,7 +609,7 @@ const verifyUser = asyncHandler(async (req, res) => {
 const CheckUniqueUsername = asyncHandler(async (req, res) => {
   const { username } = req.params;
   const existingUser = await User.findOne({
-    userName: username,
+    userName: username.toLowerCase(),
   });
 
   if (existingUser) {

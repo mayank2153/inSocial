@@ -1,18 +1,84 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { checkUserName } from "./auth.api";
+class UsernameGenerator {
+  constructor() {
+    this.adjectives = [
+      'fierce', 'stealthy', 'mystic', 'electric', 'shadowy', 'radiant', 'blazing',
+      'lunar', 'astral', 'venomous', 'rogue', 'thunderous', 'spectral', 'arcane',
+      'crimson', 'ironclad', 'obsidian', 'phantom', 'cosmic', 'runic'
+    ];
+    
+    this.nouns = [
+      'warrior', 'samurai', 'lynx', 'raven', 'vortex', 'sphinx', 'striker', 'sentinel',
+      'falcon', 'pyro', 'nova', 'cyborg', 'pioneer', 'oracle', 'golem', 'juggernaut',
+      'tundra', 'nebula', 'drifter', 'ranger'
+    ];
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GOOGLE_API_KEY);
+    this.maxLength = 15;
+  }
 
-async function usernameGenerator() {
-  try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    const result = await model.generateContent([
-      'Generate one unique and meaningful anonymous username that is easy to remember and suitable for a diverse range of users. The username should be a combination of words or phrases that evoke a positive or neutral idea, concept, or imagery. It should not include any real names or common identifiers.Username should not be greater than 15 characters. Ensure the username is creative, meaningful, and distinctive.Return only the username without any additional explanation.',
-    ]);
+async generateUsername(userInput = '') {
+    let trimmedInput = userInput.length >= 10 ? userInput.slice(0, 10) : userInput;
 
-    return result.response.text();
-  } catch (error) {
-    console.error('Error generating username:', error);
-    return '';
+    let attempts = 0;
+    let isAvailable = false;
+    let username = '';
+
+    while (!isAvailable && attempts < 10) {
+        const randomAdjective = this.adjectives[Math.floor(Math.random() * this.adjectives.length)];
+        const randomNoun = this.nouns[Math.floor(Math.random() * this.nouns.length)];
+        const randomNumber = Math.floor(Math.random() * 999);
+        const specialChar = '_'; 
+
+        username = userInput
+            ? `${trimmedInput}${specialChar}${this.capitalizeFirst(randomNoun)}${randomNumber}`
+            : `${this.capitalizeFirst(randomAdjective)}${this.capitalizeFirst(randomNoun)}${randomNumber}`;
+
+        isAvailable = await this.checkAvailability(username);
+        attempts++;
+    }
+
+    return username.length > this.maxLength ? username.slice(0, this.maxLength) : username;
+}
+
+
+  async generateSuggestions(userInput = '', count = 15) {
+    return await Promise.all(
+    Array.from({ length: count }, () => this.generateUsername(userInput))
+  );
+  }
+
+  async getAvailableSuggestions(userInput = '', count = 5) {
+    const suggestions = [];
+    const maxAttempts = count * 5; 
+    let attempts = 0;
+
+    while (suggestions.length < count && attempts < maxAttempts) {
+      const username =await this.generateUsername(userInput);
+      const isAvailable = await this.checkAvailability(username);
+
+      if (isAvailable) {
+        suggestions.push(username);
+      }
+      attempts++;
+    }
+
+    return suggestions.length > 0 ? suggestions : ['No available usernames found'];
+  }
+
+  async checkAvailability(username) {
+    try {
+      const response = await checkUserName(username);
+      const data = response.data;
+      return data.success;
+    } catch (error) {
+      console.error('Error checking username availability:', error);
+      return false;
+    }
+  }
+
+  capitalizeFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 }
-export default usernameGenerator;
+
+export default UsernameGenerator;

@@ -8,10 +8,12 @@ import axios from "axios";
 import { checkUserName } from "../../api/auth.api";
 import { toast } from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
-import { loginSuccess, loginFailure } from '../../utils/authslice.jsx';
-
-
+import { signupSuccess, signupFailure } from '../../utils/authslice.jsx';
+import UsernameGenerator from "../../api/usernameGenerator.js";
+import { FaSyncAlt } from 'react-icons/fa';
 const Register = () => {
+  const [usernameSuggestions, setUsernameSuggestions] = useState([]);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [user, setUser] = useState({
@@ -28,8 +30,22 @@ const Register = () => {
     message: '',
     isValid: true
   });
+  const [emailStatus, setEmailStatus] = useState({
+  isValid: false,
+  message: ""
+});
+const [passwordStatus, setPasswordStatus] = useState({
+  isValid: false,
+  message: ""
+});
 
   const validateUsername = (username) => {
+    if (username.length < 3) {
+      return {
+        isValid: false,
+        message: 'Username must be at least 3 characters long'
+      };
+    }
     if (username.includes(' ')) {
       return {
         isValid: false,
@@ -54,7 +70,7 @@ const Register = () => {
   const handleInput = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    
+    setUser({ ...user, [name]: value });
     if (name === 'username') {
       const validation = validateUsername(value);
       
@@ -68,9 +84,25 @@ const Register = () => {
       if (validation.isValid || value === '') {
         setUser({ ...user, [name]: value });
       }
+    } 
+    else if (name === "email") {
+    if (!value) {
+      setEmailStatus({ isValid: false, message: "Email is required" });
+    } else if (!/\S+@\S+\.\S+/.test(value)) {
+      setEmailStatus({ isValid: false, message: "Please enter a valid email address" });
     } else {
-      setUser({ ...user, [name]: value });
+      setEmailStatus({ isValid: true, message: "" });
     }
+  }
+    else if (name === "password") {
+  if (!value) {
+    setPasswordStatus({ isValid: false, message: "Password is required" });
+  } else if (value.length < 6) {
+    setPasswordStatus({ isValid: false, message: "Password must be at least 6 characters" });
+  } else {
+    setPasswordStatus({ isValid: true, message: "" });
+  }
+}
   };
 
   useEffect(() => {
@@ -84,16 +116,20 @@ const Register = () => {
             ...prev,
             isChecking: false,
             isAvailable: true,
-            message: 'Username is available'
+            message: ''
           }));
+          setUsernameSuggestions([]);
         } catch (error) {
-          setUsernameStatus(prev => ({
-            ...prev,
-            isChecking: false,
-            isAvailable: false,
-            message: error?.response?.data?.message || 'Username is already taken'
-          }));
-        }
+          const suggestions = await generator.generateSuggestions(user.username, 3);
+        setUsernameSuggestions(suggestions);
+
+        setUsernameStatus(prev => ({
+          ...prev,
+          isChecking: false,
+          isAvailable: false,
+          message: error?.response?.data?.message || 'Username is already taken'
+        }));
+      }
       }
     }, 500);
     return () => clearTimeout(checkUsernameTimeout);
@@ -115,13 +151,13 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${url}users/login`, user, {
+      const response = await axios.post(`${url}users/register`, user, {
         withCredentials: true,
       });
-      dispatch(loginSuccess(response.data));
+      dispatch(signupSuccess(response.data));
       setLoading(false);
 
-      navigate('/');
+      navigate('/auth/login', { state: { user: user } });
       toast.success(response?.data?.message || 'Registration successful!');
     } catch (error) {
       console.error(error?.response?.data);
@@ -130,7 +166,7 @@ const Register = () => {
       });
       setLoading(false);
 
-      dispatch(loginFailure(error?.response?.data?.message));
+      dispatch(signupFailure(error?.response?.data?.message));
       setForgetPassword(true);
     }
   };
@@ -138,7 +174,22 @@ const Register = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
+  const generator= new UsernameGenerator();
+const generateUsername = async() => {
+  try {
+    const username =  await generator.generateUsername(user.username);
+    setUser(prevUser => ({ ...prevUser, username }));
+    setUsernameStatus({
+      isChecking: false,
+      isAvailable: true,
+      message: '',
+      isValid: true,
+    });
+  } catch (error) {
+    console.error('Error generating username:', error);
+    toast.error('Failed to generate username. Please try again.');
+  }
+};
   return (
     <div className="lg:w-[calc(100%-40%)] sm:w-[calc(100%-35%)] ">
       <h2 className="text-3xl text-left text-white mb-6">Sign Up</h2>
@@ -154,20 +205,23 @@ const Register = () => {
             onChange={handleInput}
             placeholder="Enter your email address"
             className="w-full px-3 py-2 text-[#BDBDBD] rounded-md bg-[#1e1e1e] focus:outline-none border border-[#BDBDBD]"
-            required
           />
+          {!emailStatus.isValid && (
+            <p className="text-red-500 text-sm mt-1">{emailStatus.message}</p>
+          )}
         </div>
-        <div>
+        <div className="">
           <label className="block text-md text-[#EDEDED] pb-1">
             Username
           </label>
-          <input
+          <div className="flex px-3 py-2 text-[#BDBDBD] bg-[#1e1e1e]  rounded-md  border ">
+            <input
             type="text"
             name="username"
-            placeholder="Enter your username (letters, numbers, underscores only)"
+            placeholder="Enter your username"
             value={user.username}
             onChange={handleInput}
-            className={`w-full px-3 py-2 text-[#BDBDBD] rounded-md bg-[#1e1e1e] focus:outline-none border ${
+            className={`w-full  focus:outline-none bg-[#1e1e1e] ${
               !usernameStatus.isValid
                 ? 'border-red-500'
                 : usernameStatus.isChecking 
@@ -178,9 +232,13 @@ const Register = () => {
                       ? 'border-green-500' 
                       : 'border-[#BDBDBD]'
             }`}
-            required
             minLength={3}
           />
+          <button type="button" className="focus:outline-none text-[#BDBDBD]" onClick={generateUsername}>
+            <FaSyncAlt size={18} />
+          </button>
+          
+          </div>
           {!usernameStatus.isValid && (
             <p className="text-red-500 text-sm mt-1">{usernameStatus.message}</p>
           )}
@@ -193,25 +251,44 @@ const Register = () => {
             </p>
           )}
         </div>
+        {!usernameStatus.isAvailable && usernameSuggestions.length > 0 && (
+        <div className="text-sm text-gray-400 duration-200">
+          <p>Try these:</p>
+          <div className="flex gap-2">
+            {usernameSuggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                type="button"
+                className=" p-1 bg-gray-700 text-white rounded-md hover:bg-gray-600"
+                onClick={() => setUser({ ...user, username: suggestion })}
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
+        </div>
+)}
+
         <div className="mb-6">
           <label className="block text-[#EDEDED] text-md pb-1">
             Password
           </label>
-          <div className="relative">
+          <div className="rounded-md bg-[#1e1e1e] flex border-[#BDBDBD] border">
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
               value={user.password}
               onChange={handleInput}
               placeholder="Enter your password"
-              className="w-full px-3 py-2 text-[#BDBDBD] rounded-md bg-[#1e1e1e] focus:outline-none border border-[#BDBDBD]"
-              required
+              className="w-full px-3 py-2 text-[#BDBDBD] rounded-md bg-[#1e1e1e] focus:outline-none "
+              
               minLength={6}
             />
+           
             <button
               type="button"
               onClick={togglePasswordVisibility}
-              className="absolute inset-y-0 right-0 px-3 py-2 focus:outline-none text-[#BDBDBD]"
+              className=" inset-y-0 right-0 px-3 py-2 focus:outline-none text-[#BDBDBD]"
             >
               {showPassword ? (
                 <FaEyeSlash size={22} />
@@ -220,6 +297,9 @@ const Register = () => {
               )}
             </button>
           </div>
+             {!passwordStatus.isValid && (
+            <p className="text-red-500 text-sm mt-1">{passwordStatus.message}</p>
+          )}
           <div className="flex justify-end mt-2">
             {forgetPassword && (
               <div>
@@ -236,11 +316,11 @@ const Register = () => {
           <button
             type="submit"
             className={`w-full bg-[#7F3FBF] text-slate-200 py-2 rounded-md hover:bg-[#6b30a7] focus:outline-none font-semibold duration-200 ${
-              !usernameStatus.isValid || !usernameStatus.isAvailable || usernameStatus.isChecking 
+              !usernameStatus.isValid || !usernameStatus.isAvailable || usernameStatus.isChecking || !passwordStatus.isValid || !emailStatus.isValid
                 ? 'opacity-70 cursor-not-allowed' 
                 : ''
             }`}
-            disabled={!usernameStatus.isValid || !usernameStatus.isAvailable || usernameStatus.isChecking}
+            // disabled={!usernameStatus.isValid || !usernameStatus.isAvailable || usernameStatus.isChecking || !passwordStatus.isValid || !emailStatus.isValid}
           >
             {loading ? (
               <ClipLoader color="#ffffff" size={20} className="mt-1" />
@@ -270,6 +350,7 @@ const Register = () => {
           Sign In
         </Link>
       </div>
+      
     </div>
   );
 };
